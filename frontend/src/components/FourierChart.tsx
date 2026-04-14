@@ -1,5 +1,5 @@
 import Plot from 'react-plotly.js';
-import { PlotData } from '../services/api';
+import type { PlotData } from '../services/api';
 
 interface FourierChartProps {
   data: PlotData | null;

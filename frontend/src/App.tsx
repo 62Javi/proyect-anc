@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { calculateFourier, FourierResponse, FunctionInterval } from './services/api';
+import { calculateFourier } from './services/api';
+import type { FourierResponse, FunctionInterval } from './services/api';
 import FourierChart from './components/FourierChart';
 import FormulaDisplay from './components/FormulaDisplay';
 import { Calculator, Plus, Trash2, Sliders } from 'lucide-react';
