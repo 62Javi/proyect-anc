@@ -8,6 +8,13 @@ Interactive web tool for Fourier Series calculation and visualization.
 - **Frontend**: TypeScript 5+, Node 20, React, Vite, Plotly.js, Tailwind CSS, KaTeX
 - **Deployment**: Docker Compose (ARM64 optimized)
 
+## Deployment Context (CRITICAL)
+- **Host**: Raspberry Pi (`192.168.1.100`)
+- **Backend Port**: `8003` (Internal `8000`)
+- **Frontend Port**: `8083` (Internal `80`)
+- **Cloudflare Tunnel**: `fourier.sixtor.site` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
+- **Image Strategy**: Built locally on Pi due to network/arch specificities.
+
 ## Project Structure
 ```text
 backend/
@@ -39,14 +46,11 @@ frontend/
 - Build: `cd frontend && npm run build`
 
 ### Deployment
-- Full stack (Docker): `docker-compose up --build`
-
-## Code Style
-- **Python**: PEP 8 via Ruff
-- **TypeScript**: Standard React/Vite conventions with ESLint/Prettier
+- Deploy on Pi: `cd ~/proyect-anc && docker compose up -d --build`
 
 ## Recent Changes
-- `001-fourier-visualization`: Implemented end-to-end Fourier series analyzer with symbolic math and interactive plots.
+- `001-fourier-visualization`: Implemented end-to-end Fourier series analyzer.
+- `002-pi-deployment`: Optimized Docker for Raspberry Pi (ports 8003/8083) and configured Cloudflare Tunnel.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
