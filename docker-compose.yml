@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      network: host
     ports:
       - "8003:8000"
     volumes:
@@ -10,7 +12,9 @@ services:
       - ENV=dev
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      network: host
     ports:
       - "8083:80"
     depends_on:

@@ -93,24 +93,30 @@ class FourierSeriesCalculator:
         x_vals = np.linspace(float(start), float(end), num_points)
 
         # lambdify original function
-        f_func = sp.lambdify(self.x, f_sym, modules=["numpy", "sympy"])
+        f_func = sp.lambdify(self.x, f_sym, modules=["numpy"])
         try:
             y_original = f_func(x_vals)
-            # Handle piecewise lambdify returning scalars or arrays with object type
-            if isinstance(y_original, (int, float)):
-                y_original = np.full_like(x_vals, y_original)
+            # Ensure it's a numeric array, not scalar or object array
+            if np.isscalar(y_original):
+                y_original = np.full_like(x_vals, float(y_original))
+            else:
+                y_original = np.array(y_original, dtype=float)
         except Exception:
             y_original = np.zeros_like(x_vals)
 
         # Summation for partial sum
-        y_approx = np.full_like(x_vals, a0_val / 2.0)
+        y_approx = np.full_like(x_vals, float(a0_val / 2.0))
 
+        # Vectorized evaluation for an and bn
         for n_val in range(1, harmonics + 1):
-            an_val = float(an_expr.subs(self.n, n_val).evalf())
-            bn_val = float(bn_expr.subs(self.n, n_val).evalf())
+            try:
+                an_val = float(an_expr.subs(self.n, n_val).evalf())
+                bn_val = float(bn_expr.subs(self.n, n_val).evalf())
 
-            y_approx += an_val * np.cos(n_val * np.pi * x_vals / L)
-            y_approx += bn_val * np.sin(n_val * np.pi * x_vals / L)
+                y_approx += an_val * np.cos(n_val * np.pi * x_vals / L)
+                y_approx += bn_val * np.sin(n_val * np.pi * x_vals / L)
+            except Exception:
+                continue
 
         return {
             "x": x_vals.tolist(),
