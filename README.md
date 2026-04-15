@@ -79,7 +79,7 @@ El proyecto está configurado para operar mediante un túnel de Cloudflare en la
 
 | Nombre Completo | Legajo | Usuario GitHub |
 | :--- | :--- | :--- |
-| [Nombre Completo] | [Legajo] | [@usuario] |
+| Castro Cope Sixto Javier | 32797 | @62Javi |
 | [Nombre Completo] | [Legajo] | [@usuario] |
 | [Nombre Completo] | [Legajo] | [@usuario] |
 
