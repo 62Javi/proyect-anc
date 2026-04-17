@@ -9,6 +9,10 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 - **Frontend**: TypeScript 5+, Node 20, React, Vite, React Router, Tailwind CSS, Plotly.js, KaTeX
 - **Deployment**: Docker Compose (ARM64 optimized)
 
+## Specialized Skills (Installed in .agents/skills/)
+- **UI/UX Pro Max**: MUST be used for all visual design decisions (colors, typography, spacing). Always prioritize mobile-specific rules and "Phone-First" philosophy.
+- **Tavily Search/Research**: Use for deep technical investigations or finding updated documentation for backend libraries.
+
 ## Deployment Context (CRITICAL)
 - **Host**: Raspberry Pi (`192.168.1.100`)
 - **Backend Port**: `8003` (Internal `8000`)
