@@ -20,8 +20,8 @@ const FormulaDisplay = ({ label, formula }: FormulaDisplayProps) => {
   }, [label, formula]);
 
   return (
-    <div className="p-2 bg-slate-50 border rounded-lg overflow-x-auto">
-      <span ref={containerRef} className="text-lg"></span>
+    <div className="p-4 bg-white/40 backdrop-blur-sm rounded-2xl flex items-center min-w-max">
+      <span ref={containerRef} className="text-xl lg:text-2xl text-primary font-bold"></span>
     </div>
   );
 };
