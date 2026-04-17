@@ -12,7 +12,7 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 - **Host**: Raspberry Pi (`192.168.1.100`)
 - **Backend Port**: `8003` (Internal `8000`)
 - **Frontend Port**: `8083` (Internal `80`)
-- **Cloudflare Tunnel**: `fourier.sixtor.site` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
+- **Cloudflare Tunnel**: `anc.sixtor.site` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
 - **Image Strategy**: Built locally on Pi due to network/arch specificities.
 
 ## Project Structure
