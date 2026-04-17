@@ -2,6 +2,7 @@
 
 ## Project Overview
 Interactive web platform for Mathematical Analysis, Numerical Methods, and Calculus (ANC).
+**Design Priority**: Mobile-First (Phone-First). All interfaces must be highly optimized for small touch screens and one-handed use before scaling to desktop.
 
 ## Active Technologies
 - **Backend**: Python 3.11+, FastAPI, SymPy, NumPy
