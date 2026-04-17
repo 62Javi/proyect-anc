@@ -1,11 +1,11 @@
 # proyect-anc Development Guidelines
 
 ## Project Overview
-Interactive web tool for Fourier Series calculation and visualization.
+Interactive web platform for Mathematical Analysis, Numerical Methods, and Calculus (ANC).
 
 ## Active Technologies
 - **Backend**: Python 3.11+, FastAPI, SymPy, NumPy
-- **Frontend**: TypeScript 5+, Node 20, React, Vite, Plotly.js, Tailwind CSS, KaTeX
+- **Frontend**: TypeScript 5+, Node 20, React, Vite, React Router, Tailwind CSS, Plotly.js, KaTeX
 - **Deployment**: Docker Compose (ARM64 optimized)
 
 ## Deployment Context (CRITICAL)
@@ -19,17 +19,18 @@ Interactive web tool for Fourier Series calculation and visualization.
 ```text
 backend/
 ├── src/
-│   ├── api/         # FastAPI routes
-│   ├── core/        # Fourier logic (SymPy)
+│   ├── api/         # FastAPI routers by tool
+│   ├── core/        # Mathematical logic by tool (SymPy)
 │   ├── models/      # Pydantic schemas
 │   └── main.py      # Entry point
 └── tests/           # Pytest suite
 
 frontend/
 ├── src/
-│   ├── components/  # React components
+│   ├── components/  # Shared and tool-specific React components
+│   ├── pages/       # Page-level components (Home, Fourier, etc.)
 │   ├── services/    # API client
-│   └── App.tsx      # Main application
+│   └── App.tsx      # Main application with Routing
 └── tests/           # Vitest suite
 ```
 
@@ -42,7 +43,7 @@ frontend/
 
 ### Frontend
 - Run tests: `cd frontend && npm run test`
-- Run dev server: `cd frontend && npm run dev`
+- Run dev server: `cd frontend && npm run dev -- --host`
 - Build: `cd frontend && npm run build`
 
 ### Deployment
@@ -51,6 +52,7 @@ frontend/
 ## Recent Changes
 - `001-fourier-visualization`: Implemented end-to-end Fourier series analyzer.
 - `002-pi-deployment`: Optimized Docker for Raspberry Pi (ports 8003/8083) and configured Cloudflare Tunnel.
+- `003-multi-tool-restructuring`: Refactored frontend with React Router and established a multi-page architecture for future tools.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
