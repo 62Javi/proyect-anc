@@ -1,1 +1,58 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #4F46E5;
+  --color-on-primary: #FFFFFF;
+  --color-secondary: #818CF8;
+  --color-accent: #EA580C;
+  --color-background: #EEF2FF;
+  --color-foreground: #1E1B4B;
+  --color-muted: #EBEEF8;
+  --color-border: #C7D2FE;
+  
+  --font-heading: "Crimson Pro", serif;
+  --font-body: "Atkinson Hyperlegible", sans-serif;
+
+  /* Claymorphism shadows and transitions */
+  --shadow-clay: 
+    inset 4px 4px 12px rgba(255, 255, 255, 0.4),
+    inset -4px -4px 12px rgba(0, 0, 0, 0.05),
+    0 10px 25px -5px rgba(79, 70, 229, 0.1),
+    0 8px 10px -6px rgba(79, 70, 229, 0.1);
+  --shadow-clay-hover: 
+    inset 2px 2px 8px rgba(255, 255, 255, 0.5),
+    inset -2px -2px 8px rgba(0, 0, 0, 0.02),
+    0 20px 25px -5px rgba(79, 70, 229, 0.15),
+    0 10px 10px -6px rgba(79, 70, 229, 0.1);
+  --shadow-clay-pressed:
+    inset 6px 6px 16px rgba(0, 0, 0, 0.1),
+    inset -4px -4px 12px rgba(255, 255, 255, 0.6),
+    0 2px 4px rgba(79, 70, 229, 0.05);
+}
+
+@layer base {
+  body {
+    @apply font-body text-foreground bg-background;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+}
+
+@layer utilities {
+  .clay-card {
+    @apply bg-white rounded-[24px] border-4 border-border shadow-[var(--shadow-clay)] transition-all duration-300;
+  }
+  .clay-card:hover {
+    @apply shadow-[var(--shadow-clay-hover)] -translate-y-1;
+  }
+  .clay-button-primary {
+    @apply bg-primary text-white rounded-[16px] border-b-4 border-indigo-800 shadow-md transition-all duration-150 active:translate-y-[2px] active:border-b-0 active:shadow-inner;
+  }
+  .clay-button-accent {
+    @apply bg-accent text-white rounded-[16px] border-b-4 border-orange-800 shadow-md transition-all duration-150 active:translate-y-[2px] active:border-b-0 active:shadow-inner;
+  }
+  .clay-input {
+    @apply bg-white border-2 border-border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none shadow-inner;
+  }
+}
