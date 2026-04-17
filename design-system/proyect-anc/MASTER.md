@@ -7,8 +7,8 @@
 ---
 
 **Project:** Proyect ANC
-**Generated:** 2026-04-16 23:38:09
-**Category:** Educational App
+**Generated:** 2026-04-16 23:47:22
+**Category:** Biotech / Life Sciences
 
 ---
 
@@ -18,29 +18,22 @@
 
 | Role | Hex | CSS Variable |
 |------|-----|--------------|
-| Primary | `#4F46E5` | `--color-primary` |
-| On Primary | `#FFFFFF` | `--color-on-primary` |
-| Secondary | `#818CF8` | `--color-secondary` |
-| Accent/CTA | `#EA580C` | `--color-accent` |
-| Background | `#EEF2FF` | `--color-background` |
-| Foreground | `#1E1B4B` | `--color-foreground` |
-| Muted | `#EBEEF8` | `--color-muted` |
-| Border | `#C7D2FE` | `--color-border` |
-| Destructive | `#DC2626` | `--color-destructive` |
-| Ring | `#4F46E5` | `--color-ring` |
-
-**Color Notes:** Playful indigo + energetic orange [Accent adjusted from #F97316 for WCAG 3:1]
+| Primary | `#2563EB` | `--color-primary` |
+| Secondary | `#3B82F6` | `--color-secondary` |
+| Accent/CTA | `#F97316` | `--color-accent` |
+| Background | `#F8FAFC` | `--color-background` |
+| Foreground | `#1E293B` | `--color-foreground` |
 
 ### Typography
 
-- **Heading Font:** Crimson Pro
-- **Body Font:** Atkinson Hyperlegible
-- **Mood:** academic, research, scholarly, accessible, readable, educational
-- **Google Fonts:** [Crimson Pro + Atkinson Hyperlegible](https://fonts.google.com/share?selection.family=Atkinson+Hyperlegible:wght@400;700|Crimson+Pro:wght@400;500;600;700)
+- **Heading Font:** Inter
+- **Body Font:** Inter
+- **Mood:** spatial, legible, glass, system, clean, neutral
+- **Google Fonts:** [Inter + Inter](https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600)
 
 **CSS Import:**
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 ```
 
 ### Spacing Variables
@@ -73,7 +66,7 @@
 ```css
 /* Primary Button */
 .btn-primary {
-  background: #EA580C;
+  background: #F97316;
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -90,8 +83,8 @@
 /* Secondary Button */
 .btn-secondary {
   background: transparent;
-  color: #4F46E5;
-  border: 2px solid #4F46E5;
+  color: #2563EB;
+  border: 2px solid #2563EB;
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -104,7 +97,7 @@
 
 ```css
 .card {
-  background: #EEF2FF;
+  background: #F8FAFC;
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-md);
@@ -130,9 +123,9 @@
 }
 
 .input:focus {
-  border-color: #4F46E5;
+  border-color: #2563EB;
   outline: none;
-  box-shadow: 0 0 0 3px #4F46E520;
+  box-shadow: 0 0 0 3px #2563EB20;
 }
 ```
 
@@ -158,28 +151,28 @@
 
 ## Style Guidelines
 
-**Style:** Claymorphism
+**Style:** Glassmorphism
 
-**Keywords:** Soft 3D, chunky, playful, toy-like, bubbly, thick borders (3-4px), double shadows, rounded (16-24px)
+**Keywords:** Frosted glass, transparent, blurred background, layered, vibrant background, light source, depth, multi-layer
 
-**Best For:** Educational apps, children's apps, SaaS platforms, creative tools, fun-focused, onboarding, casual games
+**Best For:** Modern SaaS, financial dashboards, high-end corporate, lifestyle apps, modal overlays, navigation
 
-**Key Effects:** Inner+outer shadows (subtle, no hard lines), soft press (200ms ease-out), fluffy elements, smooth transitions
+**Key Effects:** Backdrop blur (10-20px), subtle border (1px solid rgba white 0.2), light reflection, Z-depth
 
 ### Page Pattern
 
-**Pattern Name:** Immersive/Interactive Experience
+**Pattern Name:** Bento Grid Showcase
 
-- **Conversion Strategy:** 40% higher engagement. Performance trade-off. Provide skip option. Mobile fallback essential.
-- **CTA Placement:** After interaction complete + Skip option for impatient users
-- **Section Order:** 1. Full-screen interactive element, 2. Guided product tour, 3. Key benefits revealed, 4. CTA after completion
+- **Conversion Strategy:** Scannable value props. High information density without clutter. Mobile stack.
+- **CTA Placement:** Floating Action Button or Bottom of Grid
+- **Section Order:** 1. Hero, 2. Bento Grid (Key Features), 3. Detail Cards, 4. Tech Specs, 5. CTA
 
 ---
 
 ## Anti-Patterns (Do NOT Use)
 
-- ❌ Dark modes
-- ❌ Complex jargon
+- ❌ Cluttered data
+- ❌ Poor credibility
 
 ### Additional Forbidden Patterns
 
