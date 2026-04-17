@@ -69,7 +69,7 @@ docker-compose up -d --build
 | Backend | 8003 | 8000 |
 
 ### Gestión de Red y Dominio
-El proyecto está configurado para operar mediante un túnel de Cloudflare en la dirección **fourier.sixtor.site**. El tráfico se redirige según la ruta:
+El proyecto está configurado para operar mediante un túnel de Cloudflare en la dirección **anc.sixtor.site**. El tráfico se redirige según la ruta:
 *   Ruta raíz (`/`): Acceso al cliente de React.
 *   Prefijo API (`/api/`): Acceso a los servicios del backend.
 
