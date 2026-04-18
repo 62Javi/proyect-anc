@@ -15,6 +15,7 @@
     "axios": "^1.6.7",
     "katex": "^0.16.10",
     "lucide-react": "^1.8.0",
+    "mathlive": "^0.109.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-is": "^19.2.5",
