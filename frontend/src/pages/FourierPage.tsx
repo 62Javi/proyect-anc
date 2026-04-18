@@ -80,13 +80,12 @@ function FourierPage() {
                     <UnifiedMathInput 
                       value={fn.expression}
                       onChange={(_, ascii) => {
-                        // Improved mapping for Python/SymPy
+                        // Keep spaces so SymPy can do implicit multiplication (e.g. "pi e" -> "pi*e")
                         const pyExpr = ascii
                           .replace(/·/g, '*')
                           .replace(/÷/g, '/')
                           .replace(/π/g, 'pi')
-                          .replace(/\\ /g, '') // Remove LaTeX spaces if any leak into ascii
-                          .replace(/ /g, '');  // Remove all spaces for safety
+                          .replace(/\\ /g, ' '); // Clean leaked LaTeX spaces, but keep the space
                         handleUpdate(idx, 'expression', pyExpr);
                       }}
                     />

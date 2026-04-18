@@ -1,5 +1,6 @@
 import sympy as sp
 import numpy as np
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
 from typing import List, Dict, Any
 from src.models.fourier import FunctionInterval
 from src.core.exceptions import InvalidExpressionError, NonIntegrableError
@@ -9,10 +10,13 @@ class FourierSeriesCalculator:
     def __init__(self):
         self.x = sp.Symbol("x")
         self.n = sp.Symbol("n", integer=True, positive=True)
+        self.transformations = standard_transformations + (implicit_multiplication_application,)
 
     def _parse_expression(self, expr_str: str):
         try:
-            return sp.parse_expr(expr_str.replace("^", "**"))
+            # Replace common MathLive ascii-math artifacts
+            clean_expr = expr_str.replace("^", "**").replace("cdot", "*")
+            return parse_expr(clean_expr, transformations=self.transformations)
         except Exception:
             raise InvalidExpressionError(expr_str)
 
