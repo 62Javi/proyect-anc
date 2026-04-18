@@ -80,14 +80,18 @@ function FourierPage() {
                     <UnifiedMathInput 
                       value={fn.expression}
                       onChange={(_, ascii) => {
+                        // Improved mapping for Python/SymPy
                         const pyExpr = ascii
                           .replace(/·/g, '*')
                           .replace(/÷/g, '/')
-                          .replace(/π/g, 'pi');
+                          .replace(/π/g, 'pi')
+                          .replace(/\\ /g, '') // Remove LaTeX spaces if any leak into ascii
+                          .replace(/ /g, '');  // Remove all spaces for safety
                         handleUpdate(idx, 'expression', pyExpr);
                       }}
                     />
                   </div>
+
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
