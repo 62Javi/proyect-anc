@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { calculateFourier } from '../services/api';
 import type { FourierResponse, FunctionInterval } from '../services/api';
 import FourierChart from '../components/FourierChart';
@@ -15,6 +15,7 @@ function FourierPage() {
   const [result, setResult] = useState<FourierResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const mainRef = useRef<HTMLElement>(null);
 
   const addInterval = () => {
     const last = functions[functions.length - 1];
@@ -39,6 +40,10 @@ function FourierPage() {
     try {
       const data = await calculateFourier({ functions, harmonics, points });
       setResult(data);
+      // Auto-scroll on mobile after calculation
+      setTimeout(() => {
+        mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Calculation failed');
     } finally {
@@ -47,7 +52,7 @@ function FourierPage() {
   };
 
   return (
-    <div className="h-full flex flex-col lg:flex-row overflow-hidden bg-slate-50">
+    <div className="min-h-[100dvh] lg:h-screen flex flex-col lg:flex-row bg-slate-50 overflow-y-auto lg:overflow-hidden">
       {/* Sidebar */}
       <aside className="w-full lg:w-[420px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 h-auto lg:h-full lg:overflow-y-auto shrink-0 relative z-20">
         <div className="flex items-center gap-3">
@@ -168,7 +173,7 @@ function FourierPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
+      <main ref={mainRef} className="flex-1 p-4 lg:p-8 overflow-y-auto">
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm min-h-[400px]">
             <FourierChart data={result?.plot_data || null} />
