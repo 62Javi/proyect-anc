@@ -1,15 +1,6 @@
 import { useEffect, useRef } from 'react';
 import 'mathlive';
 
-// Simplified and more compatible way to bypass TS for custom element
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any;
-    }
-  }
-}
-
 interface UnifiedMathInputProps {
   value: string;
   onChange: (latex: string, ascii: string) => void;
@@ -25,10 +16,9 @@ export default function UnifiedMathInput({ value, onChange, className = "" }: Un
       mfRef.current.value = value;
       
       // Configuration for a GeoGebra-like experience
-      mfRef.current.mathVirtualKeyboardPolicy = "manual"; // We'll trigger it ourselves or use system
+      mfRef.current.mathVirtualKeyboardPolicy = "manual"; 
       mfRef.current.addEventListener('input', (e: any) => {
         const latex = e.target.value;
-        // MathLive can export to various formats. 'ascii-math' is closer to what SymPy likes
         const ascii = e.target.getValue('ascii-math');
         onChange(latex, ascii);
       });
@@ -42,9 +32,11 @@ export default function UnifiedMathInput({ value, onChange, className = "" }: Un
     }
   }, [value]);
 
+  const MathField = 'math-field' as any;
+
   return (
     <div className={`w-full ${className}`}>
-      <math-field
+      <MathField
         ref={mfRef}
         style={{
           width: '100%',
@@ -55,7 +47,7 @@ export default function UnifiedMathInput({ value, onChange, className = "" }: Un
           outline: 'none',
           backgroundColor: 'white'
         }}
-      ></math-field>
+      ></MathField>
     </div>
   );
 }
