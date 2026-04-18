@@ -16,11 +16,13 @@ export default function UnifiedMathInput({ value, onChange, className = "" }: Un
       mfRef.current.value = value;
       
       // Configuration for a GeoGebra-like experience
-      mfRef.current.mathVirtualKeyboardPolicy = "manual"; 
+      mfRef.current.mathVirtualKeyboardPolicy = "auto"; 
       mfRef.current.addEventListener('input', (e: any) => {
         const latex = e.target.value;
         const ascii = e.target.getValue('ascii-math');
-        onChange(latex, ascii);
+        // Simple sanitization to ensure double asterisks for exponents which SymPy/Python likes
+        const sanitizedAscii = ascii.replace(/\^/g, '**');
+        onChange(latex, sanitizedAscii);
       });
     }
   }, []);
