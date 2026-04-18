@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react';
 import 'mathlive';
 
-// Correct way to extend JSX for MathLive in React 19 / TS
+// Simplified and more compatible way to bypass TS for custom element
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'math-field': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        ref?: React.RefObject<any>;
-      };
+      [elemName: string]: any;
     }
   }
 }
