@@ -144,12 +144,12 @@ function FourierPage() {
                       }}
                       className="cursor-pointer group relative min-h-[80px] flex flex-col items-center justify-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all"
                     >
-                        <div className="absolute top-2 left-3 flex items-center gap-1.5">
+                      <div className="absolute top-2 left-3 flex items-center gap-1.5">
                         <div className={`w-1.5 h-1.5 rounded-full ${focusedInput === idx ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Visualización</span>
                       </div>
                       <div 
-                        ref={(el) => (previewRefs.current[idx] = el)}
+                        ref={(el) => { previewRefs.current[idx] = el; }}
                         className="text-2xl text-indigo-900 transition-transform duration-300 group-hover:scale-105"
                       ></div>
                     </div>
@@ -158,11 +158,12 @@ function FourierPage() {
                       <div className="flex-1 relative">
                         <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold ${focusedInput === idx ? 'text-indigo-500' : 'text-slate-400'}`}>INPUT</span>
                         <input
-                          ref={(el) => (inputRefs.current[idx] = el)}
+                          ref={(el) => { inputRefs.current[idx] = el; }}
                           onFocus={() => {
                             setFocusedInput(idx);
                             setShowKeyboard(true);
                           }}
+
                           className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 pl-12 text-sm font-mono font-medium outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-200 transition-all"
                           value={fn.expression}
                           placeholder="Escribe aquí..."
