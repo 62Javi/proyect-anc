@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { calculateFourier } from '../services/api';
 import type { FourierResponse, FunctionInterval } from '../services/api';
 import FourierChart from '../components/FourierChart';
 import FormulaDisplay from '../components/FormulaDisplay';
-import { Calculator, Plus, Trash2, Activity, Sliders } from 'lucide-react';
+import MathKeyboard from '../components/MathKeyboard';
+import { Calculator, Trash2, Activity, Sliders, Keyboard } from 'lucide-react';
+import katex from 'katex';
 
 function FourierPage() {
   const [functions, setFunctions] = useState<FunctionInterval[]>([
@@ -14,6 +16,41 @@ function FourierPage() {
   const [result, setResult] = useState<FourierResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Math Keyboard State
+  const [focusedInput, setFocusedInput] = useState<number | null>(null);
+  const [showKeyboard, setShowKeyboard] = useState<boolean>(false);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const previewRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Update KaTeX preview
+  useEffect(() => {
+    functions.forEach((fn, idx) => {
+      const el = previewRefs.current[idx];
+      if (el) {
+        try {
+          // Basic transformation from python-like to LaTeX
+          const latex = fn.expression
+            .replace(/\*/g, '')
+            .replace(/pi/g, '\\pi')
+            .replace(/sqrt\((.*?)\)/g, '\\sqrt{$1}')
+            .replace(/sin\((.*?)\)/g, '\\sin($1)')
+            .replace(/cos\((.*?)\)/g, '\\cos($1)')
+            .replace(/tan\((.*?)\)/g, '\\tan($1)')
+            .replace(/exp\((.*?)\)/g, 'e^{$1}')
+            .replace(/log\((.*?)\)/g, '\\ln($1)')
+            .replace(/\^/g, '^');
+          
+          katex.render(`f(x) = ${latex || '0'}`, el, {
+            throwOnError: false,
+            displayMode: false
+          });
+        } catch (e) {
+          // Fallback if render fails
+        }
+      }
+    });
+  }, [functions]);
 
   const addInterval = () => {
     const last = functions[functions.length - 1];
@@ -23,6 +60,7 @@ function FourierPage() {
   const removeInterval = (index: number) => {
     if (functions.length > 1) {
       setFunctions(functions.filter((_, i) => i !== index));
+      if (focusedInput === index) setFocusedInput(null);
     }
   };
 
@@ -32,9 +70,31 @@ function FourierPage() {
     setFunctions(next);
   };
 
+  const handleInsertMath = (value: string, cursorOffset: number) => {
+    if (focusedInput === null) return;
+    const input = inputRefs.current[focusedInput];
+    if (!input) return;
+
+    const start = input.selectionStart || 0;
+    const end = input.selectionEnd || 0;
+    const currentExpr = functions[focusedInput].expression;
+    
+    const newExpr = currentExpr.substring(0, start) + value + currentExpr.substring(end);
+    
+    handleUpdate(focusedInput, 'expression', newExpr);
+    
+    // Set focus back and cursor position after render
+    setTimeout(() => {
+      input.focus();
+      const newPos = start + value.length + cursorOffset;
+      input.setSelectionRange(newPos, newPos);
+    }, 0);
+  };
+
   const onCalculate = async () => {
     setLoading(true);
     setError(null);
+    setShowKeyboard(false);
     try {
       const data = await calculateFourier({ functions, harmonics, points });
       setResult(data);
@@ -48,12 +108,21 @@ function FourierPage() {
   return (
     <div className="h-full flex flex-col lg:flex-row overflow-hidden bg-slate-50">
       {/* Sidebar */}
-      <aside className="w-full lg:w-[380px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 h-auto lg:h-full lg:overflow-y-auto shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-600 rounded-lg">
-            <Calculator className="text-white" size={20} />
+      <aside className="w-full lg:w-[380px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 h-auto lg:h-full lg:overflow-y-auto shrink-0 relative z-20">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-600 rounded-lg">
+              <Calculator className="text-white" size={20} />
+            </div>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Fourier Analyzer</h1>
           </div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Fourier Analyzer</h1>
+          <button 
+            onClick={() => setShowKeyboard(!showKeyboard)}
+            className={`p-2 rounded-lg transition-colors ${showKeyboard ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400 hover:text-slate-600'}`}
+            title="Mostrar Teclado Matemático"
+          >
+            <Keyboard size={20} />
+          </button>
         </div>
 
         <div className="space-y-6">
@@ -64,35 +133,75 @@ function FourierPage() {
             
             <div className="space-y-4">
               {functions.map((fn, idx) => (
-                <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                  <div className="flex gap-2">
-                    <div className="flex-1 relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">f(x)=</span>
-                      <input
-                        className="w-full bg-white border border-slate-200 rounded-lg p-2 pl-10 text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        value={fn.expression}
-                        onChange={(e) => handleUpdate(idx, 'expression', e.target.value)}
-                      />
+                <div key={idx} className={`p-1 rounded-[24px] transition-all duration-500 ${focusedInput === idx && showKeyboard ? 'bg-gradient-to-br from-indigo-500 to-purple-500 shadow-lg shadow-indigo-100' : 'bg-slate-200'}`}>
+                  <div className="bg-white rounded-[22px] p-5 space-y-4">
+                    {/* Hero Math Display */}
+                    <div 
+                      onClick={() => {
+                        setFocusedInput(idx);
+                        setShowKeyboard(true);
+                        inputRefs.current[idx]?.focus();
+                      }}
+                      className="cursor-pointer group relative min-h-[80px] flex flex-col items-center justify-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all"
+                    >
+                        <div className="absolute top-2 left-3 flex items-center gap-1.5">
+                        <div className={`w-1.5 h-1.5 rounded-full ${focusedInput === idx ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Visualización</span>
+                      </div>
+                      <div 
+                        ref={(el) => (previewRefs.current[idx] = el)}
+                        className="text-2xl text-indigo-900 transition-transform duration-300 group-hover:scale-105"
+                      ></div>
                     </div>
-                    {functions.length > 1 && (
-                      <button onClick={() => removeInterval(idx)} className="p-2 text-slate-400 hover:text-red-500">
-                        <Trash2 size={16} />
-                      </button>
+
+                    <div className="flex gap-2">
+                      <div className="flex-1 relative">
+                        <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold ${focusedInput === idx ? 'text-indigo-500' : 'text-slate-400'}`}>INPUT</span>
+                        <input
+                          ref={(el) => (inputRefs.current[idx] = el)}
+                          onFocus={() => {
+                            setFocusedInput(idx);
+                            setShowKeyboard(true);
+                          }}
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 pl-12 text-sm font-mono font-medium outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-200 transition-all"
+                          value={fn.expression}
+                          placeholder="Escribe aquí..."
+                          onChange={(e) => handleUpdate(idx, 'expression', e.target.value)}
+                        />
+                      </div>
+                      {functions.length > 1 && (
+                        <button onClick={() => removeInterval(idx)} className="p-2 text-slate-300 hover:text-red-500 transition-colors">
+                          <Trash2 size={18} />
+                        </button>
+                      )}
+                    </div>
+                    
+                    {showKeyboard && focusedInput === idx && (
+                      <div className="pt-2">
+                        <MathKeyboard onInsert={handleInsertMath} isVisible={true} />
+                      </div>
                     )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="number"
-                      className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-bold"
-                      value={fn.start}
-                      onChange={(e) => handleUpdate(idx, 'start', parseFloat(e.target.value))}
-                    />
-                    <input
-                      type="number"
-                      className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-bold"
-                      value={fn.end}
-                      onChange={(e) => handleUpdate(idx, 'end', parseFloat(e.target.value))}
-                    />
+
+                    <div className="grid grid-cols-2 gap-3 pt-2">
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[8px] font-black text-slate-400">DE</span>
+                        <input
+                          type="number"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2 pl-8 text-xs font-bold focus:bg-white transition-all"
+                          value={fn.start}
+                          onChange={(e) => handleUpdate(idx, 'start', parseFloat(e.target.value))}
+                        />
+                      </div>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[8px] font-black text-slate-400">A</span>
+                        <input
+                          type="number"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2 pl-6 text-xs font-bold focus:bg-white transition-all"
+                          value={fn.end}
+                          onChange={(e) => handleUpdate(idx, 'end', parseFloat(e.target.value))}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -147,7 +256,7 @@ function FourierPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 lg:p-10 overflow-y-auto">
+      <main className="flex-1 p-4 lg:p-10 overflow-y-auto relative z-10">
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm min-h-[400px]">
             <FourierChart data={result?.plot_data || null} />

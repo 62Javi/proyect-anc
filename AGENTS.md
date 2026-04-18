@@ -12,6 +12,7 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 ## Specialized Skills (Installed in .agents/skills/)
 - **UI/UX Pro Max**: MUST be used for all visual design decisions (colors, typography, spacing). Always prioritize mobile-specific rules and "Phone-First" philosophy.
 - **Tavily Search/Research**: Use for deep technical investigations or finding updated documentation for backend libraries.
+- **Universal Verify (Global)**: Use the `verify` command in any project to auto-validate code. It supports Rust, Python, and Node.js. It helps me auto-correct my own errors before delivery.
 
 ## Deployment Context (CRITICAL)
 - **Host**: Raspberry Pi (`192.168.1.100`)
