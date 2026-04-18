@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
 import 'mathlive';
 
-// Extend the HTML attributes to include math-field
+// Correct way to extend JSX for MathLive in React 19 / TS
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'math-field': any;
+      'math-field': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        ref?: React.RefObject<any>;
+      };
     }
   }
 }
