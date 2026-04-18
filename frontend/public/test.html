@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://unpkg.com/mathlive"></script>
+</head>
+<body>
+<math-field id="mf">\pi e</math-field>
+<script>
+  setTimeout(() => {
+    const mf = document.getElementById('mf');
+    console.log("ASCII:", mf.getValue('ascii-math'));
+    console.log("MathJSON:", mf.getValue('math-json'));
+  }, 1000);
+</script>
+</body>
+</html>

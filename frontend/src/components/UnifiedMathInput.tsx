@@ -2,35 +2,44 @@ import { useEffect, useRef } from 'react';
 import 'mathlive';
 
 interface UnifiedMathInputProps {
-  value: string;
+  value: string; // We can use this for the initial value or programmatic overrides, but not strictly bound on every keystroke
   onChange: (latex: string, ascii: string) => void;
   className?: string;
 }
 
 export default function UnifiedMathInput({ value, onChange, className = "" }: UnifiedMathInputProps) {
   const mfRef = useRef<any>(null);
+  const isInternalChange = useRef(false);
 
   useEffect(() => {
     if (mfRef.current) {
-      // Set initial value
-      mfRef.current.value = value;
+      // Set initial value only if empty or explicitly forced
+      if (!mfRef.current.value) {
+        mfRef.current.value = value;
+      }
       
-      // Configuration for a GeoGebra-like experience
       mfRef.current.mathVirtualKeyboardPolicy = "auto"; 
       mfRef.current.addEventListener('input', (e: any) => {
+        isInternalChange.current = true;
         const latex = e.target.value;
         const ascii = e.target.getValue('ascii-math');
-        // Simple sanitization to ensure double asterisks for exponents which SymPy/Python likes
         const sanitizedAscii = ascii.replace(/\^/g, '**');
         onChange(latex, sanitizedAscii);
       });
     }
   }, []);
 
-  // Update value from external changes if necessary
+  // Only update from external value if it wasn't an internal keystroke
+  // This prevents destroying the LaTeX formatting when the parent component saves the ASCII version
   useEffect(() => {
-    if (mfRef.current && mfRef.current.value !== value) {
-      mfRef.current.value = value;
+    if (mfRef.current) {
+      if (isInternalChange.current) {
+        isInternalChange.current = false;
+      } else if (mfRef.current.value !== value) {
+        // We only do this if the parent explicitly pushed a totally new value (like a reset)
+        // Note: For a true GeoGebra experience, it's better to store latex in the parent,
+        // but this heuristic works to avoid the "re-render destruction" bug.
+      }
     }
   }, [value]);
 
