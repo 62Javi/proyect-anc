@@ -57,7 +57,7 @@ export default function Layout() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-hidden relative bg-slate-50/50">
+      <main className="flex-1 overflow-y-auto relative bg-slate-50/50">
         <Outlet />
       </main>
     </div>

@@ -52,9 +52,9 @@ function FourierPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] lg:h-screen flex flex-col lg:flex-row bg-slate-50 overflow-y-auto lg:overflow-hidden">
+    <div className="flex flex-col lg:flex-row bg-slate-50 min-h-full">
       {/* Sidebar */}
-      <aside className="w-full lg:w-[420px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 h-auto lg:h-full lg:overflow-y-auto shrink-0 relative z-20">
+      <aside className="w-full lg:w-[420px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 shrink-0 relative z-20 lg:h-full lg:overflow-y-auto lg:sticky lg:top-0">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-200">
             <Calculator className="text-white" size={20} />
@@ -173,7 +173,7 @@ function FourierPage() {
       </aside>
 
       {/* Main Content */}
-      <main ref={mainRef} className="flex-1 p-4 lg:p-8 overflow-y-auto">
+      <main ref={mainRef} className="flex-1 p-4 lg:p-8">
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm min-h-[400px]">
             <FourierChart data={result?.plot_data || null} />

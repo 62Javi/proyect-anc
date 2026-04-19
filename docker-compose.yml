@@ -1,21 +1,36 @@
 version: '3.8'
+
 services:
   backend:
     build:
       context: ./backend
-      network: host
     ports:
       - "8003:8000"
     volumes:
       - ./backend:/app
     environment:
       - ENV=dev
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - app-network
 
   frontend:
     build:
       context: ./frontend
-      network: host
     ports:
       - "8083:80"
     depends_on:
       - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+

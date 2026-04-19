@@ -4,10 +4,17 @@ from src.api.endpoints import router
 
 app = FastAPI(title="Fourier Series API")
 
-# Configure CORS
+# Configure CORS - Use specific origins for production
+origins = [
+    "https://anc.sixtor.site",
+    "http://localhost:5173",  # Vite dev server
+    "http://127.0.0.1:5173",
+    "http://192.168.1.100:8083", # Local Pi access
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust in production
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

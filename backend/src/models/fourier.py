@@ -3,19 +3,19 @@ from typing import List
 
 
 class FunctionInterval(BaseModel):
-    expression: str = Field(..., description="SymPy-compatible string (e.g., x**2)")
+    expression: str = Field(..., min_length=1, max_length=1000, description="SymPy-compatible string (e.g., x**2)")
     start: float = Field(..., description="Start of the interval")
     end: float = Field(..., description="End of the interval")
 
 
 class FourierRequest(BaseModel):
     functions: List[FunctionInterval] = Field(
-        ..., description="List of expressions and their intervals"
+        ..., min_items=1, max_items=10, description="List of expressions and their intervals"
     )
     harmonics: int = Field(
         10, ge=1, le=100, description="Number of terms in the partial sum"
     )
-    points: int = Field(1000, description="Number of points to evaluate for plotting")
+    points: int = Field(1000, ge=10, le=5000, description="Number of points to evaluate for plotting")
 
 
 class PlotData(BaseModel):
