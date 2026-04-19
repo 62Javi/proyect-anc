@@ -16,7 +16,35 @@ class FourierSeriesCalculator:
         try:
             # Replace common MathLive ascii-math artifacts
             clean_expr = expr_str.replace("^", "**").replace("cdot", "*")
-            return parse_expr(clean_expr, transformations=self.transformations)
+            
+            # Security check to prevent dunder method access
+            if "_" in clean_expr:
+                raise InvalidExpressionError(expr_str)
+            
+            # Security: Restrict global and local dicts to prevent RCE
+            # Allow specific mathematical functions, symbols and base types
+            allowed_names = {
+                "x": self.x,
+                "n": self.n,
+                "sin": sp.sin,
+                "cos": sp.cos,
+                "tan": sp.tan,
+                "exp": sp.exp,
+                "sqrt": sp.sqrt,
+                "pi": sp.pi,
+                "log": sp.log,
+                "abs": sp.Abs,
+                "Integer": sp.Integer,
+                "Float": sp.Float,
+                "Rational": sp.Rational,
+            }
+            
+            return parse_expr(
+                clean_expr, 
+                transformations=self.transformations,
+                global_dict={"__builtins__": {}},  # Disable built-ins like __import__
+                local_dict=allowed_names
+            )
         except Exception:
             raise InvalidExpressionError(expr_str)
 
@@ -63,10 +91,10 @@ class FourierSeriesCalculator:
                 f_pw * sp.sin(self.n * sp.pi * self.x / L), (self.x, start, end)
             )
 
-            # Simplify results
-            a0_sym = sp.simplify(a0_sym)
-            an_sym = sp.simplify(an_sym)
-            bn_sym = sp.simplify(bn_sym)
+            # Simplify and convert floats to exact rational fractions
+            a0_sym = sp.nsimplify(sp.simplify(a0_sym))
+            an_sym = sp.nsimplify(sp.simplify(an_sym))
+            bn_sym = sp.nsimplify(sp.simplify(bn_sym))
 
             return {
                 "a0": sp.latex(a0_sym),
