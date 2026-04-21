@@ -148,12 +148,18 @@ function FourierPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Puntos de Muestreo</label>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Puntos de Muestreo (Máx. 1000)</label>
                 <input
                   type="number"
+                  min="10"
+                  max="1000"
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-indigo-500 transition-all"
                   value={points}
-                  onChange={(e) => setPoints(parseInt(e.target.value))}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (isNaN(val)) setPoints(0);
+                    else setPoints(Math.min(1000, val));
+                  }}
                 />
               </div>
             </div>
