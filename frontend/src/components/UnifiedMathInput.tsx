@@ -36,9 +36,7 @@ export default function UnifiedMathInput({ value, onChange, className = "" }: Un
       if (isInternalChange.current) {
         isInternalChange.current = false;
       } else if (mfRef.current.value !== value) {
-        // We only do this if the parent explicitly pushed a totally new value (like a reset)
-        // Note: For a true GeoGebra experience, it's better to store latex in the parent,
-        // but this heuristic works to avoid the "re-render destruction" bug.
+        mfRef.current.value = value;
       }
     }
   }, [value]);
