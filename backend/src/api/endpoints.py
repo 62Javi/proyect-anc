@@ -20,7 +20,7 @@ async def calculate(
     coeff_data = calc.calculate_coefficients(request.functions, request.harmonics)
 
     # 3. Evaluate plot data
-    plot_data = calc.evaluate_plot_data(coeff_data, request.harmonics, request.points)
+    plot_data = calc.evaluate_plot_data(coeff_data, request.harmonics, request.points, request.periods)
 
     return FourierResponse(
         a0=coeff_data["a0"],

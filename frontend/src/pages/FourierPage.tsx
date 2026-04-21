@@ -12,6 +12,7 @@ function FourierPage() {
   ]);
   const [harmonics, setHarmonics] = useState(10);
   const [points, setPoints] = useState(1000);
+  const [periods, setPeriods] = useState(1);
   const [result, setResult] = useState<FourierResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +39,7 @@ function FourierPage() {
     setLoading(true);
     setError(null);
     try {
-      const data = await calculateFourier({ functions, harmonics, points });
+      const data = await calculateFourier({ functions, harmonics, points, periods });
       setResult(data);
       // Auto-scroll on mobile after calculation
       setTimeout(() => {
@@ -145,6 +146,18 @@ function FourierPage() {
                   className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
                   value={harmonics}
                   onChange={(e) => setHarmonics(parseInt(e.target.value))}
+                />
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Periodos a Mostrar</label>
+                  <span className="text-lg font-black text-indigo-400">{periods}</span>
+                </div>
+                <input
+                  type="range" min="1" max="5"
+                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                  value={periods}
+                  onChange={(e) => setPeriods(parseInt(e.target.value))}
                 />
               </div>
               <div>
