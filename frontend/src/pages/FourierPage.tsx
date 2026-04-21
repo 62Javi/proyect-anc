@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback, memo } from 'react';
 import { calculateFourier } from '../services/api';
 import type { FourierResponse, FunctionInterval } from '../services/api';
 import FourierChart from '../components/FourierChart';
@@ -6,9 +6,78 @@ import FormulaDisplay from '../components/FormulaDisplay';
 import UnifiedMathInput from '../components/UnifiedMathInput';
 import { Calculator, Trash2, Activity, Sliders } from 'lucide-react';
 
+interface FunctionWithId extends FunctionInterval {
+  id: string;
+}
+
+const IntervalItem = memo(({ 
+  fn, 
+  idx, 
+  onRemove, 
+  onUpdate,
+  isRemovable 
+}: { 
+  fn: FunctionWithId; 
+  idx: number; 
+  onRemove: (id: string) => void; 
+  onUpdate: (id: string, field: keyof FunctionInterval, value: string | number) => void;
+  isRemovable: boolean;
+}) => {
+  return (
+    <div className="bg-slate-50 border border-slate-200 rounded-[24px] p-5 space-y-4 shadow-sm">
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-full">Tramo {idx + 1}</span>
+        {isRemovable && (
+          <button onClick={() => onRemove(fn.id)} className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
+            <Trash2 size={14} />
+          </button>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Expresión Matemática</label>
+        <UnifiedMathInput 
+          value={fn.expression}
+          onChange={(_, ascii) => {
+            const pyExpr = ascii
+              .replace(/·/g, '*')
+              .replace(/÷/g, '/')
+              .replace(/π/g, 'pi')
+              .replace(/\\ /g, ' ');
+            onUpdate(fn.id, 'expression', pyExpr);
+          }}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Desde (x)</label>
+          <input
+            type="number"
+            className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all"
+            value={fn.start}
+            onChange={(e) => onUpdate(fn.id, 'start', parseFloat(e.target.value))}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Hasta (x)</label>
+          <input
+            type="number"
+            className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all"
+            value={fn.end}
+            onChange={(e) => onUpdate(fn.id, 'end', parseFloat(e.target.value))}
+          />
+        </div>
+      </div>
+    </div>
+  );
+});
+
+IntervalItem.displayName = 'IntervalItem';
+
 function FourierPage() {
-  const [functions, setFunctions] = useState<FunctionInterval[]>([
-    { expression: 'x', start: -1, end: 1 },
+  const [functions, setFunctions] = useState<FunctionWithId[]>([
+    { id: crypto.randomUUID(), expression: 'x', start: -1, end: 1 },
   ]);
   const [harmonics, setHarmonics] = useState(10);
   const [points, setPoints] = useState(1000);
@@ -18,30 +87,39 @@ function FourierPage() {
   const [error, setError] = useState<string | null>(null);
   const mainRef = useRef<HTMLElement>(null);
 
-  const addInterval = () => {
+  const addInterval = useCallback(() => {
     const last = functions[functions.length - 1];
-    setFunctions([...functions, { expression: '0', start: last.end, end: last.end + 1 }]);
-  };
+    setFunctions(prev => [...prev, { 
+      id: crypto.randomUUID(), 
+      expression: '0', 
+      start: last.end, 
+      end: last.end + 1 
+    }]);
+  }, [functions]);
 
-  const removeInterval = (index: number) => {
-    if (functions.length > 1) {
-      setFunctions(functions.filter((_, i) => i !== index));
-    }
-  };
+  const removeInterval = useCallback((id: string) => {
+    setFunctions(prev => {
+      if (prev.length > 1) {
+        return prev.filter(fn => fn.id !== id);
+      }
+      return prev;
+    });
+  }, []);
 
-  const handleUpdate = (index: number, field: keyof FunctionInterval, value: string | number) => {
-    const next = [...functions];
-    next[index] = { ...next[index], [field]: value } as FunctionInterval;
-    setFunctions(next);
-  };
+  const handleUpdate = useCallback((id: string, field: keyof FunctionInterval, value: string | number) => {
+    setFunctions(prev => prev.map(fn => 
+      fn.id === id ? { ...fn, [field]: value } : fn
+    ));
+  }, []);
 
   const onCalculate = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await calculateFourier({ functions, harmonics, points, periods });
+      // Remove local IDs before sending to API
+      const apiFunctions = functions.map(({ id, ...rest }) => rest);
+      const data = await calculateFourier({ functions: apiFunctions, harmonics, points, periods });
       setResult(data);
-      // Auto-scroll on mobile after calculation
       setTimeout(() => {
         mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -54,7 +132,6 @@ function FourierPage() {
 
   return (
     <div className="flex flex-col lg:flex-row bg-slate-50 min-h-full">
-      {/* Sidebar */}
       <aside className="w-full lg:w-[420px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 shrink-0 relative z-20 lg:h-full lg:overflow-y-auto lg:sticky lg:top-0">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-200">
@@ -71,54 +148,14 @@ function FourierPage() {
             
             <div className="space-y-6">
               {functions.map((fn, idx) => (
-                <div key={idx} className="bg-slate-50 border border-slate-200 rounded-[24px] p-5 space-y-4 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-full">Tramo {idx + 1}</span>
-                    {functions.length > 1 && (
-                      <button onClick={() => removeInterval(idx)} className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
-                        <Trash2 size={14} />
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Expresión Matemática</label>
-                    <UnifiedMathInput 
-                      value={fn.expression}
-                      onChange={(_, ascii) => {
-                        // Keep spaces so SymPy can do implicit multiplication (e.g. "pi e" -> "pi*e")
-                        const pyExpr = ascii
-                          .replace(/·/g, '*')
-                          .replace(/÷/g, '/')
-                          .replace(/π/g, 'pi')
-                          .replace(/\\ /g, ' '); // Clean leaked LaTeX spaces, but keep the space
-                        handleUpdate(idx, 'expression', pyExpr);
-                      }}
-                    />
-                  </div>
-
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Desde (x)</label>
-                      <input
-                        type="number"
-                        className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all"
-                        value={fn.start}
-                        onChange={(e) => handleUpdate(idx, 'start', parseFloat(e.target.value))}
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Hasta (x)</label>
-                      <input
-                        type="number"
-                        className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all"
-                        value={fn.end}
-                        onChange={(e) => handleUpdate(idx, 'end', parseFloat(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                </div>
+                <IntervalItem 
+                  key={fn.id}
+                  fn={fn}
+                  idx={idx}
+                  isRemovable={functions.length > 1}
+                  onRemove={removeInterval}
+                  onUpdate={handleUpdate}
+                />
               ))}
             </div>
             
@@ -191,7 +228,6 @@ function FourierPage() {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main ref={mainRef} className="flex-1 p-4 lg:p-8">
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm min-h-[400px]">
