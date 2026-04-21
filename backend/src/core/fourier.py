@@ -14,8 +14,23 @@ class FourierSeriesCalculator:
 
     def _parse_expression(self, expr_str: str):
         try:
-            # Replace common MathLive ascii-math artifacts
-            clean_expr = expr_str.replace("^", "**").replace("cdot", "*")
+            # Replace common MathLive ascii-math and LaTeX artifacts
+            clean_expr = (
+                expr_str.replace("^", "**")
+                .replace("·", "*")
+                .replace("cdot", "*")
+                .replace("÷", "/")
+                .replace("π", "pi")
+                .replace("\\ ", " ")
+            )
+            
+            # Handle pipe notation for absolute value |x| -> abs(x)
+            import re
+            while "|" in clean_expr:
+                new_expr = re.sub(r"\|([^|]+)\|", r"abs(\1)", clean_expr)
+                if new_expr == clean_expr:
+                    break
+                clean_expr = new_expr
             
             # Security check to prevent dunder method access
             if "_" in clean_expr:

@@ -15,7 +15,7 @@ class FourierRequest(BaseModel):
     harmonics: int = Field(
         10, ge=1, le=100, description="Number of terms in the partial sum"
     )
-    points: int = Field(1000, ge=10, le=5000, description="Number of points to evaluate for plotting")
+    points: int = Field(1000, ge=10, le=1000, description="Number of points to evaluate for plotting")
 
 
 class PlotData(BaseModel):
