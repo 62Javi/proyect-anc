@@ -19,6 +19,7 @@ export interface FourierRequest {
   functions: FunctionInterval[];
   harmonics: number;
   points: number;
+  periods?: number;
 }
 
 export interface PlotData {

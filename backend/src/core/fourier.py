@@ -127,22 +127,31 @@ class FourierSeriesCalculator:
             raise NonIntegrableError(str(e))
 
     def evaluate_plot_data(
-        self, coeff_data: Dict[str, Any], harmonics: int, num_points: int
+        self, coeff_data: Dict[str, Any], harmonics: int, num_points: int, periods: int = 1
     ) -> Dict[str, List[float]]:
         L = coeff_data["L"]
         an_expr = coeff_data["an_expr"]
         bn_expr = coeff_data["bn_expr"]
         a0_val = coeff_data["a0_val"]
         f_sym = coeff_data["f_sym"]
-        start = coeff_data["start"]
-        end = coeff_data["end"]
+        start = float(coeff_data["start"])
+        end = float(coeff_data["end"])
+        T = end - start
 
-        x_vals = np.linspace(float(start), float(end), num_points)
+        # Expand range based on periods
+        # We'll center it around the original interval if possible
+        # or just start from 'start' and go for N periods
+        plot_start = start
+        plot_end = start + (T * periods)
+        
+        x_vals = np.linspace(plot_start, plot_end, num_points)
 
-        # lambdify original function
+        # lambdify original function with periodic extension
         f_func = sp.lambdify(self.x, f_sym, modules=["numpy"])
         try:
-            y_original = f_func(x_vals)
+            # Periodic extension: map x to the [start, end] interval
+            x_periodic = (x_vals - start) % T + start
+            y_original = f_func(x_periodic)
             # Ensure it's a numeric array, not scalar or object array
             if np.isscalar(y_original):
                 y_original = np.full_like(x_vals, float(y_original))
