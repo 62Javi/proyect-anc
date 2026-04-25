@@ -14,10 +14,14 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 - **Tavily Search/Research**: Use for deep technical investigations or finding updated documentation for backend libraries.
 - **Universal Verify (Global)**: Use the `verify` command in any project to auto-validate code. It supports Rust, Python, and Node.js. It helps me auto-correct my own errors before delivery.
 
-## Deployment Context (CRITICAL)
+## Deployment Context & Port Configuration (CRITICAL)
 - **Host**: Raspberry Pi (`192.168.1.100`)
-- **Backend Port**: `8003` (Internal `8000`)
-- **Frontend Port**: `8083` (Internal `80`)
+- **Raspberry Pi Ports**: 
+  - **Backend**: `8003` (Internal `8000`)
+  - **Frontend**: `8083` (Internal `80`)
+- **Local Development**: 
+  - Developers may change external ports in `docker-compose.yml` (e.g., `8000:8000`) for local testing if needed.
+  - **MANDATORY**: All changes must be reverted to `8003/8083` before pushing or deploying to the Raspberry Pi to maintain Cloudflare Tunnel compatibility.
 - **Cloudflare Tunnel**: `anc.sixtor.site` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
 - **Image Strategy**: Built locally on Pi due to network/arch specificities.
 
