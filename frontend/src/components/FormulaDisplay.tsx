@@ -12,7 +12,8 @@ const FormulaDisplay = ({ label, formula }: FormulaDisplayProps) => {
 
   useEffect(() => {
     if (containerRef.current) {
-      katex.render(`${label} = ${formula}`, containerRef.current, {
+      const content = label ? `${label} = ${formula}` : formula;
+      katex.render(content, containerRef.current, {
         throwOnError: false,
         displayMode: false,
       });

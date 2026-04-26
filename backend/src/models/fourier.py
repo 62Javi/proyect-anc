@@ -8,6 +8,12 @@ class FunctionInterval(BaseModel):
     end: float = Field(..., description="End of the interval")
 
 
+class ConvergenceResult(BaseModel):
+    x: float
+    value: float
+    formula: str
+
+
 class FourierRequest(BaseModel):
     functions: List[FunctionInterval] = Field(
         ..., min_items=1, max_items=10, description="List of expressions and their intervals"
@@ -17,6 +23,7 @@ class FourierRequest(BaseModel):
     )
     points: int = Field(1000, ge=10, le=1000, description="Number of points to evaluate for plotting")
     periods: int = Field(1, ge=1, le=5, description="Number of periods to display")
+    convergence_points: List[float] = Field(default_factory=list, description="Points to check convergence (Dirichlet)")
 
 
 class PlotData(BaseModel):
@@ -31,3 +38,4 @@ class FourierResponse(BaseModel):
     bn: str = Field(..., description="LaTeX string for bn formula")
     symmetry: str = Field(..., description="Par, Impar, or Ninguna")
     plot_data: PlotData = Field(..., description="Points for Plotly rendering")
+    convergence_results: List[ConvergenceResult] = Field(default_factory=list)

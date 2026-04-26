@@ -22,10 +22,16 @@ async def calculate(
     # 3. Evaluate plot data
     plot_data = calc.evaluate_plot_data(coeff_data, request.harmonics, request.points, request.periods)
 
+    # 4. Calculate convergence points
+    convergence_results = []
+    if request.convergence_points:
+        convergence_results = calc.calculate_convergence(coeff_data, request.convergence_points)
+
     return FourierResponse(
         a0=coeff_data["a0"],
         an=coeff_data["an"],
         bn=coeff_data["bn"],
         symmetry=symmetry,
         plot_data=plot_data,
+        convergence_results=convergence_results
     )

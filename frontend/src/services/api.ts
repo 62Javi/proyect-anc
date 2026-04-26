@@ -20,6 +20,13 @@ export interface FourierRequest {
   harmonics: number;
   points: number;
   periods?: number;
+  convergence_points?: number[];
+}
+
+export interface ConvergenceResult {
+  x: number;
+  value: number;
+  formula: string;
 }
 
 export interface PlotData {
@@ -34,6 +41,7 @@ export interface FourierResponse {
   bn: string;
   symmetry: string;
   plot_data: PlotData;
+  convergence_results?: ConvergenceResult[];
 }
 
 export const calculateFourier = async (request: FourierRequest): Promise<FourierResponse> => {
