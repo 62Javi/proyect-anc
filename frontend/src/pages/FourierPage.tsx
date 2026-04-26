@@ -82,6 +82,8 @@ function FourierPage() {
   const [harmonics, setHarmonics] = useState(10);
   const [points, setPoints] = useState(1000);
   const [periods, setPeriods] = useState(1);
+  const [convPoints, setConvPoints] = useState<number[]>([0, 1, 1.5, 2]);
+  const [newPoint, setNewPoint] = useState('');
   const [result, setResult] = useState<FourierResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -116,9 +118,31 @@ function FourierPage() {
     setLoading(true);
     setError(null);
     try {
+      // Auto-add point if something is in the input
+      let finalPoints = [...convPoints];
+      const val = parseFloat(newPoint);
+      if (!isNaN(val)) {
+        finalPoints = [...new Set([...finalPoints, val])];
+        setConvPoints(finalPoints);
+        setNewPoint('');
+      }
+
       // Remove local IDs before sending to API
-      const apiFunctions = functions.map(({ id, ...rest }) => rest);
-      const data = await calculateFourier({ functions: apiFunctions, harmonics, points, periods });
+      const apiFunctions = functions.map(({ id, ...rest }) => ({
+        expression: rest.expression,
+        start: Number(rest.start),
+        end: Number(rest.end)
+      }));
+      
+      const payload = { 
+        functions: apiFunctions, 
+        harmonics: Number(harmonics), 
+        points: Number(points), 
+        periods: Number(periods),
+        convergence_points: finalPoints.map(p => Number(p))
+      };
+
+      const data = await calculateFourier(payload);
       setResult(data);
       setTimeout(() => {
         mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -212,6 +236,48 @@ function FourierPage() {
                   }}
                 />
               </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Puntos de Convergencia (Dirichlet)</label>
+                <div className="flex gap-2 mb-3">
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Valor de x"
+                    className="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-indigo-500 transition-all placeholder:text-slate-600"
+                    value={newPoint}
+                    onChange={(e) => setNewPoint(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const val = parseFloat(newPoint);
+                        if (!isNaN(val)) {
+                          setConvPoints(prev => [...new Set([...prev, val])]);
+                          setNewPoint('');
+                        }
+                      }
+                    }}
+                  />
+                  <button 
+                    onClick={() => {
+                      const val = parseFloat(newPoint);
+                      if (!isNaN(val)) {
+                        setConvPoints(prev => [...new Set([...prev, val])]);
+                        setNewPoint('');
+                      }
+                    }}
+                    className="px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[10px] uppercase"
+                  >
+                    +
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {convPoints.map((p, i) => (
+                    <span key={i} className="px-2 py-1 bg-slate-700 rounded-lg text-[10px] font-bold text-indigo-300 flex items-center gap-2">
+                      x={p}
+                      <button onClick={() => setConvPoints(prev => prev.filter(v => v !== p))} className="hover:text-red-400 text-slate-500 text-xs">×</button>
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -252,6 +318,46 @@ function FourierPage() {
               </div>
             </div>
           )}
+
+          <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-8 animate-in slide-in-from-bottom-4 duration-700 delay-150">
+            <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] border-b border-slate-50 pb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Activity size={14} className="text-indigo-400" />
+                Teorema de Dirichlet (Convergencia)
+              </div>
+              {result?.convergence_results && result.convergence_results.length > 0 && (
+                <span className="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full text-[9px] font-black">
+                  {result.convergence_results.length} Puntos Analizados
+                </span>
+              )}
+            </div>
+
+            {result?.convergence_results && result.convergence_results.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                {result.convergence_results.map((res, i) => (
+                  <div key={i} className="bg-slate-50 p-6 rounded-[24px] border border-slate-100 shadow-sm hover:border-indigo-200 transition-all">
+                    <div className="flex justify-between items-center mb-4">
+                      <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Convergencia en x = {res.x}</div>
+                      <div className="px-2 py-1 bg-white rounded-lg border border-slate-100 text-[10px] font-bold text-slate-400">Dirichlet</div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="text-3xl font-black text-slate-900 tracking-tighter">
+                        {Number(res.value).toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                      </div>
+                      <div className="pt-4 border-t border-slate-200/50">
+                        <FormulaDisplay label="" formula={res.formula} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-12 flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-50 rounded-[24px]">
+                <Calculator size={32} className="opacity-20 mb-3" />
+                <p className="text-[10px] font-black uppercase tracking-widest opacity-50">Añade puntos en el panel lateral para ver la convergencia</p>
+              </div>
+            )}
+          </div>
 
           {!result && !loading && (
             <div className="flex flex-col items-center justify-center py-20 text-slate-200">

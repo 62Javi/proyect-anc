@@ -126,6 +126,54 @@ class FourierSeriesCalculator:
         except Exception as e:
             raise NonIntegrableError(str(e))
 
+    def calculate_convergence(
+        self, coeff_data: Dict[str, Any], points: List[float]
+    ) -> List[Dict[str, Any]]:
+        f_sym = coeff_data["f_sym"]
+        start = float(coeff_data["start"])
+        end = float(coeff_data["end"])
+        T = end - start
+        
+        results = []
+        for x0 in points:
+            # Map x0 to base interval [start, end)
+            x_base = ((x0 - start) % T) + start
+            
+            try:
+                # Use a small epsilon to avoid issues with Piecewise at exact boundaries
+                # and help limit detection
+                if abs(x_base - start) < 1e-7:
+                    f_right = f_sym.limit(self.x, start, "+")
+                    f_left = f_sym.limit(self.x, end, "-")
+                else:
+                    f_right = f_sym.limit(self.x, x_base, "+")
+                    f_left = f_sym.limit(self.x, x_base, "-")
+                
+                conv_val = (f_right + f_left) / 2
+                
+                # Format formula according to Dirichlet Theorem for Fourier Series
+                # S_f(x) is the standard notation for the value of the Fourier series at x
+                latex_val = sp.latex(sp.nsimplify(conv_val))
+                formula = f"S_f({x0}) = \\frac{{f({x0}^+) + f({x0}^-)}}{{2}} = {latex_val}"
+                
+                results.append({
+                    "x": float(x0),
+                    "value": float(conv_val.evalf()),
+                    "formula": formula
+                })
+            except Exception as e:
+                # Fallback to direct evaluation if limit fails
+                try:
+                    val = float(f_sym.subs(self.x, x_base).evalf())
+                    results.append({
+                        "x": float(x0),
+                        "value": val,
+                        "formula": f"S_f({x0}) \\approx {val:.4f}"
+                    })
+                except:
+                    continue
+        return results
+
     def evaluate_plot_data(
         self, coeff_data: Dict[str, Any], harmonics: int, num_points: int, periods: int = 1
     ) -> Dict[str, List[float]]:
