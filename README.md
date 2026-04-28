@@ -74,15 +74,5 @@ El proyecto está configurado para operar mediante un túnel de Cloudflare en la
 *   Prefijo API (`/api/`): Acceso a los servicios del backend.
 
 ---
-
-## Integrantes y Mentores
-
-| Nombre Completo | Legajo | Usuario GitHub |
-| :--- | :--- | :--- |
-| Castro Cope Sixto Javier | 32797 | @62Javi |
-| [Nombre Completo] | [Legajo] | [@usuario] |
-| [Nombre Completo] | [Legajo] | [@usuario] |
-
----
 **Universidad Tecnológica Nacional**
 *Facultad Regional La Plata - Cátedra de Análisis Numérico*
