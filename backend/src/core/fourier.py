@@ -64,17 +64,40 @@ class FourierSeriesCalculator:
             raise InvalidExpressionError(expr_str)
 
     def detect_symmetry(self, intervals: List[FunctionInterval]) -> str:
-        # Simplistic symmetry detection for symmetric intervals around 0
-        # For piecewise, we need to build the full function first
-        if len(intervals) == 1:
-            interval = intervals[0]
-            if abs(interval.start + interval.end) < 1e-9:
-                f = self._parse_expression(interval.expression)
-                f_neg = f.subs(self.x, -self.x)
-                if sp.simplify(f - f_neg) == 0:
-                    return "Par"
-                if sp.simplify(f + f_neg) == 0:
-                    return "Impar"
+        # Check if the total range is symmetric around 0
+        start = min(i.start for i in intervals)
+        end = max(i.end for i in intervals)
+        
+        if abs(start + end) > 1e-9:
+            return "Ninguna"
+
+        # Build the full function for comparison
+        pw_args = []
+        for i in intervals:
+            try:
+                f = self._parse_expression(i.expression)
+                pw_args.append((f, (self.x >= i.start) & (self.x <= i.end)))
+            except: continue
+            
+        if not pw_args: return "Ninguna"
+        
+        f_pw = sp.Piecewise(*pw_args)
+        
+        try:
+            # Substitute x with -x and simplify
+            # For Piecewise, simplify might be slow, so we test at some points or use sp.simplify
+            f_neg = f_pw.subs(self.x, -self.x)
+            
+            # Check for Even (Par)
+            if sp.simplify(f_pw - f_neg) == 0:
+                return "Par"
+            
+            # Check for Odd (Impar)
+            if sp.simplify(f_pw + f_neg) == 0:
+                return "Impar"
+        except:
+            pass
+            
         return "Ninguna"
 
     def calculate_coefficients(
@@ -186,21 +209,15 @@ class FourierSeriesCalculator:
         end = float(coeff_data["end"])
         T = end - start
 
-        # Expand range based on periods
-        # We'll center it around the original interval if possible
-        # or just start from 'start' and go for N periods
         plot_start = start
         plot_end = start + (T * periods)
-        
         x_vals = np.linspace(plot_start, plot_end, num_points)
 
-        # lambdify original function with periodic extension
+        # Lambdify original function
         f_func = sp.lambdify(self.x, f_sym, modules=["numpy"])
         try:
-            # Periodic extension: map x to the [start, end] interval
             x_periodic = (x_vals - start) % T + start
             y_original = f_func(x_periodic)
-            # Ensure it's a numeric array, not scalar or object array
             if np.isscalar(y_original):
                 y_original = np.full_like(x_vals, float(y_original))
             else:
@@ -208,19 +225,40 @@ class FourierSeriesCalculator:
         except Exception:
             y_original = np.zeros_like(x_vals)
 
-        # Summation for partial sum
+        # Optimization: Pre-calculate all coefficients at once
+        # Using lambdify for the formulas of an and bn
         y_approx = np.full_like(x_vals, float(a0_val / 2.0))
-
-        # Vectorized evaluation for an and bn
-        for n_val in range(1, harmonics + 1):
-            try:
-                an_val = float(an_expr.subs(self.n, n_val).evalf())
-                bn_val = float(bn_expr.subs(self.n, n_val).evalf())
-
-                y_approx += an_val * np.cos(n_val * np.pi * x_vals / L)
-                y_approx += bn_val * np.sin(n_val * np.pi * x_vals / L)
-            except Exception:
-                continue
+        
+        # Lambdify an and bn formulas to evaluate them for all n at once
+        an_func = sp.lambdify(self.n, an_expr, modules=["numpy"])
+        bn_func = sp.lambdify(self.n, bn_expr, modules=["numpy"])
+        
+        n_array = np.arange(1, harmonics + 1)
+        try:
+            # Evaluate all an and bn
+            an_vals = an_func(n_array)
+            bn_vals = bn_func(n_array)
+            
+            # Ensure they are arrays
+            if np.isscalar(an_vals): an_vals = np.full_like(n_array, float(an_vals), dtype=float)
+            if np.isscalar(bn_vals): bn_vals = np.full_like(n_array, float(bn_vals), dtype=float)
+            
+            # Use a matrix multiplication approach for the sum to maximize NumPy speed
+            # x_vals shape (num_points,)
+            # n_array shape (harmonics,)
+            # result = cos( (n * pi / L) * x ) -> shape (harmonics, num_points)
+            arg = (np.pi / L) * np.outer(n_array, x_vals)
+            y_approx += np.dot(an_vals, np.cos(arg))
+            y_approx += np.dot(bn_vals, np.sin(arg))
+        except Exception:
+            # Fallback to loop if lambdify fails for complex expressions
+            for n_val in range(1, harmonics + 1):
+                try:
+                    an_v = float(an_expr.subs(self.n, n_val).evalf())
+                    bn_v = float(bn_expr.subs(self.n, n_val).evalf())
+                    y_approx += an_v * np.cos(n_val * np.pi * x_vals / L)
+                    y_approx += bn_v * np.sin(n_val * np.pi * x_vals / L)
+                except: continue
 
         return {
             "x": x_vals.tolist(),
