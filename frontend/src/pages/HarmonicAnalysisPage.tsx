@@ -115,12 +115,18 @@ export default function HarmonicAnalysisPage() {
               <Mic size={40} />
             </button>
           ) : (
-            <button
-              onClick={stopRecording}
-              className="w-24 h-24 rounded-full bg-[#EF4444] flex items-center justify-center text-white shadow-[0_0_30px_rgba(239,68,68,0.3)] animate-pulse"
-            >
-              <Square size={40} />
-            </button>
+            <div className="relative">
+              {/* Pulse rings */}
+              <div className="absolute inset-0 rounded-full bg-[#EF4444] animate-ping opacity-25" />
+              <div className="absolute inset-0 rounded-full bg-[#EF4444] animate-ping opacity-15 [animation-delay:500ms]" />
+              
+              <button
+                onClick={stopRecording}
+                className="relative w-24 h-24 rounded-full bg-[#EF4444] flex items-center justify-center text-white shadow-[0_0_40px_rgba(239,68,68,0.4)] transition-all duration-300 active:scale-90"
+              >
+                <div className="w-8 h-8 bg-white rounded-sm animate-pulse" />
+              </button>
+            </div>
           )}
 
           <div className="text-center">
