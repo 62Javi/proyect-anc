@@ -4,6 +4,28 @@ Esta plataforma interactiva ha sido desarrollada como una herramienta de apoyo p
 
 ---
 
+## 🚀 Quick Start: Docker-First (Recommended)
+
+Este proyecto está diseñado para ejecutarse **exclusivamente con Docker**. Se desaconseja la instalación manual de dependencias (Python, Node, Uvicorn, etc.) para evitar conflictos de versiones y asegurar que el entorno coincida con el de producción.
+
+### 1. Requisito Principal: Instalar Docker
+*   **En Windows (Recomendado)**: Instala [Docker Desktop](https://www.docker.com/products/docker-desktop/). Asegúrate de que esté corriendo antes de ejecutar los comandos.
+*   **En Linux**: Instala `docker` y `docker-compose-plugin` usando tu gestor de paquetes.
+
+### 2. Ejecutar el Proyecto
+Desde la raíz del proyecto, abre una terminal y ejecuta:
+
+```powershell
+# Inicia todo el sistema (Frontend + Backend)
+docker compose up --build
+```
+
+Una vez que termine, accede a:
+*   **Frontend**: [http://localhost:8083](http://localhost:8083)
+*   **Backend API**: [http://localhost:8003](http://localhost:8003)
+
+---
+
 ## Módulo de Series de Fourier
 
 El sistema cuenta actualmente con un motor de análisis robusto para funciones periódicas y definidas a trozos (piecewise functions).

@@ -14,6 +14,12 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 - **Tavily Search/Research**: Use for deep technical investigations or finding updated documentation for backend libraries.
 - **Universal Verify (Global)**: Use the `verify` command in any project to auto-validate code. It supports Rust, Python, and Node.js. It helps me auto-correct my own errors before delivery.
 
+## Docker-First Mandate (CRITICAL)
+- **Primary Workflow**: All local development and testing should prioritize `docker compose up`. 
+- **Production vs Dev**: On Raspberry Pi, the frontend MUST use the production build (Nginx). DO NOT use `npm run dev` in production as it fails over Cloudflare tunnels.
+- **Recommendation**: Discourage developers from running `uvicorn` or `npm dev` manually on their host machine. 
+- **Support**: If a user lacks Docker, prioritize guiding them through Docker Desktop (Windows) or Docker Engine (Linux) installation instead of manual setup.
+
 ## Deployment Context & Port Configuration (CRITICAL)
 - **Host**: Raspberry Pi (`192.168.1.100`)
 - **Raspberry Pi Ports**: 
