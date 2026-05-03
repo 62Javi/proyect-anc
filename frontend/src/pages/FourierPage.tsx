@@ -357,6 +357,36 @@ function FourierPage() {
             </div>
           )}
 
+          {result?.harmonics && result.harmonics.length > 0 && (
+            <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-8 animate-in slide-in-from-bottom-4 duration-700 delay-100">
+              <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] border-b border-slate-50 pb-4 flex items-center gap-2">
+                <Activity size={14} className="text-indigo-400" />
+                Primeros 10 Armónicos
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-200">
+                      <th className="text-left px-4 py-3 text-[10px] font-black text-slate-400 uppercase">n</th>
+                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">a_n</th>
+                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">b_n</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.harmonics.map((harmonic, i) => (
+                      <tr key={i} className={i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
+                        <td className="px-4 py-3 text-sm font-bold text-slate-900">{harmonic.n}</td>
+                        <td className="px-4 py-3 text-right text-sm font-bold text-indigo-600">{harmonic.an.toFixed(6)}</td>
+                        <td className="px-4 py-3 text-right text-sm font-bold text-indigo-600">{harmonic.bn.toFixed(6)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-8 animate-in slide-in-from-bottom-4 duration-700 delay-150">
             <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] border-b border-slate-50 pb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">

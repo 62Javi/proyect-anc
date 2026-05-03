@@ -265,3 +265,35 @@ class FourierSeriesCalculator:
             "y_original": y_original.tolist(),
             "y_approx": y_approx.tolist(),
         }
+
+    def calculate_harmonics(
+        self, coeff_data: Dict[str, Any], num_harmonics: int = 10
+    ) -> List[Dict[str, Any]]:
+        """Calculate the first num_harmonics An and Bn values."""
+        an_expr = coeff_data["an_expr"]
+        bn_expr = coeff_data["bn_expr"]
+        
+        harmonics = []
+        an_func = sp.lambdify(self.n, an_expr, modules=["numpy"])
+        bn_func = sp.lambdify(self.n, bn_expr, modules=["numpy"])
+        
+        for n_val in range(1, num_harmonics + 1):
+            try:
+                an_val = float(an_func(n_val))
+                bn_val = float(bn_func(n_val))
+            except Exception:
+                # Fallback to direct substitution if lambdify fails
+                try:
+                    an_val = float(an_expr.subs(self.n, n_val).evalf())
+                    bn_val = float(bn_expr.subs(self.n, n_val).evalf())
+                except Exception:
+                    an_val = 0.0
+                    bn_val = 0.0
+            
+            harmonics.append({
+                "n": n_val,
+                "an": an_val,
+                "bn": bn_val
+            })
+        
+        return harmonics
