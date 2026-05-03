@@ -208,17 +208,23 @@ class FourierSeriesCalculator:
         an_vals = np.zeros(max_n)
         bn_vals = np.zeros(max_n)
         
+        if "an_func" not in coeff_data:
+            coeff_data["an_func"] = sp.lambdify(self.n, an_expr, modules=["numpy"])
+            coeff_data["bn_func"] = sp.lambdify(self.n, bn_expr, modules=["numpy"])
+        
+        an_func = coeff_data["an_func"]
+        bn_func = coeff_data["bn_func"]
+        
         try:
-            if "an_func" not in coeff_data:
-                coeff_data["an_func"] = sp.lambdify(self.n, an_expr, modules=["numpy"])
-                coeff_data["bn_func"] = sp.lambdify(self.n, bn_expr, modules=["numpy"])
-            
-            an_func = coeff_data["an_func"]
-            bn_func = coeff_data["bn_func"]
-            
             an_res = an_func(n_array)
             bn_res = bn_func(n_array)
             
+            # Prevent SymPy objects from sneaking into the NumPy array
+            if isinstance(an_res, np.ndarray) and an_res.dtype == object:
+                raise ValueError("an_func returned an object array")
+            if isinstance(bn_res, np.ndarray) and bn_res.dtype == object:
+                raise ValueError("bn_func returned an object array")
+                
             if np.isscalar(an_res):
                 an_vals = np.full(max_n, float(an_res))
             else:
@@ -229,13 +235,24 @@ class FourierSeriesCalculator:
             else:
                 bn_vals = np.array(bn_res, dtype=float)
         except Exception:
+            # Fallback for complex symbolic expressions that fail with array inputs
             for i, n_val in enumerate(range(1, max_n + 1)):
                 try:
-                    an_vals[i] = float(an_expr.subs(self.n, n_val).evalf())
-                    bn_vals[i] = float(bn_expr.subs(self.n, n_val).evalf())
-                except:
-                    pass
-                    
+                    an_vals[i] = float(an_func(n_val))
+                except Exception:
+                    try:
+                        an_vals[i] = float(an_expr.subs(self.n, n_val).evalf())
+                    except:
+                        pass
+                        
+                try:
+                    bn_vals[i] = float(bn_func(n_val))
+                except Exception:
+                    try:
+                        bn_vals[i] = float(bn_expr.subs(self.n, n_val).evalf())
+                    except:
+                        pass
+                        
         coeff_data["an_vals"] = an_vals
         coeff_data["bn_vals"] = bn_vals
         return an_vals, bn_vals
