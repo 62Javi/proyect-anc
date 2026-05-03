@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Mic, Square, Activity, Music, Info } from 'lucide-react';
+import { Mic, Activity, Music, Info } from 'lucide-react';
 import { analyzeAudio } from '../services/api';
 import type { AudioAnalysisResponse } from '../services/api';
 import { encodeWAV } from '../utils/wavEncoder';
@@ -19,16 +19,98 @@ import {
 export default function HarmonicAnalysisPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [currentFreq, setCurrentFreq] = useState<number | null>(null);
   const [result, setResult] = useState<AudioAnalysisResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const timerRef = useRef<number | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  
+  // Real-time analysis refs
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+
+  const autoCorrelate = (buffer: Float32Array, sampleRate: number) => {
+    // Basic auto-correlation algorithm for pitch detection
+    let SIZE = buffer.length;
+    let rms = 0;
+    for (let i = 0; i < SIZE; i++) {
+      rms += buffer[i] * buffer[i];
+    }
+    rms = Math.sqrt(rms / SIZE);
+    if (rms < 0.01) return null; // Silence
+
+    let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+    for (let i = 0; i < SIZE / 2; i++) {
+      if (Math.abs(buffer[i]) < thres) { r1 = i; break; }
+    }
+    for (let i = 1; i < SIZE / 2; i++) {
+      if (Math.abs(buffer[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+    }
+
+    let buf = buffer.slice(r1, r2);
+    SIZE = buf.length;
+
+    let c = new Array(SIZE).fill(0);
+    for (let i = 0; i < SIZE; i++) {
+      for (let j = 0; j < SIZE - i; j++) {
+        c[i] = c[i] + buf[j] * buf[j + i];
+      }
+    }
+
+    let d = 0;
+    while (c[d] > c[d + 1]) d++;
+    let maxval = -1, maxpos = -1;
+    for (let i = d; i < SIZE; i++) {
+      if (c[i] > maxval) {
+        maxval = c[i];
+        maxpos = i;
+      }
+    }
+    let T0 = maxpos;
+
+    // Interpolation for better accuracy
+    let x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
+    let a = (x1 + x3 - 2 * x2) / 2;
+    let b = (x3 - x1) / 2;
+    if (a !== 0) T0 = T0 - b / (2 * a);
+
+    return sampleRate / T0;
+  };
+
+  const updateRealTimeFreq = () => {
+    if (!analyserRef.current || !audioContextRef.current) return;
+    
+    const buffer = new Float32Array(analyserRef.current.fftSize);
+    analyserRef.current.getFloatTimeDomainData(buffer);
+    const freq = autoCorrelate(buffer, audioContextRef.current.sampleRate);
+    
+    if (freq && freq > 50 && freq < 2000) {
+      setCurrentFreq(freq);
+    } else {
+      setCurrentFreq(null);
+    }
+    
+    animationFrameRef.current = requestAnimationFrame(updateRealTimeFreq);
+  };
 
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // Setup Real-time Analyzer
+      const audioContext = new AudioContext();
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 2048;
+      source.connect(analyser);
+      
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
@@ -47,6 +129,11 @@ export default function HarmonicAnalysisPage() {
       mediaRecorder.start();
       setIsRecording(true);
       setRecordingTime(0);
+      setCurrentFreq(null);
+      
+      // Start real-time analysis
+      updateRealTimeFreq();
+      
       timerRef.current = window.setInterval(() => {
         setRecordingTime((prev) => prev + 1);
       }, 1000);
@@ -61,7 +148,12 @@ export default function HarmonicAnalysisPage() {
       mediaRecorderRef.current.stop();
       mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
       setIsRecording(false);
+      
       if (timerRef.current) clearInterval(timerRef.current);
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (audioContextRef.current) audioContextRef.current.close();
+      
+      setCurrentFreq(null);
     }
   };
 
@@ -130,6 +222,16 @@ export default function HarmonicAnalysisPage() {
           )}
 
           <div className="text-center">
+            {isRecording && currentFreq && (
+              <div className="mb-4 animate-in fade-in zoom-in duration-300">
+                <span className="text-sm font-bold text-[#F97316] uppercase tracking-[0.2em]">Detectado</span>
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-5xl font-black text-white tabular-nums">{Math.round(currentFreq)}</span>
+                  <span className="text-xl font-bold text-[#64748B]">Hz</span>
+                </div>
+              </div>
+            )}
+            
             <span className="text-4xl font-black tracking-tighter">
               {Math.floor(recordingTime / 60).toString().padStart(2, '0')}:
               {(recordingTime % 60).toString().padStart(2, '0')}
