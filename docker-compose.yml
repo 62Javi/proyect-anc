@@ -21,14 +21,10 @@ services:
       - app-network
 
   frontend:
-    image: node:20-slim
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+    build:
+      context: ./frontend
     ports:
-      - "8083:5173"
-    command: sh -c "npm install --legacy-peer-deps && npm run dev -- --host"
+      - "8083:80"
     depends_on:
       - backend
     networks:
