@@ -32,6 +32,12 @@ class PlotData(BaseModel):
     y_approx: List[float]
 
 
+class HarmonicComponent(BaseModel):
+    n: int = Field(..., description="Harmonic number")
+    an: float = Field(..., description="Numeric value of an")
+    bn: float = Field(..., description="Numeric value of bn")
+
+
 class FourierResponse(BaseModel):
     a0: str = Field(..., description="LaTeX string for a0")
     an: str = Field(..., description="LaTeX string for an formula")
@@ -39,3 +45,4 @@ class FourierResponse(BaseModel):
     symmetry: str = Field(..., description="Par, Impar, or Ninguna")
     plot_data: PlotData = Field(..., description="Points for Plotly rendering")
     convergence_results: List[ConvergenceResult] = Field(default_factory=list)
+    harmonics: List[HarmonicComponent] = Field(default_factory=list, description="First 10 harmonics with An and Bn values")

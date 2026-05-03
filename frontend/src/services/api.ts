@@ -24,25 +24,32 @@ export interface FourierRequest {
 }
 
 export interface ConvergenceResult {
-  x: number;
-  value: number;
-  formula: string;
-}
+   x: number;
+   value: number;
+   formula: string;
+ }
 
-export interface PlotData {
-  x: number[];
-  y_original: number[];
-  y_approx: number[];
-}
+ export interface PlotData {
+   x: number[];
+   y_original: number[];
+   y_approx: number[];
+ }
 
-export interface FourierResponse {
-  a0: string;
-  an: string;
-  bn: string;
-  symmetry: string;
-  plot_data: PlotData;
-  convergence_results?: ConvergenceResult[];
-}
+ export interface HarmonicComponent {
+   n: number;
+   an: number;
+   bn: number;
+ }
+
+ export interface FourierResponse {
+   a0: string;
+   an: string;
+   bn: string;
+   symmetry: string;
+   plot_data: PlotData;
+   convergence_results?: ConvergenceResult[];
+   harmonics?: HarmonicComponent[];
+ }
 
 export const calculateFourier = async (request: FourierRequest): Promise<FourierResponse> => {
   try {
