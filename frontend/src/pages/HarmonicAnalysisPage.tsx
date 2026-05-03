@@ -13,7 +13,9 @@ import {
   ResponsiveContainer,
   Cell,
   AreaChart,
-  Area
+  Area,
+  LineChart,
+  Line
 } from 'recharts';
 
 export default function HarmonicAnalysisPage() {
@@ -464,6 +466,7 @@ export default function HarmonicAnalysisPage() {
                 <Activity size={16} className="text-indigo-600" />
                 Espectro de Frecuencias (FFT)
               </h3>
+              {/* ... existing chart code ... */}
               <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={spectrumData}>
@@ -496,6 +499,48 @@ export default function HarmonicAnalysisPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
+            </div>
+
+            {/* Timeline Evolution Chart */}
+            <div className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold flex items-center gap-2 text-slate-900">
+                <Activity size={16} className="text-indigo-600" />
+                Evolución de la Fundamental (Hz)
+              </h3>
+              <div className="h-[250px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={result.timeline}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+                    <XAxis 
+                      dataKey="time" 
+                      tick={{ fill: '#94A3B8', fontSize: 10, fontWeight: 700 }}
+                      axisLine={{ stroke: '#F1F5F9' }}
+                      tickLine={false}
+                      tickFormatter={(val) => `${val.toFixed(1)}s`}
+                    />
+                    <YAxis 
+                      tick={{ fill: '#94A3B8', fontSize: 10, fontWeight: 700 }}
+                      axisLine={false}
+                      tickLine={false}
+                      domain={['auto', 'auto']}
+                    />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', fontSize: '10px', fontWeight: 'bold' }}
+                      formatter={(val: any) => [`${Number(val).toFixed(1)} Hz`, 'Frecuencia']}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="fundamental_frequency" 
+                      stroke="#4F46E5" 
+                      strokeWidth={3}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">
+                Muestra la variación del tono principal cada 200ms
+              </p>
             </div>
           </div>
         )}
