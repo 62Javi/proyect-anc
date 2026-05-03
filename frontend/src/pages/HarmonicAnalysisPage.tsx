@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { Mic, Activity, Music, Info } from 'lucide-react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { Mic, Activity, Music, Info, Play, Pause, RotateCcw } from 'lucide-react';
 import { analyzeAudio } from '../services/api';
 import type { AudioAnalysisResponse } from '../services/api';
 import { encodeWAV } from '../utils/wavEncoder';
@@ -23,6 +23,9 @@ export default function HarmonicAnalysisPage() {
   const [result, setResult] = useState<AudioAnalysisResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
+  const [playbackTime, setPlaybackTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const timerRef = useRef<number | null>(null);
@@ -32,6 +35,12 @@ export default function HarmonicAnalysisPage() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+
+  // Playback refs
+  const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const playbackStartTimeRef = useRef<number>(0);
+  const playbackOffsetRef = useRef<number>(0);
+  const playbackRequestFrameRef = useRef<number | null>(null);
 
   const autoCorrelate = (buffer: Float32Array, sampleRate: number) => {
     // Basic auto-correlation algorithm for pitch detection
@@ -160,12 +169,18 @@ export default function HarmonicAnalysisPage() {
   const processAudio = async (blob: Blob) => {
     setLoading(true);
     setError(null);
+    setAudioBuffer(null);
+    setPlaybackTime(0);
+    setIsPlaying(false);
+    
     try {
       // Convert to WAV first
       const audioContext = new AudioContext();
       const arrayBuffer = await blob.arrayBuffer();
-      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-      const wavBlob = encodeWAV(audioBuffer.getChannelData(0), audioBuffer.sampleRate);
+      const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      setAudioBuffer(decodedBuffer);
+      
+      const wavBlob = encodeWAV(decodedBuffer.getChannelData(0), decodedBuffer.sampleRate);
       
       const file = new File([wavBlob], 'recording.wav', { type: 'audio/wav' });
       const analysis = await analyzeAudio(file);
@@ -177,6 +192,97 @@ export default function HarmonicAnalysisPage() {
       setLoading(false);
     }
   };
+
+  const togglePlayback = () => {
+    if (!audioBuffer) return;
+
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+    if (isPlaying) {
+      if (audioSourceRef.current) {
+        audioSourceRef.current.stop();
+        audioSourceRef.current = null;
+      }
+      if (playbackRequestFrameRef.current) {
+        cancelAnimationFrame(playbackRequestFrameRef.current);
+      }
+      playbackOffsetRef.current += ctx.currentTime - playbackStartTimeRef.current;
+      setIsPlaying(false);
+    } else {
+      const source = ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(ctx.destination);
+      
+      const startAt = playbackOffsetRef.current >= audioBuffer.duration ? 0 : playbackOffsetRef.current;
+      if (startAt === 0) playbackOffsetRef.current = 0;
+
+      source.start(0, startAt);
+      audioSourceRef.current = source;
+      playbackStartTimeRef.current = ctx.currentTime;
+      setIsPlaying(true);
+
+      source.onended = () => {
+        if (isPlaying) {
+          setIsPlaying(false);
+          playbackOffsetRef.current = 0;
+          setPlaybackTime(0);
+        }
+      };
+
+      const updatePlaybackUI = () => {
+        const elapsed = ctx.currentTime - playbackStartTimeRef.current + playbackOffsetRef.current;
+        if (elapsed >= audioBuffer.duration) {
+          setPlaybackTime(audioBuffer.duration);
+          setIsPlaying(false);
+          playbackOffsetRef.current = 0;
+          return;
+        }
+        setPlaybackTime(elapsed);
+        playbackRequestFrameRef.current = requestAnimationFrame(updatePlaybackUI);
+      };
+      updatePlaybackUI();
+    }
+  };
+
+  const resetPlayback = () => {
+    if (audioSourceRef.current) {
+      audioSourceRef.current.stop();
+      audioSourceRef.current = null;
+    }
+    if (playbackRequestFrameRef.current) {
+      cancelAnimationFrame(playbackRequestFrameRef.current);
+    }
+    setPlaybackTime(0);
+    playbackOffsetRef.current = 0;
+    setIsPlaying(false);
+  };
+
+  const waveformData = useMemo(() => {
+    if (!audioBuffer) return [];
+    const rawData = audioBuffer.getChannelData(0);
+    const samples = 100; // Number of vertical lines
+    const blockSize = Math.floor(rawData.length / samples);
+    const filteredData = [];
+    for (let i = 0; i < samples; i++) {
+      let sum = 0;
+      for (let j = 0; j < blockSize; j++) {
+        sum += Math.abs(rawData[i * blockSize + j]);
+      }
+      filteredData.push(sum / blockSize);
+    }
+    const maxAmp = Math.max(...filteredData) || 1;
+    return filteredData.map(amp => amp / maxAmp);
+  }, [audioBuffer]);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (playbackRequestFrameRef.current) cancelAnimationFrame(playbackRequestFrameRef.current);
+      if (audioContextRef.current) audioContextRef.current.close();
+      if (audioSourceRef.current) audioSourceRef.current.stop();
+    };
+  }, []);
 
   const spectrumData = result?.spectrum_x.map((x, i) => ({
     freq: x,
@@ -258,6 +364,51 @@ export default function HarmonicAnalysisPage() {
 
         {result && !loading && (
           <div className="grid grid-cols-1 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Audio Player & Waveform */}
+            <div className="bg-[#1E1B4B]/50 p-6 rounded-[32px] border border-[#4338CA]/30 space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={togglePlayback}
+                    className="w-12 h-12 rounded-full bg-[#F97316] flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform"
+                  >
+                    {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} className="ml-1" fill="currentColor" />}
+                  </button>
+                  <div>
+                    <h3 className="text-sm font-bold">Reproducir Grabación</h3>
+                    <p className="text-[10px] text-[#64748B] font-bold uppercase tracking-widest">
+                      {Math.floor(playbackTime / 60)}:{(Math.floor(playbackTime % 60)).toString().padStart(2, '0')} / 
+                      {Math.floor((audioBuffer?.duration || 0) / 60)}:{(Math.floor((audioBuffer?.duration || 0) % 60)).toString().padStart(2, '0')}
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  onClick={resetPlayback}
+                  className="p-2 text-[#64748B] hover:text-white transition-colors"
+                >
+                  <RotateCcw size={18} />
+                </button>
+              </div>
+
+              {/* Waveform Visualizer */}
+              <div className="h-16 flex items-center justify-between gap-[2px]">
+                {waveformData.map((amp, i) => {
+                  const progress = audioBuffer ? (playbackTime / audioBuffer.duration) : 0;
+                  const isPlayed = (i / waveformData.length) < progress;
+                  return (
+                    <div 
+                      key={i}
+                      className="flex-1 rounded-full transition-colors duration-200"
+                      style={{ 
+                        height: `${Math.max(10, amp * 100)}%`,
+                        backgroundColor: isPlayed ? '#F97316' : '#27273B'
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Main Stats */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-[#1E1B4B]/50 p-6 rounded-[24px] border border-[#4338CA]/20">
