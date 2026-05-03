@@ -2,6 +2,8 @@ fastapi
 uvicorn
 sympy
 numpy
+scipy
+python-multipart
 pytest
 httpx
 pydantic

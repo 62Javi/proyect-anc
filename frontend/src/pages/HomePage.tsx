@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Activity, Beaker, Calculator } from 'lucide-react';
+import { Activity, Beaker, Calculator, Music } from 'lucide-react';
 
 export default function HomePage() {
   const tools = [
@@ -10,6 +10,14 @@ export default function HomePage() {
       path: '/fourier',
       ready: true,
       tag: 'Matemática Superior'
+    },
+    {
+      title: 'Análisis de Armónicos',
+      description: 'Análisis de frecuencia en tiempo real (FFT) mediante grabaciones de audio.',
+      icon: <Music size={24} />,
+      path: '/harmonics',
+      ready: true,
+      tag: 'Procesamiento de Señales'
     },
     {
       title: 'Métodos Numéricos',

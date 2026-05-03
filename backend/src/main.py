@@ -9,6 +9,8 @@ origins = [
     "https://anc.sixtor.site",
     "http://localhost:5173",  # Vite dev server
     "http://127.0.0.1:5173",
+    "http://localhost:8083",  # Local Production access
+    "http://127.0.0.1:8083",
     "http://192.168.1.100:8083", # Local Pi access
 ]
 
