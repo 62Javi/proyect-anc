@@ -51,6 +51,28 @@ export interface ConvergenceResult {
    harmonics?: HarmonicComponent[];
  }
 
+export interface HarmonicResult {
+  frequency: number;
+  amplitude: number;
+  harmonic_index: number;
+}
+
+export interface AnalysisFrame {
+  time: number;
+  fundamental_frequency: number;
+  harmonics: HarmonicResult[];
+}
+
+export interface AudioAnalysisResponse {
+  fundamental_frequency: number;
+  harmonics: HarmonicResult[];
+  spectrum_x: number[];
+  spectrum_y: number[];
+  timeline: AnalysisFrame[];
+  sample_rate: number;
+  duration: number;
+}
+
 export const calculateFourier = async (request: FourierRequest): Promise<FourierResponse> => {
   try {
     const response = await api.post<FourierResponse>('/calculate', request);
@@ -58,6 +80,25 @@ export const calculateFourier = async (request: FourierRequest): Promise<Fourier
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.detail || 'Failed to calculate Fourier series');
+    }
+    throw new Error('Network error or server unreachable');
+  }
+};
+
+export const analyzeAudio = async (file: File): Promise<AudioAnalysisResponse> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const response = await api.post<AudioAnalysisResponse>('/harmonics/analyze', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.detail || 'Failed to analyze audio');
     }
     throw new Error('Network error or server unreachable');
   }

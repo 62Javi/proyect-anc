@@ -1,18 +1,20 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from src.models.fourier import FourierRequest, FourierResponse
 from src.core.fourier import FourierSeriesCalculator
+from src.models.harmonics import AudioAnalysisResponse
+from src.core.harmonics import HarmonicAnalyzer
 
 router = APIRouter()
-
+harmonics_analyzer = HarmonicAnalyzer()
 
 def get_calculator():
     return FourierSeriesCalculator()
-
 
 @router.post("/calculate", response_model=FourierResponse)
 async def calculate(
     request: FourierRequest, calc: FourierSeriesCalculator = Depends(get_calculator)
 ):
+    # ... (existing code)
     # 1. Detect symmetry
     symmetry = calc.detect_symmetry(request.functions)
 
@@ -39,3 +41,15 @@ async def calculate(
         convergence_results=convergence_results,
         harmonics=harmonics_data
     )
+
+@router.post("/harmonics/analyze", response_model=AudioAnalysisResponse)
+async def analyze_audio(file: UploadFile = File(...)):
+    if not file.filename.endswith(('.wav')):
+        raise HTTPException(status_code=400, detail="Only WAV files are supported")
+    
+    try:
+        content = await file.read()
+        result = harmonics_analyzer.analyze_audio(content)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error analyzing audio: {str(e)}")
