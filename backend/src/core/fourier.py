@@ -197,12 +197,53 @@ class FourierSeriesCalculator:
                     continue
         return results
 
+    def _get_numeric_harmonics(self, coeff_data: Dict[str, Any], max_n: int):
+        if "an_vals" in coeff_data and len(coeff_data["an_vals"]) >= max_n:
+            return coeff_data["an_vals"][:max_n], coeff_data["bn_vals"][:max_n]
+            
+        an_expr = coeff_data["an_expr"]
+        bn_expr = coeff_data["bn_expr"]
+        
+        n_array = np.arange(1, max_n + 1)
+        an_vals = np.zeros(max_n)
+        bn_vals = np.zeros(max_n)
+        
+        try:
+            if "an_func" not in coeff_data:
+                coeff_data["an_func"] = sp.lambdify(self.n, an_expr, modules=["numpy"])
+                coeff_data["bn_func"] = sp.lambdify(self.n, bn_expr, modules=["numpy"])
+            
+            an_func = coeff_data["an_func"]
+            bn_func = coeff_data["bn_func"]
+            
+            an_res = an_func(n_array)
+            bn_res = bn_func(n_array)
+            
+            if np.isscalar(an_res):
+                an_vals = np.full(max_n, float(an_res))
+            else:
+                an_vals = np.array(an_res, dtype=float)
+                
+            if np.isscalar(bn_res):
+                bn_vals = np.full(max_n, float(bn_res))
+            else:
+                bn_vals = np.array(bn_res, dtype=float)
+        except Exception:
+            for i, n_val in enumerate(range(1, max_n + 1)):
+                try:
+                    an_vals[i] = float(an_expr.subs(self.n, n_val).evalf())
+                    bn_vals[i] = float(bn_expr.subs(self.n, n_val).evalf())
+                except:
+                    pass
+                    
+        coeff_data["an_vals"] = an_vals
+        coeff_data["bn_vals"] = bn_vals
+        return an_vals, bn_vals
+
     def evaluate_plot_data(
         self, coeff_data: Dict[str, Any], harmonics: int, num_points: int, periods: int = 1
     ) -> Dict[str, List[float]]:
         L = coeff_data["L"]
-        an_expr = coeff_data["an_expr"]
-        bn_expr = coeff_data["bn_expr"]
         a0_val = coeff_data["a0_val"]
         f_sym = coeff_data["f_sym"]
         start = float(coeff_data["start"])
@@ -226,39 +267,18 @@ class FourierSeriesCalculator:
             y_original = np.zeros_like(x_vals)
 
         # Optimization: Pre-calculate all coefficients at once
-        # Using lambdify for the formulas of an and bn
         y_approx = np.full_like(x_vals, float(a0_val / 2.0))
         
-        # Lambdify an and bn formulas to evaluate them for all n at once
-        an_func = sp.lambdify(self.n, an_expr, modules=["numpy"])
-        bn_func = sp.lambdify(self.n, bn_expr, modules=["numpy"])
+        an_vals, bn_vals = self._get_numeric_harmonics(coeff_data, harmonics)
         
         n_array = np.arange(1, harmonics + 1)
-        try:
-            # Evaluate all an and bn
-            an_vals = an_func(n_array)
-            bn_vals = bn_func(n_array)
-            
-            # Ensure they are arrays
-            if np.isscalar(an_vals): an_vals = np.full_like(n_array, float(an_vals), dtype=float)
-            if np.isscalar(bn_vals): bn_vals = np.full_like(n_array, float(bn_vals), dtype=float)
-            
-            # Use a matrix multiplication approach for the sum to maximize NumPy speed
-            # x_vals shape (num_points,)
-            # n_array shape (harmonics,)
-            # result = cos( (n * pi / L) * x ) -> shape (harmonics, num_points)
-            arg = (np.pi / L) * np.outer(n_array, x_vals)
-            y_approx += np.dot(an_vals, np.cos(arg))
-            y_approx += np.dot(bn_vals, np.sin(arg))
-        except Exception:
-            # Fallback to loop if lambdify fails for complex expressions
-            for n_val in range(1, harmonics + 1):
-                try:
-                    an_v = float(an_expr.subs(self.n, n_val).evalf())
-                    bn_v = float(bn_expr.subs(self.n, n_val).evalf())
-                    y_approx += an_v * np.cos(n_val * np.pi * x_vals / L)
-                    y_approx += bn_v * np.sin(n_val * np.pi * x_vals / L)
-                except: continue
+        arg = (np.pi / L) * np.outer(n_array, x_vals)
+        
+        an_vals = np.nan_to_num(an_vals)
+        bn_vals = np.nan_to_num(bn_vals)
+        
+        y_approx += np.dot(an_vals, np.cos(arg))
+        y_approx += np.dot(bn_vals, np.sin(arg))
 
         return {
             "x": x_vals.tolist(),
@@ -270,30 +290,14 @@ class FourierSeriesCalculator:
         self, coeff_data: Dict[str, Any], num_harmonics: int = 10
     ) -> List[Dict[str, Any]]:
         """Calculate the first num_harmonics An and Bn values."""
-        an_expr = coeff_data["an_expr"]
-        bn_expr = coeff_data["bn_expr"]
+        an_vals, bn_vals = self._get_numeric_harmonics(coeff_data, num_harmonics)
         
         harmonics = []
-        an_func = sp.lambdify(self.n, an_expr, modules=["numpy"])
-        bn_func = sp.lambdify(self.n, bn_expr, modules=["numpy"])
-        
-        for n_val in range(1, num_harmonics + 1):
-            try:
-                an_val = float(an_func(n_val))
-                bn_val = float(bn_func(n_val))
-            except Exception:
-                # Fallback to direct substitution if lambdify fails
-                try:
-                    an_val = float(an_expr.subs(self.n, n_val).evalf())
-                    bn_val = float(bn_expr.subs(self.n, n_val).evalf())
-                except Exception:
-                    an_val = 0.0
-                    bn_val = 0.0
-            
+        for i in range(num_harmonics):
             harmonics.append({
-                "n": n_val,
-                "an": an_val,
-                "bn": bn_val
+                "n": i + 1,
+                "an": float(np.nan_to_num(an_vals[i])),
+                "bn": float(np.nan_to_num(bn_vals[i]))
             })
         
         return harmonics
