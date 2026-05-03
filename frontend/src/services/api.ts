@@ -42,11 +42,18 @@ export interface HarmonicResult {
   harmonic_index: number;
 }
 
+export interface AnalysisFrame {
+  time: number;
+  fundamental_frequency: number;
+  harmonics: HarmonicResult[];
+}
+
 export interface AudioAnalysisResponse {
   fundamental_frequency: number;
   harmonics: HarmonicResult[];
   spectrum_x: number[];
   spectrum_y: number[];
+  timeline: AnalysisFrame[];
   sample_rate: number;
   duration: number;
 }
