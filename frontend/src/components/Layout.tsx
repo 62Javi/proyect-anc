@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Home, Activity, Calculator } from 'lucide-react';
+import { Home, Activity, Calculator, Music } from 'lucide-react';
 
 export default function Layout() {
   const location = useLocation();
@@ -7,6 +7,7 @@ export default function Layout() {
   const navItems = [
     { path: '/', icon: <Home size={20} />, label: 'Inicio' },
     { path: '/fourier', icon: <Activity size={20} />, label: 'Fourier' },
+    { path: '/harmonics', icon: <Music size={20} />, label: 'Armónicos' },
   ];
 
   return (
