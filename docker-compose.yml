@@ -10,6 +10,7 @@ services:
       - ./backend:/app
     environment:
       - ENV=dev
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     deploy:
       resources:
         limits:
@@ -23,8 +24,15 @@ services:
   frontend:
     build:
       context: ./frontend
+      target: builder
     ports:
-      - "8083:80"
+      - "8083:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=/api
+    command: npm run dev -- --host 0.0.0.0
     depends_on:
       - backend
     networks:
@@ -33,4 +41,3 @@ services:
 networks:
   app-network:
     driver: bridge
-

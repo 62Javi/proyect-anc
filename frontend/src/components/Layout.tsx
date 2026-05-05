@@ -45,16 +45,6 @@ export default function Layout() {
             );
           })}
         </div>
-
-        <div className="mt-auto px-4 hidden lg:block">
-          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Estado</div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-xs font-bold text-slate-600">Local Host Online</span>
-            </div>
-          </div>
-        </div>
       </nav>
 
       {/* Main Content */}
