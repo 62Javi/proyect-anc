@@ -131,52 +131,63 @@ function FourierPage() {
     setLoading(true);
     setProgress(0);
     setError(null);
-    
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 98) return prev;
-        // Saltos más dinámicos para que la barra se vea activa
-        const jump = Math.random() * 12 + 2; 
-        return Math.min(98, prev + jump);
-      });
-    }, 120);
+    setResult(null);
 
-    try {
-      let finalPoints = [...convPoints];
-      const val = parseFloat(newPoint);
-      if (!isNaN(val)) {
-        finalPoints = [...new Set([...finalPoints, val])];
-        setConvPoints(finalPoints);
-        setNewPoint('');
-      }
+    const apiFunctions = functions.map(({ id, ...rest }) => ({
+      expression: rest.expression,
+      start: Number(rest.start),
+      end: Number(rest.end)
+    }));
 
-      const apiFunctions = functions.map(({ id, ...rest }) => ({
-        expression: rest.expression,
-        start: Number(rest.start),
-        end: Number(rest.end)
-      }));
-      
-      const payload = { 
-        functions: apiFunctions, 
-        harmonics: Number(harmonics), 
-        points: Number(points), 
-        periods: Number(periods),
-        convergence_points: finalPoints.map(p => Number(p))
-      };
+    let finalPoints = [...convPoints];
+    const val = parseFloat(newPoint);
+    if (!isNaN(val)) {
+      finalPoints = [...new Set([...finalPoints, val])];
+      setConvPoints(finalPoints);
+      setNewPoint('');
+    }
 
-      const data = await calculateFourier(payload);
-      clearInterval(progressInterval);
-      setProgress(100);
+    const params = new URLSearchParams({
+      functions: JSON.stringify(apiFunctions),
+      harmonics: harmonics.toString(),
+      points: points.toString(),
+      periods: periods.toString(),
+      convergence_points: finalPoints.join(',')
+    });
+
+    // Usar Server-Sent Events para progreso real
+    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL || '/api'}/calculate-stream?${params.toString()}`);
+
+    eventSource.addEventListener('progress', (e) => {
+      const data = JSON.parse(e.data);
+      setProgress(data.progress);
+    });
+
+    eventSource.addEventListener('result', (e) => {
+      const data = JSON.parse(e.data);
       setResult(data);
+      setProgress(100);
+      setLoading(false);
+      eventSource.close();
       setTimeout(() => {
         mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
-    } catch (err) {
-      clearInterval(progressInterval);
-      setError(err instanceof Error ? err.message : 'Calculation failed');
-    } finally {
+    });
+
+    eventSource.addEventListener('error', (e: any) => {
+      setError(e.data || 'Error en el cálculo');
       setLoading(false);
-    }
+      eventSource.close();
+    });
+
+    eventSource.onerror = () => {
+      // EventSource no da detalles en onerror por spec, pero si cerramos suele ser fin o error grave
+      if (loading) {
+        setError('Error de conexión con el servidor');
+        setLoading(false);
+      }
+      eventSource.close();
+    };
   };
 
   return (
