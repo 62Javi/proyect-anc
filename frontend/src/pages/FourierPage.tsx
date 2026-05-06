@@ -1,5 +1,4 @@
 import { useState, useRef, useCallback, memo } from 'react';
-import { calculateFourier } from '../services/api';
 import type { FourierResponse, FunctionInterval } from '../services/api';
 import FourierChart from '../components/FourierChart';
 import FormulaDisplay from '../components/FormulaDisplay';
