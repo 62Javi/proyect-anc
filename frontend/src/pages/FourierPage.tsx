@@ -89,13 +89,49 @@ function FourierPage() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [intervalsOpen, setIntervalsOpen] = useState(true);
-...
+  const [configOpen, setConfigOpen] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
+
+  const resetAll = () => {
+    setFunctions([{ id: crypto.randomUUID(), expression: 'x', start: -1, end: 1 }]);
+    setHarmonics(10);
+    setPoints(1000);
+    setPeriods(1);
+    setConvPoints([0, 1, 1.5, 2]);
+    setResult(null);
+    setError(null);
+  };
+
+  const addInterval = useCallback(() => {
+    const last = functions[functions.length - 1];
+    setFunctions(prev => [...prev, { 
+      id: crypto.randomUUID(), 
+      expression: '0', 
+      start: last.end, 
+      end: last.end + 1 
+    }]);
+  }, [functions]);
+
+  const removeInterval = useCallback((id: string) => {
+    setFunctions(prev => {
+      if (prev.length > 1) {
+        return prev.filter(fn => fn.id !== id);
+      }
+      return prev;
+    });
+  }, []);
+
+  const handleUpdate = useCallback((id: string, field: keyof FunctionInterval, value: string | number) => {
+    setFunctions(prev => prev.map(fn => 
+      fn.id === id ? { ...fn, [field]: value } : fn
+    ));
+  }, []);
+
   const onCalculate = async () => {
     setLoading(true);
     setProgress(0);
     setError(null);
     
-    // Simulación de progreso suave para mejorar la percepción
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 90) return prev;
@@ -105,7 +141,28 @@ function FourierPage() {
     }, 400);
 
     try {
-...
+      let finalPoints = [...convPoints];
+      const val = parseFloat(newPoint);
+      if (!isNaN(val)) {
+        finalPoints = [...new Set([...finalPoints, val])];
+        setConvPoints(finalPoints);
+        setNewPoint('');
+      }
+
+      const apiFunctions = functions.map(({ id, ...rest }) => ({
+        expression: rest.expression,
+        start: Number(rest.start),
+        end: Number(rest.end)
+      }));
+      
+      const payload = { 
+        functions: apiFunctions, 
+        harmonics: Number(harmonics), 
+        points: Number(points), 
+        periods: Number(periods),
+        convergence_points: finalPoints.map(p => Number(p))
+      };
+
       const data = await calculateFourier(payload);
       clearInterval(progressInterval);
       setProgress(100);
@@ -120,7 +177,173 @@ function FourierPage() {
       setLoading(false);
     }
   };
-...
+
+  return (
+    <div className="flex flex-col lg:flex-row bg-slate-50 min-h-full">
+      <aside className="w-full lg:w-[420px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 shrink-0 relative z-20 lg:h-full lg:overflow-y-auto lg:sticky lg:top-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-200">
+              <Calculator className="text-white" size={20} />
+            </div>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Fourier Analyzer</h1>
+          </div>
+          <button 
+            onClick={resetAll}
+            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+            title="Reiniciar"
+          >
+            <RotateCcw size={18} />
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <button 
+              onClick={() => setIntervalsOpen(!intervalsOpen)}
+              className="flex items-center justify-between w-full text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group"
+            >
+              Intervalos de Función
+              {intervalsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+            
+            {intervalsOpen && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="space-y-6">
+                  {functions.map((fn, idx) => (
+                    <IntervalItem 
+                      key={fn.id}
+                      fn={fn}
+                      idx={idx}
+                      isRemovable={functions.length > 1}
+                      onRemove={removeInterval}
+                      onUpdate={handleUpdate}
+                    />
+                  ))}
+                </div>
+                
+                <button 
+                  onClick={addInterval}
+                  className="w-full py-3 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-white hover:bg-indigo-50 rounded-xl border-2 border-dashed border-indigo-100 transition-all"
+                >
+                  + Añadir Tramo
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="p-6 bg-slate-900 rounded-[32px] text-white shadow-xl shadow-slate-200 overflow-hidden">
+            <button 
+              onClick={() => setConfigOpen(!configOpen)}
+              className="flex items-center justify-between w-full mb-0 group"
+            >
+              <div className="flex items-center gap-2">
+                <Sliders size={16} className="text-indigo-400" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Configuración</span>
+              </div>
+              {configOpen ? <ChevronUp size={14} className="text-slate-500" /> : <ChevronDown size={14} className="text-slate-500" />}
+            </button>
+
+            {configOpen && (
+              <div className="space-y-6 mt-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div>
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Armónicos</label>
+                    <span className="text-lg font-black text-indigo-400">{harmonics}</span>
+                  </div>
+                  <input
+                    type="range" min="1" max="50"
+                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                    value={harmonics}
+                    onChange={(e) => setHarmonics(parseInt(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Periodos a Mostrar</label>
+                    <span className="text-lg font-black text-indigo-400">{periods}</span>
+                  </div>
+                  <input
+                    type="range" min="1" max="5"
+                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                    value={periods}
+                    onChange={(e) => setPeriods(parseInt(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Puntos de Muestreo (Máx. 1000)</label>
+                  <input
+                    type="number"
+                    min="10"
+                    max="1000"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-indigo-500 transition-all"
+                    value={points}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (isNaN(val)) setPoints(0);
+                      else setPoints(Math.min(1000, val));
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Puntos de Convergencia (Dirichlet)</label>
+                  <div className="flex gap-2 mb-3">
+                    <input
+                      type="number"
+                      step="any"
+                      placeholder="Valor de x"
+                      className="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-indigo-500 transition-all placeholder:text-slate-600"
+                      value={newPoint}
+                      onChange={(e) => setNewPoint(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = parseFloat(newPoint);
+                          if (!isNaN(val)) {
+                            setConvPoints(prev => [...new Set([...prev, val])]);
+                            setNewPoint('');
+                          }
+                        }
+                      }}
+                    />
+                    <button 
+                      onClick={() => {
+                        const val = parseFloat(newPoint);
+                        if (!isNaN(val)) {
+                          setConvPoints(prev => [...new Set([...prev, val])]);
+                          setNewPoint('');
+                        }
+                      }}
+                      className="px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[10px] uppercase"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {convPoints.map((p, i) => (
+                      <span key={i} className="px-2 py-1 bg-slate-700 rounded-lg text-[10px] font-bold text-indigo-300 flex items-center gap-2">
+                        x={p}
+                        <button onClick={() => setConvPoints(prev => prev.filter(v => v !== p))} className="hover:text-red-400 text-slate-500 text-xs">×</button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-auto pt-6">
+          <button
+            onClick={onCalculate}
+            disabled={loading}
+            className="w-full bg-indigo-600 text-white py-5 rounded-[24px] font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:opacity-50"
+          >
+            {loading ? 'Calculando...' : 'Analizar Función'}
+          </button>
+          {error && <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-xl text-[10px] font-bold border border-red-100 uppercase tracking-widest leading-loose">{error}</div>}
+        </div>
+      </aside>
+
       <main ref={mainRef} className="flex-1 p-4 lg:p-8">
         <div className="max-w-5xl mx-auto space-y-6">
           {loading && (

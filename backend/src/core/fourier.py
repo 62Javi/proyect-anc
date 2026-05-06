@@ -84,17 +84,23 @@ class FourierSeriesCalculator:
         f_pw = sp.Piecewise(*pw_args)
         
         try:
-            # Substitute x with -x and simplify
-            # For Piecewise, simplify might be slow, so we test at some points or use sp.simplify
-            f_neg = f_pw.subs(self.x, -self.x)
+            # Numerical symmetry check (much faster than symbolic simplify on Pi)
+            test_points = [0.1, 0.5, 0.9]
+            is_even = True
+            is_odd = True
             
-            # Check for Even (Par)
-            if sp.simplify(f_pw - f_neg) == 0:
-                return "Par"
+            for p in test_points:
+                # Scaled points to fit L if needed, but start/end is safer
+                val_p = float(f_pw.subs(self.x, p).evalf())
+                val_neg_p = float(f_pw.subs(self.x, -p).evalf())
+                
+                if abs(val_p - val_neg_p) > 1e-6:
+                    is_even = False
+                if abs(val_p + val_neg_p) > 1e-6:
+                    is_odd = False
             
-            # Check for Odd (Impar)
-            if sp.simplify(f_pw + f_neg) == 0:
-                return "Impar"
+            if is_even: return "Par"
+            if is_odd: return "Impar"
         except:
             pass
             

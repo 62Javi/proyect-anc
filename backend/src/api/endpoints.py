@@ -11,10 +11,9 @@ def get_calculator():
     return FourierSeriesCalculator()
 
 @router.post("/calculate", response_model=FourierResponse)
-async def calculate(
+def calculate(
     request: FourierRequest, calc: FourierSeriesCalculator = Depends(get_calculator)
 ):
-    # ... (existing code)
     # 1. Detect symmetry
     symmetry = calc.detect_symmetry(request.functions)
 
