@@ -13,9 +13,6 @@ services:
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000
     deploy:
       resources:
-        limits:
-          cpus: '1.0'
-          memory: 768M
         reservations:
           memory: 256M
     networks:

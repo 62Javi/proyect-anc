@@ -134,11 +134,12 @@ function FourierPage() {
     
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 90) return prev;
-        const jump = Math.random() * 5;
-        return Math.min(90, prev + jump);
+        if (prev >= 98) return prev;
+        // Saltos más dinámicos para que la barra se vea activa
+        const jump = Math.random() * 12 + 2; 
+        return Math.min(98, prev + jump);
       });
-    }, 400);
+    }, 120);
 
     try {
       let finalPoints = [...convPoints];
