@@ -1,16 +1,11 @@
-FROM python:3.11-slim as builder
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
-
 FROM python:3.11-slim
+
 # Create non-root user for security
 RUN adduser --disabled-password --gecos "" appuser
 WORKDIR /app
 
-# Copy packages from builder to the new user's home
-COPY --from=builder /root/.local /home/appuser/.local
-ENV PATH=/home/appuser/.local/bin:$PATH
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source and set ownership
 COPY . .

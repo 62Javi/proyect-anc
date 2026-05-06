@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, memo } from 'react';
+import { calculateFourier } from '../services/api';
 import type { FourierResponse, FunctionInterval } from '../services/api';
 import FourierChart from '../components/FourierChart';
 import FormulaDisplay from '../components/FormulaDisplay';
@@ -101,6 +102,78 @@ function FourierPage() {
     setError(null);
   };
 
+  const handleUpdate = useCallback((id: string, field: keyof FunctionInterval, value: string | number) => {
+    setFunctions(prev => prev.map(fn => 
+      fn.id === id ? { ...fn, [field]: value } : fn
+    ));
+  }, []);
+
+  const onCalculate = async () => {
+    setLoading(true);
+    setProgress(0);
+    setError(null);
+    setResult(null);
+
+    // Animación de alta fidelidad que simula las etapas reales
+    const stages = [
+      { name: 'Simetría', start: 0, end: 15, duration: 200 },
+      { name: 'Coeficientes', start: 15, end: 50, duration: 1200 },
+      { name: 'Gráfica', start: 50, end: 85, duration: 800 },
+      { name: 'Dirichlet', start: 85, end: 95, duration: 400 }
+    ];
+
+    let currentStage = 0;
+    const animInterval = setInterval(() => {
+      if (currentStage < stages.length) {
+        const stage = stages[currentStage];
+        setProgress(prev => {
+          if (prev < stage.end) return prev + 1;
+          currentStage++;
+          return prev;
+        });
+      }
+    }, 50);
+
+    try {
+      const apiFunctions = functions.map(({ id, ...rest }) => ({
+        expression: rest.expression,
+        start: Number(rest.start),
+        end: Number(rest.end)
+      }));
+
+      let finalPoints = [...convPoints];
+      const val = parseFloat(newPoint);
+      if (!isNaN(val)) {
+        finalPoints = [...new Set([...finalPoints, val])];
+        setConvPoints(finalPoints);
+        setNewPoint('');
+      }
+
+      const payload = { 
+        functions: apiFunctions, 
+        harmonics: Number(harmonics), 
+        points: Number(points), 
+        periods: Number(periods),
+        convergence_points: finalPoints.map(p => Number(p))
+      };
+
+      const data = await calculateFourier(payload);
+      
+      clearInterval(animInterval);
+      setProgress(100);
+      setResult(data);
+      
+      setTimeout(() => {
+        mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setLoading(false);
+      }, 300);
+    } catch (err) {
+      clearInterval(animInterval);
+      setError(err instanceof Error ? err.message : 'Calculation failed');
+      setLoading(false);
+    }
+  };
+
   const addInterval = useCallback(() => {
     const last = functions[functions.length - 1];
     setFunctions(prev => [...prev, { 
@@ -119,75 +192,6 @@ function FourierPage() {
       return prev;
     });
   }, []);
-
-  const handleUpdate = useCallback((id: string, field: keyof FunctionInterval, value: string | number) => {
-    setFunctions(prev => prev.map(fn => 
-      fn.id === id ? { ...fn, [field]: value } : fn
-    ));
-  }, []);
-
-  const onCalculate = async () => {
-    setLoading(true);
-    setProgress(0);
-    setError(null);
-    setResult(null);
-
-    const apiFunctions = functions.map(({ id, ...rest }) => ({
-      expression: rest.expression,
-      start: Number(rest.start),
-      end: Number(rest.end)
-    }));
-
-    let finalPoints = [...convPoints];
-    const val = parseFloat(newPoint);
-    if (!isNaN(val)) {
-      finalPoints = [...new Set([...finalPoints, val])];
-      setConvPoints(finalPoints);
-      setNewPoint('');
-    }
-
-    const params = new URLSearchParams({
-      functions: JSON.stringify(apiFunctions),
-      harmonics: harmonics.toString(),
-      points: points.toString(),
-      periods: periods.toString(),
-      convergence_points: finalPoints.join(',')
-    });
-
-    // Usar Server-Sent Events para progreso real
-    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL || '/api'}/calculate-stream?${params.toString()}`);
-
-    eventSource.addEventListener('progress', (e) => {
-      const data = JSON.parse(e.data);
-      setProgress(data.progress);
-    });
-
-    eventSource.addEventListener('result', (e) => {
-      const data = JSON.parse(e.data);
-      setResult(data);
-      setProgress(100);
-      setLoading(false);
-      eventSource.close();
-      setTimeout(() => {
-        mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    });
-
-    eventSource.addEventListener('error', (e: any) => {
-      setError(e.data || 'Error en el cálculo');
-      setLoading(false);
-      eventSource.close();
-    });
-
-    eventSource.onerror = () => {
-      // EventSource no da detalles en onerror por spec, pero si cerramos suele ser fin o error grave
-      if (loading) {
-        setError('Error de conexión con el servidor');
-        setLoading(false);
-      }
-      eventSource.close();
-    };
-  };
 
   return (
     <div className="flex flex-col lg:flex-row bg-slate-50 min-h-full">
