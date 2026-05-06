@@ -24,15 +24,8 @@ services:
   frontend:
     build:
       context: ./frontend
-      target: builder
     ports:
-      - "8083:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    environment:
-      - VITE_API_URL=/api
-    command: npm run dev -- --host 0.0.0.0
+      - "8083:80"
     depends_on:
       - backend
     networks:
