@@ -182,8 +182,10 @@ class FourierSeriesCalculator:
                 
                 # Format formula according to Dirichlet Theorem for Fourier Series
                 # S_f(x) is the standard notation for the value of the Fourier series at x
+                # Format x0 to remove .0 if it is an integer
+                x_fmt = f"{x0:g}"
                 latex_val = sp.latex(sp.nsimplify(conv_val))
-                formula = f"S_f({x0}) = \\frac{{f({x0}^+) + f({x0}^-)}}{{2}} = {latex_val}"
+                formula = f"S_f({x_fmt}) = \\frac{{f({x_fmt}^+) + f({x_fmt}^-)}}{{2}} = {latex_val}"
                 
                 results.append({
                     "x": float(x0),
@@ -194,10 +196,12 @@ class FourierSeriesCalculator:
                 # Fallback to direct evaluation if limit fails
                 try:
                     val = float(f_sym.subs(self.x, x_base).evalf())
+                    x_fmt = f"{x0:g}"
+                    val_fmt = f"{val:g}"
                     results.append({
                         "x": float(x0),
                         "value": val,
-                        "formula": f"S_f({x0}) \\approx {val:.4f}"
+                        "formula": f"S_f({x_fmt}) \\approx {val_fmt}"
                     })
                 except:
                     continue
