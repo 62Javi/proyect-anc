@@ -213,7 +213,7 @@ function FourierPage() {
             <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-200">
               <Calculator className="text-white" size={20} />
             </div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Fourier Analyzer</h1>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Analizador de Fourier</h1>
           </div>
           <button 
             onClick={resetAll}

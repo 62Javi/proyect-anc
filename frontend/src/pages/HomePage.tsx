@@ -4,7 +4,7 @@ import { Activity, Beaker, Calculator, Music } from 'lucide-react';
 export default function HomePage() {
   const tools = [
     {
-      title: 'Fourier Analyzer',
+      title: 'Analizador de Fourier',
       description: 'Calcula y visualiza series de Fourier para funciones periódicas y a trozos.',
       icon: <Activity size={24} />,
       path: '/fourier',

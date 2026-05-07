@@ -18,7 +18,7 @@ export default function Layout() {
           <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary border border-primary/20">
             <Calculator size={20} />
           </div>
-          <span className="text-xl font-bold tracking-tight hidden lg:block">ANC Platform</span>
+          <span className="text-xl font-bold tracking-tight hidden lg:block text-slate-900">Proyecto ANC</span>
         </div>
         
         <div className="flex flex-col gap-2 w-full">
