@@ -90,6 +90,7 @@ function FourierPage() {
   const [error, setError] = useState<string | null>(null);
   const [intervalsOpen, setIntervalsOpen] = useState(true);
   const [configOpen, setConfigOpen] = useState(false);
+  const [visibleHarmonics, setVisibleHarmonics] = useState(10);
   const mainRef = useRef<HTMLElement>(null);
 
   const resetAll = () => {
@@ -433,9 +434,23 @@ function FourierPage() {
 
           {result?.harmonics && result.harmonics.length > 0 && (
             <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-8 animate-in slide-in-from-bottom-4 duration-700 delay-100">
-              <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] border-b border-slate-50 pb-4 flex items-center gap-2">
-                <Activity size={14} className="text-indigo-400" />
-                Primeros 10 Armónicos
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-50 pb-4">
+                <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] flex items-center gap-2">
+                  <Activity size={14} className="text-indigo-400" />
+                  Tabla de Armónicos
+                </div>
+                <div className="flex items-center gap-3">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Mostrar:</label>
+                  <input
+                    type="range"
+                    min="1"
+                    max={result.harmonics.length}
+                    value={Math.min(visibleHarmonics, result.harmonics.length)}
+                    onChange={(e) => setVisibleHarmonics(parseInt(e.target.value))}
+                    className="w-24 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                  />
+                  <span className="text-xs font-black text-indigo-600 w-6 tabular-nums">{Math.min(visibleHarmonics, result.harmonics.length)}</span>
+                </div>
               </div>
               
               <div className="overflow-x-auto">
@@ -443,12 +458,12 @@ function FourierPage() {
                   <thead>
                     <tr className="border-b border-slate-200">
                       <th className="text-left px-4 py-3 text-[10px] font-black text-slate-400 uppercase">n</th>
-                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">a_n</th>
-                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">b_n</th>
+                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">a<sub className="text-[8px] lowercase">n</sub></th>
+                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">b<sub className="text-[8px] lowercase">n</sub></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {result.harmonics.map((harmonic, i) => (
+                    {result.harmonics.slice(0, visibleHarmonics).map((harmonic, i) => (
                       <tr key={i} className={i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
                         <td className="px-4 py-3 text-sm font-bold text-slate-900">{harmonic.n}</td>
                         <td className="px-4 py-3 text-right text-sm font-bold text-indigo-600">{harmonic.an.toFixed(6)}</td>

@@ -28,8 +28,8 @@ def calculate(
     if request.convergence_points:
         convergence_results = calc.calculate_convergence(coeff_data, request.convergence_points)
 
-    # 5. Calculate first 10 harmonics An and Bn
-    harmonics_data = calc.calculate_harmonics(coeff_data, num_harmonics=10)
+    # 5. Calculate harmonics An and Bn up to the requested harmonics
+    harmonics_data = calc.calculate_harmonics(coeff_data, num_harmonics=request.harmonics)
 
     return FourierResponse(
         a0=coeff_data["a0"],
