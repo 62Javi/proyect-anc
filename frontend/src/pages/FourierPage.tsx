@@ -90,7 +90,7 @@ function FourierPage() {
   const [error, setError] = useState<string | null>(null);
   const [intervalsOpen, setIntervalsOpen] = useState(true);
   const [configOpen, setConfigOpen] = useState(false);
-  const [visibleHarmonics, setVisibleHarmonics] = useState(10);
+  const [visibleHarmonics, setVisibleHarmonics] = useState(1);
   const mainRef = useRef<HTMLElement>(null);
 
   const resetAll = () => {
