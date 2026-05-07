@@ -39,8 +39,8 @@ export default function UnifiedMathInput({ value, onChange, className = "", hide
       }
       if (isInternalChange.current) {
         isInternalChange.current = false;
-      } else if (mfRef.current.value !== value) {
-        mfRef.current.value = value;
+      } else if (mfRef.current.getValue('ascii-math') !== value) {
+        mfRef.current.setValue(value, { format: 'ascii-math' });
       }
     }
   }, [value]);

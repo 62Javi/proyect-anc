@@ -188,14 +188,13 @@ function FourierPage() {
   };
 
   const addInterval = useCallback(() => {
-    const last = functions[functions.length - 1];
     setFunctions(prev => [...prev, { 
       id: crypto.randomUUID(), 
-      expression: '0', 
-      start: last.end, 
-      end: !isNaN(Number(last.end)) ? String(Number(last.end) + 1) : last.end 
+      expression: '', 
+      start: '', 
+      end: ''
     }]);
-  }, [functions]);
+  }, []);
 
   const removeInterval = useCallback((id: string) => {
     setFunctions(prev => {

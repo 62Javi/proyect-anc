@@ -102,8 +102,8 @@ class FourierSeriesCalculator:
         f_pw = sp.Piecewise(*pw_args)
         
         try:
-            # Numerical symmetry check (much faster than symbolic simplify on Pi)
-            test_points = [0.1, 0.5, 0.9]
+            # Numerical symmetry check with points unlikely to be boundaries
+            test_points = [0.123, 0.456, 0.789]
             is_even = True
             is_odd = True
             
