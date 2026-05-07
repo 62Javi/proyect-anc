@@ -32,6 +32,12 @@ class FourierSeriesCalculator:
                     break
                 clean_expr = new_expr
             
+            # Handle implicit multiplication for cases like x3 -> x*3
+            # and ensure numbers before variables are handled if implicit_multiplication fails
+            import re
+            clean_expr = re.sub(r"([xXnN])(\d)", r"\1*\2", clean_expr)
+            clean_expr = re.sub(r"(\d)([xXnN])", r"\1*\2", clean_expr)
+            
             # Security check to prevent dunder method access
             if "_" in clean_expr:
                 raise InvalidExpressionError(expr_str)
@@ -64,19 +70,31 @@ class FourierSeriesCalculator:
             raise InvalidExpressionError(expr_str)
 
     def detect_symmetry(self, intervals: List[FunctionInterval]) -> str:
+        # Parse limits first
+        numeric_intervals = []
+        for i in intervals:
+            try:
+                s = float(self._parse_expression(i.start).evalf())
+                e = float(self._parse_expression(i.end).evalf())
+                numeric_intervals.append((s, e))
+            except: continue
+
+        if not numeric_intervals: return "Ninguna"
+
         # Check if the total range is symmetric around 0
-        start = min(i.start for i in intervals)
-        end = max(i.end for i in intervals)
+        start = min(ni[0] for ni in numeric_intervals)
+        end = max(ni[1] for ni in numeric_intervals)
         
         if abs(start + end) > 1e-9:
             return "Ninguna"
 
         # Build the full function for comparison
         pw_args = []
-        for i in intervals:
+        for idx, i in enumerate(intervals):
             try:
                 f = self._parse_expression(i.expression)
-                pw_args.append((f, (self.x >= i.start) & (self.x <= i.end)))
+                s, e = numeric_intervals[idx]
+                pw_args.append((f, (self.x >= s) & (self.x <= e)))
             except: continue
             
         if not pw_args: return "Ninguna"
@@ -109,17 +127,24 @@ class FourierSeriesCalculator:
     def calculate_coefficients(
         self, intervals: List[FunctionInterval], harmonics: int
     ) -> Dict[str, Any]:
+        # Parse limits and build piecewise args
+        parsed_intervals = []
+        for i in intervals:
+            s = float(self._parse_expression(i.start).evalf())
+            e = float(self._parse_expression(i.end).evalf())
+            f = self._parse_expression(i.expression)
+            parsed_intervals.append({"f": f, "start": s, "end": e})
+
         # Determine period T and L
-        start = min(i.start for i in intervals)
-        end = max(i.end for i in intervals)
+        start = min(pi["start"] for pi in parsed_intervals)
+        end = max(pi["end"] for pi in parsed_intervals)
         T = end - start
         L = T / 2
 
-        # Build Piecewise function if needed
+        # Build Piecewise function
         pw_args = []
-        for i in intervals:
-            f = self._parse_expression(i.expression)
-            pw_args.append((f, (self.x >= i.start) & (self.x <= i.end)))
+        for pi in parsed_intervals:
+            pw_args.append((pi["f"], (self.x >= pi["start"]) & (self.x <= pi["end"])))
 
         f_pw = sp.Piecewise(*pw_args)
 

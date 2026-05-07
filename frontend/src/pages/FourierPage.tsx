@@ -52,20 +52,32 @@ const IntervalItem = memo(({
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Desde (x)</label>
-          <input
-            type="number"
-            className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all"
+          <UnifiedMathInput 
             value={fn.start}
-            onChange={(e) => onUpdate(fn.id, 'start', parseFloat(e.target.value))}
+            hideMenu={true}
+            onChange={(_, ascii) => {
+              const pyExpr = ascii
+                .replace(/·/g, '*')
+                .replace(/÷/g, '/')
+                .replace(/π/g, 'pi')
+                .replace(/\\ /g, ' ');
+              onUpdate(fn.id, 'start', pyExpr);
+            }}
           />
         </div>
         <div className="space-y-1.5">
           <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Hasta (x)</label>
-          <input
-            type="number"
-            className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all"
+          <UnifiedMathInput 
             value={fn.end}
-            onChange={(e) => onUpdate(fn.id, 'end', parseFloat(e.target.value))}
+            hideMenu={true}
+            onChange={(_, ascii) => {
+              const pyExpr = ascii
+                .replace(/·/g, '*')
+                .replace(/÷/g, '/')
+                .replace(/π/g, 'pi')
+                .replace(/\\ /g, ' ');
+              onUpdate(fn.id, 'end', pyExpr);
+            }}
           />
         </div>
       </div>
@@ -77,7 +89,7 @@ IntervalItem.displayName = 'IntervalItem';
 
 function FourierPage() {
   const [functions, setFunctions] = useState<FunctionWithId[]>([
-    { id: crypto.randomUUID(), expression: 'x', start: -1, end: 1 },
+    { id: crypto.randomUUID(), expression: 'x', start: '-1', end: '1' },
   ]);
   const [harmonics, setHarmonics] = useState(10);
   const [points, setPoints] = useState(1000);
@@ -94,7 +106,7 @@ function FourierPage() {
   const mainRef = useRef<HTMLElement>(null);
 
   const resetAll = () => {
-    setFunctions([{ id: crypto.randomUUID(), expression: 'x', start: -1, end: 1 }]);
+    setFunctions([{ id: crypto.randomUUID(), expression: 'x', start: '-1', end: '1' }]);
     setHarmonics(10);
     setPoints(1000);
     setPeriods(1);
@@ -138,8 +150,8 @@ function FourierPage() {
     try {
       const apiFunctions = functions.map(({ id, ...rest }) => ({
         expression: rest.expression,
-        start: Number(rest.start),
-        end: Number(rest.end)
+        start: String(rest.start),
+        end: String(rest.end)
       }));
 
       let finalPoints = [...convPoints];
@@ -181,7 +193,7 @@ function FourierPage() {
       id: crypto.randomUUID(), 
       expression: '0', 
       start: last.end, 
-      end: last.end + 1 
+      end: !isNaN(Number(last.end)) ? String(Number(last.end) + 1) : last.end 
     }]);
   }, [functions]);
 

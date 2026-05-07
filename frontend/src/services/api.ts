@@ -11,8 +11,8 @@ const api = axios.create({
 
 export interface FunctionInterval {
   expression: string;
-  start: number;
-  end: number;
+  start: string;
+  end: string;
 }
 
 export interface FourierRequest {

@@ -3,9 +3,9 @@ from typing import List
 
 
 class FunctionInterval(BaseModel):
-    expression: str = Field(..., min_length=1, max_length=1000, description="SymPy-compatible string (e.g., x**2)")
-    start: float = Field(..., description="Start of the interval")
-    end: float = Field(..., description="End of the interval")
+    expression: str = Field(..., description="Mathematical expression for this interval")
+    start: str = Field(..., description="Start of the interval (can be math expression like -pi)")
+    end: str = Field(..., description="End of the interval (can be math expression like pi)")
 
 
 class ConvergenceResult(BaseModel):
