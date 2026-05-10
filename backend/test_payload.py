@@ -1,5 +1,3 @@
-import sys
-import sympy as sp
 from src.core.fourier import FourierSeriesCalculator
 from src.models.fourier import FunctionInterval
 

@@ -1,4 +1,5 @@
 import time
+
 from src.core.fourier import FourierSeriesCalculator
 from src.models.fourier import FunctionInterval
 
@@ -7,8 +8,8 @@ def test_performance_heavy():
     calc = FourierSeriesCalculator()
     # Piecewise with many harmonics
     intervals = [
-        FunctionInterval(expression="x**2", start=-1.0, end=0.0),
-        FunctionInterval(expression="sin(x)", start=0.0, end=1.0),
+        FunctionInterval(expression="x**2", start="-1.0", end="0.0"),
+        FunctionInterval(expression="sin(x)", start="0.0", end="1.0"),
     ]
 
     start_time = time.time()

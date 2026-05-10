@@ -1,9 +1,15 @@
-import sympy as sp
+from typing import Any, Dict, List
+
 import numpy as np
-from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
-from typing import List, Dict, Any
-from src.models.fourier import FunctionInterval
+import sympy as sp
+from sympy.parsing.sympy_parser import (
+    implicit_multiplication_application,
+    parse_expr,
+    standard_transformations,
+)
+
 from src.core.exceptions import InvalidExpressionError, NonIntegrableError
+from src.models.fourier import FunctionInterval
 
 
 class FourierSeriesCalculator:
@@ -189,19 +195,19 @@ class FourierSeriesCalculator:
         T = end - start
         
         results = []
+        eps = sp.Symbol('eps', positive=True)
         for x0 in points:
             # Map x0 to base interval [start, end)
             x_base = ((x0 - start) % T) + start
             
             try:
-                # Use a small epsilon to avoid issues with Piecewise at exact boundaries
-                # and help limit detection
+                # Use a symbolic epsilon to evaluate limits of Piecewise safely
                 if abs(x_base - start) < 1e-7:
-                    f_right = f_sym.limit(self.x, start, "+")
-                    f_left = f_sym.limit(self.x, end, "-")
+                    f_right = f_sym.subs(self.x, start + eps).limit(eps, 0, "+")
+                    f_left = f_sym.subs(self.x, end - eps).limit(eps, 0, "+")
                 else:
-                    f_right = f_sym.limit(self.x, x_base, "+")
-                    f_left = f_sym.limit(self.x, x_base, "-")
+                    f_right = f_sym.subs(self.x, x_base + eps).limit(eps, 0, "+")
+                    f_left = f_sym.subs(self.x, x_base - eps).limit(eps, 0, "+")
                 
                 conv_val = (f_right + f_left) / 2
                 
@@ -217,7 +223,7 @@ class FourierSeriesCalculator:
                     "value": float(conv_val.evalf()),
                     "formula": formula
                 })
-            except Exception as e:
+            except Exception:
                 # Fallback to direct evaluation if limit fails
                 try:
                     val = float(f_sym.subs(self.x, x_base).evalf())

@@ -1,5 +1,7 @@
+from typing import List
+
 from pydantic import BaseModel
-from typing import List, Dict
+
 
 class HarmonicResult(BaseModel):
     frequency: float

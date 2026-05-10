@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+
 from src.main import app
 
 client = TestClient(app)
@@ -6,7 +7,7 @@ client = TestClient(app)
 
 def test_calculate_endpoint_success():
     payload = {
-        "functions": [{"expression": "x", "start": -1.0, "end": 1.0}],
+        "functions": [{"expression": "x", "start": "-1.0", "end": "1.0"}],
         "harmonics": 10,
         "points": 100,
     }

@@ -1,6 +1,8 @@
 import time
+
 from src.core.fourier import FourierSeriesCalculator
 from src.models.fourier import FunctionInterval
+
 
 def test_performance():
     calc = FourierSeriesCalculator()

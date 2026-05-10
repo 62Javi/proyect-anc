@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
-from src.models.fourier import FourierRequest, FourierResponse
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+
 from src.core.fourier import FourierSeriesCalculator
-from src.models.harmonics import AudioAnalysisResponse
 from src.core.harmonics import HarmonicAnalyzer
+from src.models.fourier import FourierRequest, FourierResponse
+from src.models.harmonics import AudioAnalysisResponse
 
 router = APIRouter()
 harmonics_analyzer = HarmonicAnalyzer()

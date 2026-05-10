@@ -1,8 +1,10 @@
-import numpy as np
-from scipy.io import wavfile
-from scipy.fft import rfft, rfftfreq
-from typing import List, Dict, Any
 import io
+from typing import Any, Dict
+
+import numpy as np
+from scipy.fft import rfft, rfftfreq
+from scipy.io import wavfile
+
 
 class HarmonicAnalyzer:
     def analyze_audio(self, audio_bytes: bytes) -> Dict[str, Any]:
