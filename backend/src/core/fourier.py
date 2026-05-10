@@ -136,34 +136,37 @@ class FourierSeriesCalculator:
         # Parse limits and build piecewise args
         parsed_intervals = []
         for i in intervals:
-            s = float(self._parse_expression(i.start).evalf())
-            e = float(self._parse_expression(i.end).evalf())
+            s_sym = self._parse_expression(i.start)
+            e_sym = self._parse_expression(i.end)
+            s_val = float(s_sym.evalf())
+            e_val = float(e_sym.evalf())
             f = self._parse_expression(i.expression)
-            parsed_intervals.append({"f": f, "start": s, "end": e})
+            parsed_intervals.append({"f": f, "start_sym": s_sym, "end_sym": e_sym, "start_val": s_val, "end_val": e_val})
 
         # Determine period T and L
-        start = min(pi["start"] for pi in parsed_intervals)
-        end = max(pi["end"] for pi in parsed_intervals)
-        T = end - start
-        L = T / 2
+        sorted_intervals = sorted(parsed_intervals, key=lambda pi: pi["start_val"])
+        start_sym = sorted_intervals[0]["start_sym"]
+        end_sym = sorted_intervals[-1]["end_sym"]
+        T_sym = sp.simplify(end_sym - start_sym)
+        L_sym = sp.simplify(T_sym / 2)
 
         # Build Piecewise function
         pw_args = []
         for pi in parsed_intervals:
-            pw_args.append((pi["f"], (self.x >= pi["start"]) & (self.x <= pi["end"])))
+            pw_args.append((pi["f"], (self.x >= pi["start_sym"]) & (self.x <= pi["end_sym"])))
 
         f_pw = sp.Piecewise(*pw_args)
 
         try:
             # a0 calculation
-            a0_sym = (1 / L) * sp.integrate(f_pw, (self.x, start, end))
+            a0_sym = (1 / L_sym) * sp.integrate(f_pw, (self.x, start_sym, end_sym))
 
             # an and bn as formulas (symbolic n)
-            an_sym = (1 / L) * sp.integrate(
-                f_pw * sp.cos(self.n * sp.pi * self.x / L), (self.x, start, end)
+            an_sym = (1 / L_sym) * sp.integrate(
+                f_pw * sp.cos(self.n * sp.pi * self.x / L_sym), (self.x, start_sym, end_sym)
             )
-            bn_sym = (1 / L) * sp.integrate(
-                f_pw * sp.sin(self.n * sp.pi * self.x / L), (self.x, start, end)
+            bn_sym = (1 / L_sym) * sp.integrate(
+                f_pw * sp.sin(self.n * sp.pi * self.x / L_sym), (self.x, start_sym, end_sym)
             )
 
             # Simplify and convert floats to exact rational fractions
@@ -178,10 +181,10 @@ class FourierSeriesCalculator:
                 "a0_val": float(a0_sym.evalf()) if a0_sym.is_number else 0.0,
                 "an_expr": an_sym,
                 "bn_expr": bn_sym,
-                "L": L,
+                "L": float(L_sym.evalf()),
                 "f_sym": f_pw,
-                "start": start,
-                "end": end,
+                "start": float(start_sym.evalf()),
+                "end": float(end_sym.evalf()),
             }
         except Exception as e:
             raise NonIntegrableError(str(e))
