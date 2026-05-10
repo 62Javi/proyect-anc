@@ -8,7 +8,7 @@ from sympy.parsing.sympy_parser import (
     standard_transformations,
 )
 
-from src.core.exceptions import InvalidExpressionError, NonIntegrableError
+from src.core.exceptions import InvalidExpressionError, InvalidIntervalError, NonIntegrableError
 from src.models.fourier import FunctionInterval
 
 
@@ -140,6 +140,8 @@ class FourierSeriesCalculator:
             e_sym = self._parse_expression(i.end)
             s_val = float(s_sym.evalf())
             e_val = float(e_sym.evalf())
+            if s_val >= e_val:
+                raise InvalidIntervalError(i.start, i.end)
             f = self._parse_expression(i.expression)
             parsed_intervals.append({"f": f, "start_sym": s_sym, "end_sym": e_sym, "start_val": s_val, "end_val": e_val})
 

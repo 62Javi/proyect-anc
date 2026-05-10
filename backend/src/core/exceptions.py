@@ -20,6 +20,11 @@ class InvalidExpressionError(FourierError):
         super().__init__(detail=f"Invalid mathematical expression: {expression}")
 
 
+class InvalidIntervalError(FourierError):
+    def __init__(self, start: str, end: str):
+        super().__init__(detail=f"El límite inferior ({start}) debe ser menor que el límite superior ({end})")
+
+
 class NonIntegrableError(FourierError):
     def __init__(self, expression: str):
         super().__init__(

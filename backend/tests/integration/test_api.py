@@ -30,3 +30,14 @@ def test_calculate_endpoint_invalid_harmonics():
     }
     response = client.post("/api/calculate", json=payload)
     assert response.status_code == 422
+
+
+def test_calculate_endpoint_invalid_interval():
+    payload = {
+        "functions": [{"expression": "x", "start": "0", "end": "-5"}],
+        "harmonics": 10,
+        "points": 100,
+    }
+    response = client.post("/api/calculate", json=payload)
+    assert response.status_code == 400
+    assert "El límite inferior" in response.json()["detail"]
