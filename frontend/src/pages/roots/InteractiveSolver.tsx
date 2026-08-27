@@ -1,0 +1,384 @@
+import React, { useState, useEffect } from 'react';
+import {
+  calculateNewtonRoot,
+  calculateFixedPointRoot,
+  type NewtonResponse,
+  type FixedPointResponse,
+} from '../../services/api';
+import FormulaDisplay from '../../components/FormulaDisplay';
+import NewtonInteractivePlot from '../../components/roots/NewtonInteractivePlot';
+import FixedPointInteractivePlot from '../../components/roots/FixedPointInteractivePlot';
+import RootsIterationTable from '../../components/roots/RootsIterationTable';
+import {
+  Calculator,
+  Play,
+  RotateCcw,
+  CheckCircle,
+  AlertCircle,
+  Sparkles,
+  Layers,
+} from 'lucide-react';
+
+interface InteractiveSolverProps {
+  initialConfig?: {
+    method: 'newton' | 'fixed-point';
+    expression: string;
+    x0: number;
+    tolerance: number;
+    maxIterations: number;
+  };
+}
+
+export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
+  initialConfig,
+}) => {
+  const [method, setMethod] = useState<'newton' | 'fixed-point'>(
+    initialConfig?.method || 'newton'
+  );
+  const [expression, setExpression] = useState<string>(
+    initialConfig?.expression || 'x**2 - 4*x - 45'
+  );
+  const [x0, setX0] = useState<number>(initialConfig?.x0 ?? 4.0);
+  const [tolerance, setTolerance] = useState<number>(
+    initialConfig?.tolerance ?? 1e-4
+  );
+  const [maxIterations, setMaxIterations] = useState<number>(
+    initialConfig?.maxIterations ?? 20
+  );
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [newtonResult, setNewtonResult] = useState<NewtonResponse | null>(null);
+  const [fixedPointResult, setFixedPointResult] =
+    useState<FixedPointResponse | null>(null);
+  const [activeStep, setActiveStep] = useState<number | undefined>(undefined);
+
+  // Sync with prop changes if triggered from exercises
+  useEffect(() => {
+    if (initialConfig) {
+      setMethod(initialConfig.method);
+      setExpression(initialConfig.expression);
+      setX0(initialConfig.x0);
+      setTolerance(initialConfig.tolerance);
+      setMaxIterations(initialConfig.maxIterations);
+      handleCalculateWith(
+        initialConfig.method,
+        initialConfig.expression,
+        initialConfig.x0,
+        initialConfig.tolerance,
+        initialConfig.maxIterations
+      );
+    }
+  }, [initialConfig]);
+
+  const handleCalculateWith = async (
+    curMethod: 'newton' | 'fixed-point',
+    expr: string,
+    valX0: number,
+    tol: number,
+    maxIter: number
+  ) => {
+    setLoading(true);
+    setError(null);
+    setActiveStep(undefined);
+
+    try {
+      if (curMethod === 'newton') {
+        const res = await calculateNewtonRoot({
+          expression: expr,
+          x0: Number(valX0),
+          tolerance: Number(tol),
+          max_iterations: Number(maxIter),
+        });
+        setNewtonResult(res);
+        setFixedPointResult(null);
+      } else {
+        const res = await calculateFixedPointRoot({
+          g_expression: expr,
+          x0: Number(valX0),
+          tolerance: Number(tol),
+          max_iterations: Number(maxIter),
+        });
+        setFixedPointResult(res);
+        setNewtonResult(null);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Error al procesar el cálculo.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCalculate = () => {
+    handleCalculateWith(method, expression, x0, tolerance, maxIterations);
+  };
+
+  // Quick preset presets
+  const presets = [
+    {
+      name: 'TP2: x² - 4x - 45 (x₀ = 4)',
+      method: 'newton' as const,
+      expr: 'x**2 - 4*x - 45',
+      x0: 4.0,
+      tol: 1e-4,
+    },
+    {
+      name: 'TP2: x - 0.8 - 0.2·sen(x)',
+      method: 'newton' as const,
+      expr: 'x - 0.8 - 0.2*sin(x)',
+      x0: 0.7854,
+      tol: 1e-4,
+    },
+    {
+      name: 'TP2: x - cos(x) (Dottie)',
+      method: 'newton' as const,
+      expr: 'x - cos(x)',
+      x0: 0.7854,
+      tol: 1e-4,
+    },
+    {
+      name: 'Punto Fijo: g(x) = 0.8 + 0.2·sen(x)',
+      method: 'fixed-point' as const,
+      expr: '0.8 + 0.2*sin(x)',
+      x0: 0.7854,
+      tol: 1e-4,
+    },
+  ];
+
+  return (
+    <div className="space-y-8 max-w-5xl mx-auto pb-12">
+      {/* Method selector and Input form */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        {/* Method Toggle */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-100">
+              <Calculator size={20} />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Simulador Numérico de Raíces</h2>
+              <p className="text-xs text-slate-500">
+                Calcula derivadas exactas con SymPy y genera proyecciones geométricas iterativas.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 self-start sm:self-auto">
+            <button
+              onClick={() => {
+                setMethod('newton');
+                if (expression.includes('0.8 + 0.2*sin(x)')) {
+                  setExpression('x**2 - 4*x - 45');
+                }
+              }}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                method === 'newton'
+                  ? 'bg-white text-indigo-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Newton-Raphson
+            </button>
+            <button
+              onClick={() => {
+                setMethod('fixed-point');
+                if (expression.includes('x**2 - 4*x - 45')) {
+                  setExpression('0.8 + 0.2*sin(x)');
+                }
+              }}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                method === 'fixed-point'
+                  ? 'bg-white text-indigo-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Punto Fijo (x = g(x))
+            </button>
+          </div>
+        </div>
+
+        {/* Form Fields */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="sm:col-span-2 space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              {method === 'newton' ? 'Función f(x) = 0' : 'Función de iteración g(x)'}
+            </label>
+            <input
+              type="text"
+              value={expression}
+              onChange={(e) => setExpression(e.target.value)}
+              placeholder={method === 'newton' ? 'Ej: x**2 - 4*x - 45' : 'Ej: 0.8 + 0.2*sin(x)'}
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Valor Inicial (x₀)
+            </label>
+            <input
+              type="number"
+              step="any"
+              value={x0}
+              onChange={(e) => setX0(parseFloat(e.target.value) || 0)}
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Tolerancia (ε)
+            </label>
+            <select
+              value={tolerance}
+              onChange={(e) => setTolerance(parseFloat(e.target.value))}
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="1e-3">10⁻³ (0.001)</option>
+              <option value="1e-4">10⁻⁴ (0.0001)</option>
+              <option value="1e-6">10⁻⁶ (0.000001)</option>
+              <option value="1e-8">10⁻⁸</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Presets and Action buttons */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
+              Ejemplos rápidos:
+            </span>
+            {presets.map((p, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setMethod(p.method);
+                  setExpression(p.expr);
+                  setX0(p.x0);
+                  setTolerance(p.tol);
+                  handleCalculateWith(p.method, p.expr, p.x0, p.tol, maxIterations);
+                }}
+                className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 font-medium transition-colors cursor-pointer"
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={handleCalculate}
+            disabled={loading || !expression.trim()}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-bold uppercase tracking-wider shadow-md shadow-indigo-100 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+          >
+            {loading ? (
+              <span className="animate-pulse">Calculando...</span>
+            ) : (
+              <>
+                <Play size={15} />
+                <span>Calcular Raíz</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Error alert */}
+      {error && (
+        <div className="bg-rose-50 border border-rose-200 text-rose-900 p-4 rounded-2xl flex items-start gap-3 text-xs">
+          <AlertCircle className="text-rose-600 shrink-0 mt-0.5" size={16} />
+          <div>
+            <span className="font-bold block uppercase tracking-wider">Error en el cálculo:</span>
+            {error}
+          </div>
+        </div>
+      )}
+
+      {/* Result Status Banner */}
+      {(newtonResult || fixedPointResult) && (
+        <div
+          className={`p-5 sm:p-6 rounded-3xl border shadow-sm space-y-4 ${
+            (newtonResult?.converged || fixedPointResult?.converged)
+              ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+              : 'bg-amber-50/70 border-amber-200 text-amber-950'
+          }`}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              {(newtonResult?.converged || fixedPointResult?.converged) ? (
+                <CheckCircle className="text-emerald-600" size={24} />
+              ) : (
+                <AlertCircle className="text-amber-600" size={24} />
+              )}
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest block opacity-70">
+                  Resultado del Cálculo
+                </span>
+                <h3 className="text-lg sm:text-xl font-bold">
+                  {(newtonResult?.converged || fixedPointResult?.converged)
+                    ? `Raíz encontrada: ${(newtonResult?.root ?? fixedPointResult?.root)?.toFixed(6)}`
+                    : 'No se alcanzó convergencia'}
+                </h3>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-bold px-3 py-1.5 rounded-xl bg-white/80 border border-slate-200/60 shadow-xs">
+                {(newtonResult?.iterations_count ?? fixedPointResult?.iterations_count)} iteraciones
+              </span>
+            </div>
+          </div>
+
+          <p className="text-xs sm:text-sm leading-relaxed opacity-90">
+            {newtonResult?.message || fixedPointResult?.message}
+          </p>
+
+          {/* Formulas Render */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {newtonResult && (
+              <>
+                <FormulaDisplay label="f(x)" formula={newtonResult.latex_f} />
+                <FormulaDisplay label="f'(x)" formula={newtonResult.latex_f_prime} />
+              </>
+            )}
+            {fixedPointResult && (
+              <>
+                <FormulaDisplay label="g(x)" formula={fixedPointResult.latex_g} />
+                <FormulaDisplay label="g'(x)" formula={fixedPointResult.latex_g_prime} />
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Interactive Plots */}
+      {newtonResult && (
+        <NewtonInteractivePlot
+          plotData={newtonResult.plot_data}
+          root={newtonResult.root}
+        />
+      )}
+
+      {fixedPointResult && (
+        <FixedPointInteractivePlot
+          plotData={fixedPointResult.plot_data}
+          steps={fixedPointResult.steps}
+          root={fixedPointResult.root}
+          kConstantEst={fixedPointResult.k_constant_est}
+        />
+      )}
+
+      {/* Steps Table */}
+      {(newtonResult || fixedPointResult) && (
+        <RootsIterationTable
+          type={method}
+          newtonSteps={newtonResult?.steps}
+          fixedPointSteps={fixedPointResult?.steps}
+          activeStep={activeStep}
+          onSelectStep={(st) => setActiveStep(st)}
+        />
+      )}
+    </div>
+  );
+};
+export default InteractiveSolver;

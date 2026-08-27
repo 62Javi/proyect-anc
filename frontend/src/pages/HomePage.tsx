@@ -36,12 +36,12 @@ export default function HomePage() {
       tag: 'Procesamiento de Señales'
     },
     {
-      title: 'Métodos Numéricos',
-      description: 'Solución numérica de ecuaciones y sistemas complejos.',
+      title: 'Cálculo de Raíces',
+      description: 'Métodos de Newton-Raphson y Punto Fijo para ecuaciones no lineales continuas con diagramas de tangentes y telaraña.',
       icon: <Beaker size={24} />,
-      path: '#',
-      ready: false,
-      tag: 'Próximamente'
+      path: '/roots',
+      ready: true,
+      tag: 'Análisis Numérico'
     },
   ];
 

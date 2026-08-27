@@ -2,14 +2,25 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from src.core.fourier import FourierSeriesCalculator
 from src.core.harmonics import HarmonicAnalyzer
+from src.core.roots import RootFindingCalculator
 from src.models.fourier import FourierRequest, FourierResponse
 from src.models.harmonics import AudioAnalysisResponse
+from src.models.roots import (
+    FixedPointRequest,
+    FixedPointResponse,
+    NewtonRequest,
+    NewtonResponse,
+)
 
 router = APIRouter()
 harmonics_analyzer = HarmonicAnalyzer()
+root_calculator = RootFindingCalculator()
 
 def get_calculator():
     return FourierSeriesCalculator()
+
+def get_root_calculator():
+    return root_calculator
 
 @router.post("/calculate", response_model=FourierResponse)
 def calculate(
@@ -53,3 +64,24 @@ async def analyze_audio(file: UploadFile = File(...)):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error analyzing audio: {str(e)}")
+
+
+@router.post("/roots/newton", response_model=NewtonResponse)
+def calculate_newton_root(
+    request: NewtonRequest, calc: RootFindingCalculator = Depends(get_root_calculator)
+):
+    try:
+        return calc.calculate_newton(request)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/roots/fixed-point", response_model=FixedPointResponse)
+def calculate_fixed_point_root(
+    request: FixedPointRequest, calc: RootFindingCalculator = Depends(get_root_calculator)
+):
+    try:
+        return calc.calculate_fixed_point(request)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+

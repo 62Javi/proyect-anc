@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import FourierPage from './pages/FourierPage';
 import HarmonicAnalysisPage from './pages/HarmonicAnalysisPage';
+import RootsPage from './pages/roots/RootsPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="fourier" element={<FourierPage />} />
           <Route path="harmonics" element={<HarmonicAnalysisPage />} />
+          <Route path="roots" element={<RootsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
