@@ -3,22 +3,15 @@ import {
   Calculator,
   BookOpen,
   FileCheck2,
-  AlertTriangle,
-  HelpCircle,
   Sparkles,
-  Zap,
+  Printer,
 } from 'lucide-react';
 import InteractiveSolver from './InteractiveSolver';
-import MethodBattleSection from './MethodBattleSection';
 import TheorySection from './TheorySection';
 import ExercisesSection from './ExercisesSection';
-import FailureCasesSection from './FailureCasesSection';
-import QuizSection from './QuizSection';
 
 export const RootsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<
-    'solver' | 'battle' | 'theory' | 'exercises' | 'failures' | 'quiz'
-  >('battle');
+  const [activeTab, setActiveTab] = useState<'solver' | 'theory' | 'exercises'>('solver');
 
   const [solverConfig, setSolverConfig] = useState<{
     method: 'newton' | 'fixed-point';
@@ -40,43 +33,32 @@ export const RootsPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const tabs = [
-    {
-      id: 'battle' as const,
-      label: 'Duelo en Vivo (Newton vs Punto Fijo)',
-      icon: <Zap size={17} />,
-    },
     {
       id: 'solver' as const,
       label: 'Simulador Interactivo',
-      icon: <Calculator size={17} />,
+      icon: <Calculator size={18} />,
     },
     {
       id: 'theory' as const,
       label: 'Teoría & Teoremas',
-      icon: <BookOpen size={17} />,
+      icon: <BookOpen size={18} />,
     },
     {
       id: 'exercises' as const,
-      label: 'Ejercicios TP2 (Cátedra)',
-      icon: <FileCheck2 size={17} />,
-    },
-    {
-      id: 'failures' as const,
-      label: 'Casos de Fallo & Sabotaje',
-      icon: <AlertTriangle size={17} />,
-    },
-    {
-      id: 'quiz' as const,
-      label: 'Dinámica de Clase (Quiz)',
-      icon: <HelpCircle size={17} />,
+      label: 'Ejercicios Resueltos (TP2)',
+      icon: <FileCheck2 size={18} />,
     },
   ];
 
   return (
     <div className="min-h-full bg-slate-50/50 p-4 sm:p-8 lg:p-12 flex flex-col">
       {/* Top Banner Header */}
-      <div className="max-w-5xl mx-auto w-full space-y-6 mb-8">
+      <div className="max-w-5xl mx-auto w-full space-y-6 mb-8 print:hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
@@ -95,7 +77,15 @@ export const RootsPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl text-xs font-bold transition-all hover:scale-105 active:scale-95 border border-slate-200 cursor-pointer"
+              title="Imprimir o guardar la guía en PDF"
+            >
+              <Printer size={16} />
+              <span>Descargar / Imprimir PDF</span>
+            </button>
             <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-lg shadow-slate-200">
               <Sparkles size={24} />
             </div>
@@ -110,7 +100,7 @@ export const RootsPage: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
@@ -126,7 +116,6 @@ export const RootsPage: React.FC = () => {
 
       {/* Tab Contents */}
       <div className="max-w-5xl mx-auto w-full flex-1">
-        {activeTab === 'battle' && <MethodBattleSection />}
         {activeTab === 'solver' && (
           <InteractiveSolver initialConfig={solverConfig} />
         )}
@@ -134,10 +123,6 @@ export const RootsPage: React.FC = () => {
         {activeTab === 'exercises' && (
           <ExercisesSection onLoadExercise={handleLoadExerciseOrCase} />
         )}
-        {activeTab === 'failures' && (
-          <FailureCasesSection onLoadExample={handleLoadExerciseOrCase} />
-        )}
-        {activeTab === 'quiz' && <QuizSection />}
       </div>
     </div>
   );

@@ -1,11 +1,36 @@
 import React from 'react';
 import FormulaDisplay from '../../components/FormulaDisplay';
 import InlineMath from '../../components/InlineMath';
-import { BookOpen, CheckCircle, AlertTriangle, Sparkles, FileText } from 'lucide-react';
+import { BookOpen, CheckCircle, AlertTriangle, Sparkles, FileText, Printer } from 'lucide-react';
 
 export const TheorySection: React.FC = () => {
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="space-y-10 max-w-5xl mx-auto pb-16">
+      {/* Top Banner with PDF Print Action */}
+      <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-slate-200 print:hidden">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-800 px-3 py-1 rounded-full">
+            Material de Estudio & Resumen
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black">Guía Teórica de Análisis Numérico</h2>
+          <p className="text-xs sm:text-sm text-slate-300">
+            Descarga o imprime este documento en PDF con todos los teoremas, fórmulas y deducciones paso a paso.
+          </p>
+        </div>
+
+        <button
+          onClick={handlePrint}
+          className="flex items-center justify-center gap-2.5 px-6 py-3.5 bg-white text-slate-900 hover:bg-slate-100 rounded-2xl text-xs font-black uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+        >
+          <Printer size={16} />
+          <span>Descargar / Imprimir PDF</span>
+        </button>
+      </div>
+
       {/* Introduction Card */}
       <section className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center gap-3 text-slate-900">
@@ -95,17 +120,17 @@ export const TheorySection: React.FC = () => {
         {/* Newton as Fixed Point */}
         <div className="p-6 bg-slate-900 text-white rounded-2xl space-y-3">
           <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
-            <Sparkles size={16} /> Teorema Clave de la Cátedra
+            <Sparkles size={16} /> Demostración Fundamental
           </div>
           <h4 className="text-base sm:text-lg font-black">¿Por qué Newton es el Punto Fijo Óptimo?</h4>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            El Método de Newton es en realidad un caso particular de Punto Fijo donde la función de iteración se define como:
+            El Método de Newton es un caso especial de Punto Fijo con la función de iteración:
           </p>
           <div className="bg-slate-800 p-2 rounded-xl text-white">
             <FormulaDisplay label="g(x) de Newton" formula="g(x) = x - \frac{f(x)}{f'(x)}" />
           </div>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Al derivar esta <InlineMath math="g(x)" />, obtenemos <InlineMath math="g'(x) = 1 - \frac{[f'(x)]^2 - f(x)f''(x)}{[f'(x)]^2} = \frac{f(x)f''(x)}{[f'(x)]^2}" />. En la raíz <InlineMath math="p" />, como <InlineMath math="f(p) = 0" />, se anula la derivada: <strong><InlineMath math="g'(p) = 0" /></strong>. Esta es la razón matemática por la cual Newton converge con velocidad <strong>cuadrática</strong> mientras que el punto fijo común solo alcanza velocidad <strong>lineal</strong>.
+            Al derivar esta <InlineMath math="g(x)" />, obtenemos <InlineMath math="g'(x) = \frac{f(x)f''(x)}{[f'(x)]^2}" />. En la raíz <InlineMath math="p" />, dado que <InlineMath math="f(p) = 0" />, se cumple exactamente <strong><InlineMath math="g'(p) = 0" /></strong>. Esta anulación de la derivada en la raíz es lo que le otorga su velocidad <strong>cuadrática</strong>.
           </p>
         </div>
       </section>
@@ -194,7 +219,7 @@ export const TheorySection: React.FC = () => {
             <ul className="space-y-2 text-slate-700 list-disc list-inside">
               <li>Convergencia extraordinariamente rápida (orden cuadrático).</li>
               <li>Solo requiere un valor inicial <InlineMath math="x_0" /> en vez de un intervalo acotado.</li>
-              <li>Excelente para ingeniería donde se requieren tolerancias estrictas (<InlineMath math="10^{-6}" />).</li>
+              <li>Ideal para ingeniería donde se requieren tolerancias estrictas (<InlineMath math="10^{-6}" />).</li>
             </ul>
           </div>
 
@@ -211,15 +236,20 @@ export const TheorySection: React.FC = () => {
         </div>
       </section>
 
-      {/* References */}
-      <footer className="p-6 bg-slate-100 rounded-3xl text-xs text-slate-500 space-y-2 border border-slate-200">
-        <h4 className="font-bold uppercase tracking-wider text-slate-700">Bibliografía y Referencias de Cátedra</h4>
-        <ul className="list-disc list-inside space-y-1">
-          <li>Guía de Trabajos Prácticos Nº 2: Cálculo de Raíces de Ecuaciones No Lineales.</li>
-          <li>Burden, R. L., & Faires, J. D. <em>Análisis Numérico</em> (9ª Edición). Cengage Learning.</li>
-          <li>Chapra, S. C., & Canale, R. P. <em>Métodos Numéricos para Ingenieros</em> (7ª Edición). McGraw-Hill.</li>
-        </ul>
-      </footer>
+      {/* Print PDF Footer */}
+      <div className="p-6 bg-slate-100 rounded-3xl text-center space-y-3 border border-slate-200 print:hidden">
+        <h4 className="font-black text-slate-900 text-sm uppercase tracking-wider">¿Deseas llevarte esta teoría en PDF?</h4>
+        <p className="text-xs text-slate-600 max-w-md mx-auto">
+          Pulsa el botón para generar el archivo imprimible con todos los teoremas y esquemas listos.
+        </p>
+        <button
+          onClick={handlePrint}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
+        >
+          <Printer size={15} />
+          <span>Generar PDF Imprimible</span>
+        </button>
+      </div>
     </div>
   );
 };
