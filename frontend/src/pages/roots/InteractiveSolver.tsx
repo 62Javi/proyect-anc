@@ -176,8 +176,9 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
             <button
               onClick={() => {
                 setMethod('newton');
-                if (expression.includes('0.8 + 0.2*sin(x)')) {
+                if (expression === '0.8 + 0.2*sin(x)' || expression === 'cos(x)') {
                   setExpression('x**2 - 4*x - 45');
+                  setX0(4.0);
                 }
               }}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
@@ -191,8 +192,9 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
             <button
               onClick={() => {
                 setMethod('fixed-point');
-                if (expression.includes('x**2 - 4*x - 45')) {
+                if (expression.includes('x**2') || expression.includes('exp(-1.5')) {
                   setExpression('0.8 + 0.2*sin(x)');
+                  setX0(0.7854);
                 }
               }}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
@@ -360,6 +362,16 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
               </>
             )}
           </div>
+
+          {/* Educational Divergence Note */}
+          {fixedPointResult && !fixedPointResult.converged && (
+            <div className="bg-amber-100/80 border border-amber-300/80 rounded-2xl p-3.5 text-xs text-amber-950 space-y-1">
+              <strong>💡 ¿Por qué no converge este despeje?</strong>
+              <p className="leading-relaxed">
+                Según el <strong>Teorema de Punto Fijo</strong>, la sucesión solo converge si la derivada cumple <InlineMath math="|g'(x)| < 1" /> cerca del punto. Con esta función, la derivada vale <InlineMath math="|g'(4)| = 4 \ge 1" />, por lo que cada paso se aleja más y los números explotan rápidamente.
+              </p>
+            </div>
+          )}
         </div>
       )}
 
