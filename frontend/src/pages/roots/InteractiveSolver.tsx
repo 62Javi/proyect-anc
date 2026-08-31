@@ -116,6 +116,14 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
   // Presets formatted with clean math
   const presets = [
     {
+      name: 'TP2 Ej. 9: Bacterias Río',
+      math: '70 e^{-1.5x} + 25 e^{-0.075x} - 9',
+      method: 'newton' as const,
+      expr: '70*exp(-1.5*x) + 25*exp(-0.075*x) - 9',
+      x0: 1.0,
+      tol: 1e-4,
+    },
+    {
       name: 'x² - 4x - 45',
       math: 'x^2 - 4x - 45',
       method: 'newton' as const,
