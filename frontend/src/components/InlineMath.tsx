@@ -33,7 +33,7 @@ export const InlineMath: React.FC<InlineMathProps> = ({ math, className = '', bl
     }
   }, [math, block]);
 
-  return <span ref={spanRef} className={`inline-block ${className}`} />;
+  return <span ref={spanRef} className={`inline whitespace-nowrap align-baseline px-0.5 ${className}`} />;
 };
 
 export default InlineMath;

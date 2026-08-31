@@ -47,7 +47,7 @@ export const TheorySection: React.FC = () => {
         </p>
         <FormulaDisplay formula="f(r) = 0" />
         <p className="text-slate-600 text-sm leading-relaxed">
-          Cuando las ecuaciones son no lineales o trascendentes (por ejemplo <InlineMath math="x = \cos(x)" /> o <InlineMath math="e^x + 2x = 6" />), no existen fórmulas analíticas cerradas. Por ello, recurrimos a <strong>métodos numéricos iterativos</strong> que construyen una sucesión de aproximaciones <InlineMath math="\{x_n\}" /> que converge a la raíz buscada.
+          Cuando las ecuaciones son no lineales o trascendentes (por ejemplo <InlineMath math="x - \cos(x) = 0" /> o <InlineMath math="e^x + 2x - 6 = 0" />), no existen fórmulas analíticas cerradas. Por ello, recurrimos a <strong>métodos numéricos iterativos</strong> que construyen una sucesión de aproximaciones <InlineMath math="\{x_n\}" /> que converge a la raíz buscada.
         </p>
       </section>
 
