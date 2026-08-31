@@ -85,7 +85,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
             Visualización Geométrica: Rectas Tangentes
           </h3>
           <p className="text-xs text-slate-500">
-            Paso a paso de la linealización <span className="font-mono text-indigo-600">Lₙ(x)</span> e intersección con el eje <span className="font-mono">y = 0</span>.
+            Paso a paso de la linealización <span className="font-mono text-slate-900 font-bold">Lₙ(x)</span> e intersección con el eje <span className="font-mono">y = 0</span>.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
           <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded-lg bg-white shadow-xs border border-slate-200 text-slate-700 hover:text-indigo-600 transition-colors"
+              className="p-1.5 rounded-lg bg-white shadow-xs border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors"
               title={isPlaying ? 'Pausar animación' : 'Reproducir animación'}
             >
               {isPlaying ? <Pause size={15} /> : <Play size={15} />}
@@ -143,7 +143,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
 
       {/* Step Detail Pill */}
       {activeTangent && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
           <div>
             <span className="text-slate-500 block text-[10px] uppercase font-bold">Punto actual xₙ</span>
             <span className="font-mono font-bold text-slate-900">{activeTangent.x_point.toFixed(5)}</span>
@@ -154,7 +154,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
           </div>
           <div>
             <span className="text-slate-500 block text-[10px] uppercase font-bold">Pendiente f'(xₙ)</span>
-            <span className="font-mono font-bold text-indigo-700">{activeTangent.slope.toFixed(5)}</span>
+            <span className="font-mono font-bold text-slate-900">{activeTangent.slope.toFixed(5)}</span>
           </div>
           <div>
             <span className="text-slate-500 block text-[10px] uppercase font-bold">Próximo xₙ₊₁</span>
@@ -200,11 +200,11 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
             {activeTangent && (
               <ReferenceLine
                 x={Number(activeTangent.x_point.toFixed(4))}
-                stroke="#6366F1"
+                stroke="#0F172A"
                 strokeDasharray="4 4"
                 label={{
                   value: `xₙ=${activeTangent.x_point.toFixed(3)}`,
-                  fill: '#4F46E5',
+                  fill: '#0F172A',
                   fontSize: 10,
                   position: 'top',
                 }}
@@ -258,7 +258,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
                 type="linear"
                 dataKey="tangente"
                 name={`Tangente (Paso ${currentStepIndex + 1})`}
-                stroke="#6366F1"
+                stroke="#475569"
                 strokeWidth={2}
                 dot={false}
                 strokeDasharray="3 2"
@@ -276,7 +276,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
           <span>Curva f(x)</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-indigo-500 rounded-full border-b border-dashed" />
+          <span className="w-3 h-0.5 bg-slate-600 rounded-full border-b border-dashed" />
           <span>Recta Tangente Lₙ(x)</span>
         </div>
         <div className="flex items-center gap-1.5">

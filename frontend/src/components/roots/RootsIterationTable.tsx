@@ -27,13 +27,13 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
       <div className="p-4 sm:p-5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
         <div>
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-            Tabla de Iteraciones ({type === 'newton' ? 'Newton-Raphson' : 'Punto Fijo'})
+            Tabla de Iteraciones ({type === 'newton' ? 'Método de Newton' : 'Punto Fijo'})
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Evolución paso a paso del valor de aproximación y cálculo de error.
           </p>
         </div>
-        <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100">
+        <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-800 rounded-full border border-slate-200">
           {steps.length} {steps.length === 1 ? 'iteración' : 'iteraciones'}
         </span>
       </div>
@@ -52,7 +52,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
               ) : (
                 <th className="py-3 px-4">g(xₙ)</th>
               )}
-              <th className="py-3 px-4 font-semibold text-indigo-700">xₙ₊₁</th>
+              <th className="py-3 px-4 font-semibold text-slate-900">xₙ₊₁</th>
               <th className="py-3 px-4">|xₙ₊₁ - xₙ|</th>
               <th className="py-3 px-4">Error Rel.</th>
             </tr>
@@ -67,7 +67,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                       onClick={() => onSelectStep && onSelectStep(step.iteration)}
                       className={`transition-colors cursor-pointer ${
                         isSelected
-                          ? 'bg-indigo-50/90 font-bold text-indigo-950'
+                          ? 'bg-slate-100 font-bold text-slate-950'
                           : 'hover:bg-slate-50'
                       }`}
                     >
@@ -77,7 +77,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                       <td className="py-2.5 px-4 text-slate-900">{step.xn.toFixed(6)}</td>
                       <td className="py-2.5 px-4 text-slate-600">{step.fxn.toFixed(6)}</td>
                       <td className="py-2.5 px-4 text-slate-600">{step.f_prime_xn.toFixed(6)}</td>
-                      <td className="py-2.5 px-4 text-indigo-700 font-bold bg-indigo-50/30">
+                      <td className="py-2.5 px-4 text-slate-900 font-bold bg-slate-50/70">
                         {step.xn_plus_1.toFixed(6)}
                       </td>
                       <td className="py-2.5 px-4 text-amber-700 font-medium">
@@ -103,7 +103,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                       onClick={() => onSelectStep && onSelectStep(step.iteration)}
                       className={`transition-colors cursor-pointer ${
                         isSelected
-                          ? 'bg-indigo-50/90 font-bold text-indigo-950'
+                          ? 'bg-slate-100 font-bold text-slate-950'
                           : 'hover:bg-slate-50'
                       }`}
                     >
@@ -112,7 +112,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                       </td>
                       <td className="py-2.5 px-4 text-slate-900">{step.xn.toFixed(6)}</td>
                       <td className="py-2.5 px-4 text-slate-600">{step.gxn.toFixed(6)}</td>
-                      <td className="py-2.5 px-4 text-indigo-700 font-bold bg-indigo-50/30">
+                      <td className="py-2.5 px-4 text-slate-900 font-bold bg-slate-50/70">
                         {step.xn_plus_1.toFixed(6)}
                       </td>
                       <td className="py-2.5 px-4 text-amber-700 font-medium">

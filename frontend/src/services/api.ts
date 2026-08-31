@@ -104,7 +104,7 @@ export const analyzeAudio = async (file: File): Promise<AudioAnalysisResponse> =
   }
 };
 
-// --- Numerical Methods: Root Finding (Newton-Raphson & Fixed Point) ---
+// --- Numerical Methods: Root Finding (Newton & Fixed Point) ---
 
 export interface NewtonRequest {
   expression: string;
@@ -194,7 +194,7 @@ export const calculateNewtonRoot = async (request: NewtonRequest): Promise<Newto
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.detail || 'Error al calcular por Newton-Raphson');
+      throw new Error(error.response.data.detail || 'Error al calcular por el método de Newton');
     }
     throw new Error('Error de conexión con el servidor');
   }

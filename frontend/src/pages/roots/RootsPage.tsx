@@ -6,8 +6,10 @@ import {
   AlertTriangle,
   HelpCircle,
   Sparkles,
+  Zap,
 } from 'lucide-react';
 import InteractiveSolver from './InteractiveSolver';
+import MethodBattleSection from './MethodBattleSection';
 import TheorySection from './TheorySection';
 import ExercisesSection from './ExercisesSection';
 import FailureCasesSection from './FailureCasesSection';
@@ -15,8 +17,8 @@ import QuizSection from './QuizSection';
 
 export const RootsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    'solver' | 'theory' | 'exercises' | 'failures' | 'quiz'
-  >('solver');
+    'solver' | 'battle' | 'theory' | 'exercises' | 'failures' | 'quiz'
+  >('battle');
 
   const [solverConfig, setSolverConfig] = useState<{
     method: 'newton' | 'fixed-point';
@@ -40,6 +42,11 @@ export const RootsPage: React.FC = () => {
 
   const tabs = [
     {
+      id: 'battle' as const,
+      label: 'Duelo en Vivo (Newton vs Punto Fijo)',
+      icon: <Zap size={17} />,
+    },
+    {
       id: 'solver' as const,
       label: 'Simulador Interactivo',
       icon: <Calculator size={17} />,
@@ -51,12 +58,12 @@ export const RootsPage: React.FC = () => {
     },
     {
       id: 'exercises' as const,
-      label: 'Ejercicios TP2 Amiconi',
+      label: 'Ejercicios TP2 (Cátedra)',
       icon: <FileCheck2 size={17} />,
     },
     {
       id: 'failures' as const,
-      label: 'Casos de Fallo',
+      label: 'Casos de Fallo & Sabotaje',
       icon: <AlertTriangle size={17} />,
     },
     {
@@ -73,7 +80,7 @@ export const RootsPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                 Grupo 1 • Análisis Numérico
               </span>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -81,15 +88,15 @@ export const RootsPage: React.FC = () => {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              Método de Newton-Raphson & Punto Fijo
+              Método de Newton & Punto Fijo
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm max-w-2xl font-medium">
-              Plataforma interactiva para el cálculo de raíces no lineales, teoremas de convergencia de Amiconi, visualización geométrica de tangentes y diagramas de telaraña.
+              Plataforma interactiva para el cálculo de raíces no lineales, teoremas de convergencia de la cátedra, visualización geométrica de tangentes y diagramas de telaraña.
             </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
+            <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-lg shadow-slate-200">
               <Sparkles size={24} />
             </div>
           </div>
@@ -105,7 +112,7 @@ export const RootsPage: React.FC = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-white text-indigo-700 shadow-sm'
+                    ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
@@ -119,6 +126,7 @@ export const RootsPage: React.FC = () => {
 
       {/* Tab Contents */}
       <div className="max-w-5xl mx-auto w-full flex-1">
+        {activeTab === 'battle' && <MethodBattleSection />}
         {activeTab === 'solver' && (
           <InteractiveSolver initialConfig={solverConfig} />
         )}

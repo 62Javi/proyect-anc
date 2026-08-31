@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, Check, X, HelpCircle as QuestionIcon, Award } from 'lucide-react';
+import { Check, X, HelpCircle as QuestionIcon, Award } from 'lucide-react';
 
 interface Question {
   id: number;
@@ -42,7 +42,7 @@ export const QuizSection: React.FC = () => {
     },
     {
       id: 3,
-      question: '3. Según el Teorema 1 de Punto Fijo (Amiconi), ¿qué condición garantiza que el punto fijo en [a, b] sea ÚNICO?',
+      question: '3. Según el Teorema 1 de Punto Fijo de la cátedra, ¿qué condición garantiza que el punto fijo en [a, b] sea ÚNICO?',
       options: [
         'Que f(a) y f(b) tengan signos opuestos.',
         'Que la función g(x) sea un polinomio de grado par.',
@@ -96,7 +96,7 @@ export const QuizSection: React.FC = () => {
       {/* Header */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-indigo-600 mb-1">
+          <div className="flex items-center gap-2 text-slate-900 mb-1">
             <QuestionIcon size={22} />
             <h2 className="text-xl font-bold text-slate-900">Dinámica de Clase: Preguntas y Preguntas Rápidas</h2>
           </div>
@@ -106,9 +106,9 @@ export const QuizSection: React.FC = () => {
         </div>
 
         {totalAnswered > 0 && (
-          <div className="flex items-center gap-2 bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-100 shrink-0">
-            <Award className="text-indigo-600" size={20} />
-            <span className="text-xs font-bold text-indigo-950">
+          <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200 shrink-0">
+            <Award className="text-slate-900" size={20} />
+            <span className="text-xs font-bold text-slate-900">
               Puntaje: {totalCorrect} / {questions.length}
             </span>
           </div>
@@ -134,7 +134,7 @@ export const QuizSection: React.FC = () => {
               <div className="space-y-2">
                 {q.options.map((opt, optIdx) => {
                   let btnStyle =
-                    'border-slate-200 hover:border-indigo-300 hover:bg-slate-50 text-slate-700';
+                    'border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-slate-700';
 
                   if (isAnswered) {
                     if (optIdx === q.correctIndex) {
@@ -171,7 +171,7 @@ export const QuizSection: React.FC = () => {
                   className={`p-4 rounded-2xl border text-xs leading-relaxed transition-all ${
                     isCorrect
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-                      : 'bg-indigo-50 border-indigo-200 text-indigo-900'
+                      : 'bg-slate-100 border-slate-200 text-slate-800'
                   }`}
                 >
                   <span className="font-bold block mb-1 uppercase text-[10px] tracking-wider">

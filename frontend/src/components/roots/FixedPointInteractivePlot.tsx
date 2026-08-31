@@ -78,7 +78,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
             Diagrama de Telaraña (Cobweb Plot)
           </h3>
           <p className="text-xs text-slate-500">
-            Intersección entre <span className="font-mono text-indigo-600">y = g(x)</span> y la recta identidad <span className="font-mono text-slate-700">y = x</span>.
+            Intersección entre <span className="font-mono text-slate-900 font-bold">y = g(x)</span> y la recta identidad <span className="font-mono text-slate-700">y = x</span>.
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
           <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded-lg bg-white shadow-xs border border-slate-200 text-slate-700 hover:text-indigo-600 transition-colors"
+              className="p-1.5 rounded-lg bg-white shadow-xs border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors"
               title={isPlaying ? 'Pausar animación' : 'Reproducir animación'}
             >
               {isPlaying ? <Pause size={15} /> : <Play size={15} />}
@@ -135,7 +135,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
       </div>
 
       {/* Step and Convergence Indicator */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
         {activeStep && (
           <>
             <div>
@@ -144,7 +144,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
             </div>
             <div>
               <span className="text-slate-500 block text-[10px] uppercase font-bold">g(xₙ) = xₙ₊₁</span>
-              <span className="font-mono font-bold text-indigo-700">{activeStep.gxn.toFixed(5)}</span>
+              <span className="font-mono font-bold text-slate-900">{activeStep.gxn.toFixed(5)}</span>
             </div>
           </>
         )}
@@ -205,11 +205,11 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
             {activeStep && (
               <ReferenceLine
                 x={Number(activeStep.xn.toFixed(4))}
-                stroke="#6366F1"
+                stroke="#0F172A"
                 strokeDasharray="4 4"
                 label={{
                   value: `xₙ=${activeStep.xn.toFixed(3)}`,
-                  fill: '#4F46E5',
+                  fill: '#0F172A',
                   fontSize: 10,
                   position: 'top',
                 }}
@@ -248,7 +248,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
               type="monotone"
               dataKey="g_x"
               name="g(x)"
-              stroke="#6366F1"
+              stroke="#0F172A"
               strokeWidth={2.4}
               dot={false}
               isAnimationActive={false}
@@ -260,7 +260,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
       {/* Legend */}
       <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-slate-600 pt-2 border-t border-slate-100">
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-indigo-600 rounded-full" />
+          <span className="w-3 h-0.5 bg-slate-900 rounded-full" />
           <span>Curva de iteración y = g(x)</span>
         </div>
         <div className="flex items-center gap-1.5">

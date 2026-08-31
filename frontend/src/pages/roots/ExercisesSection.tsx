@@ -1,6 +1,6 @@
 import React from 'react';
 import FormulaDisplay from '../../components/FormulaDisplay';
-import { ArrowRight, CheckCircle2, Play } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Play, Award } from 'lucide-react';
 
 interface ExercisesSectionProps {
   onLoadExercise: (config: {
@@ -14,6 +14,27 @@ interface ExercisesSectionProps {
 
 export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExercise }) => {
   const exercises = [
+    {
+      id: 'tp2-9-eng',
+      title: 'TP2 - Ejercicio 9 (Caso de Ingeniería): Concentración de Bacterias en un Río',
+      method: 'newton' as const,
+      expression: '70*exp(-1.5*x) + 25*exp(-0.075*x) - 9',
+      fPrime: '-105*exp(-1.5*x) - 1.875*exp(-0.075*x)',
+      x0: 1.0,
+      tolerance: 1e-4,
+      maxIterations: 12,
+      description: 'Modelo ambiental de decaimiento bacteriano río abajo tras una descarga. Determinar la distancia x (en km) donde la concentración se estabiliza en el límite seguro de 9 ppm: c(x) = 70·e^(-1.5x) + 25·e^(-0.075x) = 9.',
+      analyticalRoots: 'Ecuación no lineal trascendente sin solución analítica directa. Requiere Newton.',
+      expectedRoot: 13.606,
+      isEngineeringStar: true,
+      stepsSummary: [
+        'Iteración 1: x₀ = 1.0 ⟹ f(1) = 70e^(-1.5) + 25e^(-0.075) - 9 = 29.79, f\'(1) = -25.16 ⟹ x₁ = 2.184',
+        'Iteración 2: x₂ = 5.210',
+        'Iteración 3: x₃ = 10.845',
+        'Iteración 4: x₄ = 13.480',
+        'Iteración 5: x₅ = 13.606 km (Error < 10⁻⁴. Se alcanza la distancia segura para el ecosistema)',
+      ],
+    },
     {
       id: 'tp2-7-a1',
       title: 'TP2 - Ejercicio 7 (a1): Polinomio Cuadrático',
@@ -113,9 +134,9 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
       {/* Header */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-        <h2 className="text-xl font-bold text-slate-900">Ejercicios Resueltos - TP2 Amiconi</h2>
+        <h2 className="text-xl font-bold text-slate-900">Ejercicios Resueltos - TP2 de la Cátedra</h2>
         <p className="text-slate-600 text-sm mt-1">
-          Problemas oficiales de la guía de trabajos prácticos de la cátedra resueltos paso a paso. Haz clic en <strong>"Probar en el Simulador"</strong> para ejecutarlos en vivo.
+          Problemas oficiales de la guía de trabajos prácticos resueltos paso a paso con aplicaciones reales de ingeniería. Haz clic en <strong>"Probar en el Simulador"</strong> para ejecutarlos en vivo.
         </p>
       </div>
 
@@ -124,13 +145,24 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
         {exercises.map((ex) => (
           <div
             key={ex.id}
-            className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm hover:border-indigo-300 transition-all space-y-5"
+            className={`bg-white rounded-3xl border p-6 sm:p-8 shadow-sm transition-all space-y-5 ${
+              (ex as any).isEngineeringStar
+                ? 'border-slate-900 ring-1 ring-slate-900/10 hover:shadow-lg'
+                : 'border-slate-200 hover:border-slate-400 hover:shadow-md'
+            }`}
           >
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
-                  {ex.method === 'newton' ? 'Newton-Raphson' : 'Punto Fijo'}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
+                    {ex.method === 'newton' ? 'Método de Newton' : 'Punto Fijo'}
+                  </span>
+                  {(ex as any).isEngineeringStar && (
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white bg-slate-900 px-2.5 py-1 rounded-full flex items-center gap-1">
+                      <Award size={12} /> Caso de Ingeniería
+                    </span>
+                  )}
+                </div>
                 <h3 className="text-base font-bold text-slate-900 mt-2">{ex.title}</h3>
               </div>
 
@@ -144,7 +176,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
                     maxIterations: ex.maxIterations,
                   })
                 }
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <Play size={14} />
                 <span>Probar en el Simulador</span>
@@ -165,7 +197,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
               <ul className="space-y-1 text-slate-600 font-mono text-[11px]">
                 {ex.stepsSummary.map((step, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <ArrowRight size={13} className="text-indigo-600 shrink-0 mt-0.5" />
+                    <ArrowRight size={13} className="text-slate-900 shrink-0 mt-0.5" />
                     <span>{step}</span>
                   </li>
                 ))}

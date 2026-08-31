@@ -4,7 +4,7 @@ import type { FourierResponse, FunctionInterval } from '../services/api';
 import FourierChart from '../components/FourierChart';
 import FormulaDisplay from '../components/FormulaDisplay';
 import UnifiedMathInput from '../components/UnifiedMathInput';
-import { Calculator, Trash2, Activity, Sliders, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { Calculator, Trash2, Sigma, Sliders, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 
 interface FunctionWithId extends FunctionInterval {
   id: string;
@@ -26,7 +26,7 @@ const IntervalItem = memo(({
   return (
     <div className="bg-slate-50 border border-slate-200 rounded-[24px] p-5 space-y-4 shadow-sm">
       <div className="flex items-center justify-between">
-        <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-full">Tramo {idx + 1}</span>
+        <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded-full">Tramo {idx + 1}</span>
         {isRemovable && (
           <button onClick={() => onRemove(fn.id)} className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
             <Trash2 size={14} />
@@ -210,14 +210,14 @@ function FourierPage() {
       <aside className="w-full lg:w-[420px] bg-white border-b lg:border-r border-slate-200 p-6 flex flex-col gap-6 shrink-0 relative z-20 lg:h-full lg:overflow-y-auto lg:sticky lg:top-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-200">
+            <div className="p-2 bg-slate-900 rounded-lg shadow-lg shadow-slate-200">
               <Calculator className="text-white" size={20} />
             </div>
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">Analizador de Fourier</h1>
           </div>
           <button 
             onClick={resetAll}
-            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+            className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
             title="Reiniciar"
           >
             <RotateCcw size={18} />
@@ -251,7 +251,7 @@ function FourierPage() {
                 
                 <button 
                   onClick={addInterval}
-                  className="w-full py-3 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-white hover:bg-indigo-50 rounded-xl border-2 border-dashed border-indigo-100 transition-all"
+                  className="w-full py-3 text-[10px] font-black uppercase tracking-widest text-slate-900 bg-white hover:bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 transition-all"
                 >
                   + Añadir Tramo
                 </button>
@@ -265,7 +265,7 @@ function FourierPage() {
               className="flex items-center justify-between w-full mb-0 group"
             >
               <div className="flex items-center gap-2">
-                <Sliders size={16} className="text-indigo-400" />
+                <Sliders size={16} className="text-slate-500" />
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Configuración</span>
               </div>
               {configOpen ? <ChevronUp size={14} className="text-slate-500" /> : <ChevronDown size={14} className="text-slate-500" />}
@@ -276,11 +276,11 @@ function FourierPage() {
                 <div>
                   <div className="flex justify-between items-center mb-3">
                     <label className="text-[10px] font-bold text-slate-400 uppercase">Armónicos</label>
-                    <span className="text-lg font-black text-indigo-400">{harmonics}</span>
+                    <span className="text-lg font-black text-slate-500">{harmonics}</span>
                   </div>
                   <input
                     type="range" min="1" max="50"
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-slate-900"
                     value={harmonics}
                     onChange={(e) => setHarmonics(parseInt(e.target.value))}
                   />
@@ -288,11 +288,11 @@ function FourierPage() {
                 <div>
                   <div className="flex justify-between items-center mb-3">
                     <label className="text-[10px] font-bold text-slate-400 uppercase">Periodos a Mostrar</label>
-                    <span className="text-lg font-black text-indigo-400">{periods}</span>
+                    <span className="text-lg font-black text-slate-500">{periods}</span>
                   </div>
                   <input
                     type="range" min="1" max="5"
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-slate-900"
                     value={periods}
                     onChange={(e) => setPeriods(parseInt(e.target.value))}
                   />
@@ -303,7 +303,7 @@ function FourierPage() {
                     type="number"
                     min="10"
                     max="1000"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-indigo-500 transition-all"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-slate-900 transition-all"
                     value={points}
                     onChange={(e) => {
                       const val = parseInt(e.target.value);
@@ -319,7 +319,7 @@ function FourierPage() {
                       type="number"
                       step="any"
                       placeholder="Valor de x"
-                      className="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-indigo-500 transition-all placeholder:text-slate-600"
+                      className="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-slate-900 transition-all placeholder:text-slate-600"
                       value={newPoint}
                       onChange={(e) => setNewPoint(e.target.value)}
                       onKeyDown={(e) => {
@@ -340,14 +340,14 @@ function FourierPage() {
                           setNewPoint('');
                         }
                       }}
-                      className="px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[10px] uppercase"
+                      className="px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-[10px] uppercase"
                     >
                       +
                     </button>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {convPoints.map((p, i) => (
-                      <span key={i} className="px-2 py-1 bg-slate-700 rounded-lg text-[10px] font-bold text-indigo-300 flex items-center gap-2">
+                      <span key={i} className="px-2 py-1 bg-slate-700 rounded-lg text-[10px] font-bold text-slate-900 flex items-center gap-2">
                         x={p}
                         <button onClick={() => setConvPoints(prev => prev.filter(v => v !== p))} className="hover:text-red-400 text-slate-500 text-xs">×</button>
                       </span>
@@ -363,7 +363,7 @@ function FourierPage() {
           <button
             onClick={onCalculate}
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-5 rounded-[24px] font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:opacity-50"
+            className="w-full bg-slate-900 text-white py-5 rounded-[24px] font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-slate-200 hover:bg-slate-800 active:scale-[0.98] transition-all disabled:opacity-50"
           >
             {loading ? 'Calculando...' : 'Analizar Función'}
           </button>
@@ -378,21 +378,21 @@ function FourierPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                    <Activity size={16} className="text-indigo-600 animate-pulse" />
+                    <Sigma size={16} className="text-slate-900 animate-pulse" />
                     Procesando Análisis
                   </h3>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     Calculando coeficientes y convergencia...
                   </p>
                 </div>
-                <span className="text-xl font-black text-indigo-600 tabular-nums">
+                <span className="text-xl font-black text-slate-900 tabular-nums">
                   {Math.round(progress)}%
                 </span>
               </div>
               
               <div className="h-4 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100 p-1">
                 <div 
-                  className="h-full bg-indigo-600 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
+                  className="h-full bg-slate-900 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
                   style={{ width: `${progress}%` }}
                 >
                   <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite] skew-x-[-20deg] w-1/2" />
@@ -407,11 +407,11 @@ function FourierPage() {
                   
                   return (
                     <div key={step} className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all ${
-                      isDone ? 'bg-indigo-50 border-indigo-100 text-indigo-700' : 
-                      isCurrent ? 'bg-white border-indigo-200 text-slate-600 animate-pulse' :
+                      isDone ? 'bg-slate-100 border-slate-200 text-slate-900' : 
+                      isCurrent ? 'bg-white border-slate-300 text-slate-600 animate-pulse' :
                       'bg-slate-50 border-slate-100 text-slate-300'
                     }`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${isDone ? 'bg-indigo-600' : isCurrent ? 'bg-indigo-400' : 'bg-slate-200'}`} />
+                      <div className={`w-1.5 h-1.5 rounded-full ${isDone ? 'bg-slate-900' : isCurrent ? 'bg-slate-400' : 'bg-slate-200'}`} />
                       <span className="text-[9px] font-black uppercase tracking-widest">{step}</span>
                     </div>
                   );
@@ -428,7 +428,7 @@ function FourierPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-in slide-in-from-bottom-4 duration-700">
               <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-2">Simetría</span>
-                <span className="text-2xl font-black text-indigo-600 tracking-tighter">{result.symmetry}</span>
+                <span className="text-2xl font-black text-slate-900 tracking-tighter">{result.symmetry}</span>
               </div>
               <div className="md:col-span-3 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-8">
                 <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] border-b border-slate-50 pb-4">Resultados Analíticos</div>
@@ -447,7 +447,7 @@ function FourierPage() {
             <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-8 animate-in slide-in-from-bottom-4 duration-700 delay-100">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-50 pb-4">
                 <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] flex items-center gap-2">
-                  <Activity size={14} className="text-indigo-400" />
+                  <Sigma size={14} className="text-slate-900" />
                   Tabla de Armónicos
                 </div>
                 <div className="flex items-center gap-3">
@@ -458,9 +458,9 @@ function FourierPage() {
                     max={result.harmonics.length}
                     value={Math.min(visibleHarmonics, result.harmonics.length)}
                     onChange={(e) => setVisibleHarmonics(parseInt(e.target.value))}
-                    className="w-24 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                    className="w-24 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-slate-900"
                   />
-                  <span className="text-xs font-black text-indigo-600 w-6 tabular-nums">{Math.min(visibleHarmonics, result.harmonics.length)}</span>
+                  <span className="text-xs font-black text-slate-900 w-6 tabular-nums">{Math.min(visibleHarmonics, result.harmonics.length)}</span>
                 </div>
               </div>
               
@@ -477,8 +477,8 @@ function FourierPage() {
                     {result.harmonics.slice(0, visibleHarmonics).map((harmonic, i) => (
                       <tr key={i} className={i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
                         <td className="px-4 py-3 text-sm font-bold text-slate-900">{harmonic.n}</td>
-                        <td className="px-4 py-3 text-right text-sm font-bold text-indigo-600">{harmonic.an.toFixed(6)}</td>
-                        <td className="px-4 py-3 text-right text-sm font-bold text-indigo-600">{harmonic.bn.toFixed(6)}</td>
+                        <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">{harmonic.an.toFixed(6)}</td>
+                        <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">{harmonic.bn.toFixed(6)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -490,11 +490,11 @@ function FourierPage() {
           <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-8 animate-in slide-in-from-bottom-4 duration-700 delay-150">
             <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] border-b border-slate-50 pb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Activity size={14} className="text-indigo-400" />
+                <Sigma size={14} className="text-slate-900" />
                 Teorema de Dirichlet (Convergencia)
               </div>
               {result?.convergence_results && result.convergence_results.length > 0 && (
-                <span className="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full text-[9px] font-black">
+                <span className="bg-slate-50 text-slate-900 px-2 py-0.5 rounded-full text-[9px] font-black">
                   {result.convergence_results.length} Puntos Analizados
                 </span>
               )}
@@ -503,9 +503,9 @@ function FourierPage() {
             {result?.convergence_results && result.convergence_results.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                 {result.convergence_results.map((res, i) => (
-                  <div key={i} className="bg-slate-50 p-6 rounded-[24px] border border-slate-100 shadow-sm hover:border-indigo-200 transition-all">
+                  <div key={i} className="bg-slate-50 p-6 rounded-[24px] border border-slate-100 shadow-sm hover:border-slate-300 transition-all">
                     <div className="flex justify-between items-center mb-4">
-                      <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Convergencia en x = {res.x}</div>
+                      <div className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Convergencia en x = {res.x}</div>
                       <div className="px-2 py-1 bg-white rounded-lg border border-slate-100 text-[10px] font-bold text-slate-400">Dirichlet</div>
                     </div>
                     <div className="space-y-4">
@@ -529,7 +529,7 @@ function FourierPage() {
 
           {!result && !loading && (
             <div className="flex flex-col items-center justify-center py-20 text-slate-200">
-              <Activity size={64} className="opacity-10 mb-6" />
+              <Sigma size={64} className="opacity-10 mb-6" />
               <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 text-center">Introduce una función para visualizar</p>
             </div>
           )}

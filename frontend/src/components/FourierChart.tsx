@@ -57,7 +57,7 @@ const FourierChart = ({ data }: FourierChartProps) => {
             type="monotone" 
             dataKey="aproximacion" 
             name="Fourier" 
-            stroke="#4F46E5" 
+            stroke="#0F172A" 
             strokeWidth={3} 
             dot={false} 
             activeDot={{ r: 6 }}

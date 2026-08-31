@@ -7,7 +7,7 @@ export const TheorySection: React.FC = () => {
     <div className="space-y-12 max-w-4xl mx-auto pb-12">
       {/* Introduction Card */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-        <div className="flex items-center gap-3 text-indigo-600">
+        <div className="flex items-center gap-3 text-slate-900">
           <BookOpen size={24} />
           <h2 className="text-xl font-bold text-slate-900">Fundamentos: Raíces de Funciones Continuas</h2>
         </div>
@@ -22,9 +22,9 @@ export const TheorySection: React.FC = () => {
 
       {/* Newton Method Card */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-        <div className="flex items-center gap-3 text-indigo-600 border-b border-slate-100 pb-4">
+        <div className="flex items-center gap-3 text-slate-900 border-b border-slate-100 pb-4">
           <Sparkles size={24} />
-          <h2 className="text-xl font-bold text-slate-900">1. Método de Newton-Raphson</h2>
+          <h2 className="text-xl font-bold text-slate-900">1. Método de Newton</h2>
         </div>
 
         <div className="space-y-3">
@@ -58,7 +58,7 @@ export const TheorySection: React.FC = () => {
 
       {/* Fixed Point Method Card */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-        <div className="flex items-center gap-3 text-indigo-600 border-b border-slate-100 pb-4">
+        <div className="flex items-center gap-3 text-slate-900 border-b border-slate-100 pb-4">
           <FileText size={24} />
           <h2 className="text-xl font-bold text-slate-900">2. Método de Iteración de Punto Fijo</h2>
         </div>
@@ -78,18 +78,18 @@ export const TheorySection: React.FC = () => {
         </div>
 
         {/* Newton as a Fixed Point special case */}
-        <div className="p-5 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-2">
-          <h4 className="text-sm font-bold text-indigo-950">Newton como caso particular de Punto Fijo</h4>
-          <p className="text-xs text-indigo-900 leading-relaxed">
+        <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <h4 className="text-sm font-bold text-slate-900">Newton como caso particular de Punto Fijo</h4>
+          <p className="text-xs text-slate-700 leading-relaxed">
             El método de Newton es una técnica de punto fijo donde la función de iteración se define específicamente como:
           </p>
           <FormulaDisplay label="Función g(x) de Newton" formula="g(x) = x - \frac{f(x)}{f'(x)}" />
         </div>
       </section>
 
-      {/* Theorems of the Syllabus (Amiconi) */}
+      {/* Theorems of the Syllabus */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-        <div className="flex items-center gap-3 text-indigo-600 border-b border-slate-100 pb-4">
+        <div className="flex items-center gap-3 text-slate-900 border-b border-slate-100 pb-4">
           <CheckCircle size={24} />
           <h2 className="text-xl font-bold text-slate-900">3. Teoremas de Convergencia de la Cátedra</h2>
         </div>
@@ -97,7 +97,7 @@ export const TheorySection: React.FC = () => {
         {/* Teorema 1 */}
         <div className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-slate-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
               Teorema 1
             </span>
             <span className="text-xs font-medium text-slate-400">Existencia y Unicidad</span>
@@ -120,7 +120,7 @@ export const TheorySection: React.FC = () => {
         {/* Teorema 2 */}
         <div className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-slate-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
               Teorema 2
             </span>
             <span className="text-xs font-medium text-slate-400">Convergencia Global</span>
@@ -137,7 +137,7 @@ export const TheorySection: React.FC = () => {
         {/* Teorema 3 */}
         <div className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-slate-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
               Teorema 3
             </span>
             <span className="text-xs font-medium text-slate-400">Convergencia Cuadrática</span>
@@ -159,22 +159,22 @@ export const TheorySection: React.FC = () => {
       <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
         <h3 className="text-lg font-bold text-slate-900">Comparativa: Ventajas y Desventajas</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="p-5 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-3">
-            <h4 className="font-bold text-emerald-900 flex items-center gap-2">
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <h4 className="font-bold text-slate-900 flex items-center gap-2">
               <CheckCircle size={16} /> Ventajas de Newton
             </h4>
-            <ul className="space-y-1.5 text-emerald-800 list-disc list-inside">
+            <ul className="space-y-1.5 text-slate-700 list-disc list-inside">
               <li>Convergencia extraordinariamente rápida (orden 2 / cuadrática).</li>
               <li>Requiere únicamente una estimación inicial <span className="font-mono">x₀</span> en lugar de un intervalo cerrado.</li>
               <li>Fácil de programar y evaluar computacionalmente.</li>
             </ul>
           </div>
 
-          <div className="p-5 rounded-2xl bg-amber-50/50 border border-amber-100 space-y-3">
-            <h4 className="font-bold text-amber-900 flex items-center gap-2">
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <h4 className="font-bold text-slate-900 flex items-center gap-2">
               <AlertTriangle size={16} /> Limitaciones y Desventajas
             </h4>
-            <ul className="space-y-1.5 text-amber-800 list-disc list-inside">
+            <ul className="space-y-1.5 text-slate-700 list-disc list-inside">
               <li>Si <span className="font-mono">f'(xₙ) = 0</span>, el método se indetermina por división por cero.</li>
               <li>No garantiza convergencia si <span className="font-mono">x₀</span> está lejos de la raíz.</li>
               <li>Requiere calcular analíticamente la derivada <span className="font-mono">f'(x)</span>.</li>
@@ -186,10 +186,9 @@ export const TheorySection: React.FC = () => {
 
       {/* Bibliography */}
       <footer className="p-6 bg-slate-100 rounded-3xl text-xs text-slate-500 space-y-2 border border-slate-200">
-        <h4 className="font-bold uppercase tracking-wider text-slate-700">Referencias y Fuentes Consultadas</h4>
+        <h4 className="font-bold uppercase tracking-wider text-slate-700">Referencias y Bibliografía</h4>
         <ul className="list-disc list-inside space-y-1">
-          <li>Apunte Teórico sobre Raíces - Cátedra Cálculo Numérico (Ing. Diego Federico Amiconi).</li>
-          <li>Guía de Trabajos Prácticos Nº 2 (Raíces de Funciones Continuas) - Amiconi.</li>
+          <li>Apunte Teórico y Guía de Trabajos Prácticos Nº 2 (Raíces de Ecuaciones No Lineales).</li>
           <li>Burden, R. L., & Faires, J. D. <em>Análisis Numérico</em> (9ª Edición). Cengage Learning.</li>
           <li>Chapra, S. C., & Canale, R. P. <em>Métodos Numéricos para Ingenieros</em> (7ª Edición). McGraw-Hill.</li>
         </ul>

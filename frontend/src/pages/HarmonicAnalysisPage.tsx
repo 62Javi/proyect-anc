@@ -292,12 +292,12 @@ export default function HarmonicAnalysisPage() {
   })).filter((_, i) => i % 2 === 0) || []; // Subsample for performance
 
   return (
-    <div className="min-h-full bg-slate-50/50 text-slate-900 p-4 lg:p-8 font-['Atkinson_Hyperlegible']">
+    <div className="min-h-full bg-slate-50/50 text-slate-900 p-4 lg:p-8 font-sans">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <header className="space-y-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 border border-indigo-100">
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-900 border border-slate-200">
               <Music size={24} />
             </div>
             <h1 className="text-3xl font-black tracking-tight text-slate-900">Análisis de Armónicos</h1>
@@ -308,10 +308,10 @@ export default function HarmonicAnalysisPage() {
         {/* Recording Section */}
         <section className="bg-white border border-slate-200 rounded-[32px] p-8 flex flex-col items-center justify-center space-y-6 shadow-sm">
           {!isRecording ? (
-            <button
-              onClick={startRecording}
-              className="w-24 h-24 rounded-full bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-100 hover:scale-105 transition-transform active:scale-95"
-            >
+              <button
+                onClick={startRecording}
+                className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-200 hover:scale-105 transition-transform active:scale-95"
+              >
               <Mic size={40} />
             </button>
           ) : (
@@ -332,7 +332,7 @@ export default function HarmonicAnalysisPage() {
           <div className="text-center">
             {isRecording && currentFreq && (
               <div className="mb-4 animate-in fade-in zoom-in duration-300">
-                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">Detectado</span>
+                <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Detectado</span>
                 <div className="flex items-baseline justify-center gap-1">
                   <span className="text-5xl font-black text-slate-900 tabular-nums">{Math.round(currentFreq)}</span>
                   <span className="text-xl font-bold text-slate-400">Hz</span>
@@ -352,7 +352,7 @@ export default function HarmonicAnalysisPage() {
 
         {loading && (
           <div className="flex flex-col items-center justify-center py-12 space-y-4">
-            <Activity className="text-indigo-600 animate-spin" size={48} />
+            <Activity className="text-slate-900 animate-spin" size={48} />
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Procesando Espectro...</p>
           </div>
         )}
@@ -372,7 +372,7 @@ export default function HarmonicAnalysisPage() {
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={togglePlayback}
-                    className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100 hover:scale-105 transition-transform"
+                    className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-200 hover:scale-105 transition-transform"
                   >
                     {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} className="ml-1" fill="currentColor" />}
                   </button>
@@ -403,7 +403,7 @@ export default function HarmonicAnalysisPage() {
                       className="flex-1 rounded-full transition-colors duration-200"
                       style={{ 
                         height: `${Math.max(10, amp * 100)}%`,
-                        backgroundColor: isPlayed ? '#4F46E5' : '#F1F5F9'
+                        backgroundColor: isPlayed ? '#0F172A' : '#F1F5F9'
                       }}
                     />
                   );
@@ -414,14 +414,14 @@ export default function HarmonicAnalysisPage() {
             {/* Main Stats */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white p-6 rounded-[24px] border border-slate-200 shadow-sm">
-                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Frecuencia Fundamental</span>
+                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Frecuencia Fundamental</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-4xl font-black text-slate-900">{result.fundamental_frequency.toFixed(1)}</span>
                   <span className="text-lg font-bold text-slate-400">Hz</span>
                 </div>
               </div>
               <div className="bg-white p-6 rounded-[24px] border border-slate-200 shadow-sm">
-                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Duración</span>
+                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Duración</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-4xl font-black">{result.duration.toFixed(2)}</span>
                   <span className="text-lg font-bold text-slate-400">s</span>
@@ -432,7 +432,7 @@ export default function HarmonicAnalysisPage() {
             {/* Harmonics Bar Chart */}
             <div className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm space-y-4">
               <h3 className="text-sm font-bold flex items-center gap-2 text-slate-900">
-                <Activity size={16} className="text-indigo-600" />
+                <Activity size={16} className="text-slate-900" />
                 Distribución de Armónicos
               </h3>
               <div className="h-[250px] w-full">
@@ -452,7 +452,7 @@ export default function HarmonicAnalysisPage() {
                     />
                     <Bar dataKey="amplitude" radius={[6, 6, 0, 0]}>
                       {result.harmonics.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={index === 0 ? '#4F46E5' : '#C7D2FE'} />
+                        <Cell key={`cell-${index}`} fill={index === 0 ? '#0F172A' : '#94A3B8'} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -463,7 +463,7 @@ export default function HarmonicAnalysisPage() {
             {/* Full Spectrum Chart */}
             <div className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm space-y-4">
               <h3 className="text-sm font-bold flex items-center gap-2 text-slate-900">
-                <Activity size={16} className="text-indigo-600" />
+                <Activity size={16} className="text-slate-900" />
                 Espectro de Frecuencias (FFT)
               </h3>
               {/* ... existing chart code ... */}
@@ -486,14 +486,14 @@ export default function HarmonicAnalysisPage() {
                     <Area 
                       type="monotone" 
                       dataKey="amp" 
-                      stroke="#4F46E5" 
+                      stroke="#0F172A" 
                       fill="url(#colorAmp)" 
                       strokeWidth={3}
                     />
                     <defs>
                       <linearGradient id="colorAmp" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#4F46E5" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#0F172A" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#0F172A" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                   </AreaChart>
@@ -504,7 +504,7 @@ export default function HarmonicAnalysisPage() {
             {/* Timeline Evolution Chart */}
             <div className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm space-y-4">
               <h3 className="text-sm font-bold flex items-center gap-2 text-slate-900">
-                <Activity size={16} className="text-indigo-600" />
+                <Activity size={16} className="text-slate-900" />
                 Evolución de la Fundamental (Hz)
               </h3>
               <div className="h-[250px] w-full">
@@ -531,7 +531,7 @@ export default function HarmonicAnalysisPage() {
                     <Line 
                       type="monotone" 
                       dataKey="fundamental_frequency" 
-                      stroke="#4F46E5" 
+                      stroke="#0F172A" 
                       strokeWidth={3}
                       dot={false}
                     />
