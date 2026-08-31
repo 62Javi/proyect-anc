@@ -9,8 +9,9 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import { ChevronLeft, ChevronRight, Play, Pause, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Pause, RotateCcw, HelpCircle } from 'lucide-react';
 import type { NewtonPlotData } from '../../services/api';
+import InlineMath from '../InlineMath';
 
 interface NewtonInteractivePlotProps {
   plotData: NewtonPlotData;
@@ -36,7 +37,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
           }
           return prev + 1;
         });
-      }, 1200);
+      }, 1400);
     }
     return () => {
       if (interval) clearInterval(interval);
@@ -63,7 +64,6 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
       const tVal =
         activeTangent.y_point +
         activeTangent.slope * (xVal - activeTangent.x_point);
-      // Keep tangent values bounded in graph view
       if (Math.abs(tVal) < 1e4) {
         yTangent = tVal;
       }
@@ -77,26 +77,26 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
   });
 
   return (
-    <div className="w-full bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm space-y-4">
+    <div className="w-full bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm space-y-4">
       {/* Header and Step Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+          <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wider">
             Visualización Geométrica: Rectas Tangentes
           </h3>
-          <p className="text-xs text-slate-500">
-            Paso a paso de la linealización <span className="font-mono text-slate-900 font-bold">Lₙ(x)</span> e intersección con el eje <span className="font-mono">y = 0</span>.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Intersección de la recta tangente <InlineMath math="L_n(x)" /> con el eje <InlineMath math="y = 0" />.
           </p>
         </div>
 
         {totalTangents > 0 && (
-          <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+          <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded-lg bg-white shadow-xs border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors"
+              className="p-2 rounded-xl bg-white shadow-xs border border-slate-200 text-slate-900 hover:bg-slate-900 hover:text-white transition-all cursor-pointer"
               title={isPlaying ? 'Pausar animación' : 'Reproducir animación'}
             >
-              {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+              {isPlaying ? <Pause size={16} /> : <Play size={16} />}
             </button>
 
             <button
@@ -105,14 +105,14 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
                 setCurrentStepIndex((prev) => Math.max(0, prev - 1));
               }}
               disabled={currentStepIndex === 0}
-              className="p-1.5 rounded-lg hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors cursor-pointer"
               title="Paso anterior"
             >
-              <ChevronLeft size={15} />
+              <ChevronLeft size={16} />
             </button>
 
-            <span className="text-xs font-bold text-slate-700 font-mono px-2">
-              Paso {currentStepIndex + 1} / {totalTangents}
+            <span className="text-xs font-black text-slate-900 font-mono px-3">
+              Paso {currentStepIndex + 1} de {totalTangents}
             </span>
 
             <button
@@ -121,10 +121,10 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
                 setCurrentStepIndex((prev) => Math.min(totalTangents - 1, prev + 1));
               }}
               disabled={currentStepIndex === totalTangents - 1}
-              className="p-1.5 rounded-lg hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors cursor-pointer"
               title="Paso siguiente"
             >
-              <ChevronRight size={15} />
+              <ChevronRight size={16} />
             </button>
 
             <button
@@ -132,10 +132,10 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
                 setIsPlaying(false);
                 setCurrentStepIndex(0);
               }}
-              className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
               title="Reiniciar"
             >
-              <RotateCcw size={14} />
+              <RotateCcw size={15} />
             </button>
           </div>
         )}
@@ -143,28 +143,41 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
 
       {/* Step Detail Pill */}
       {activeTangent && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs">
           <div>
             <span className="text-slate-500 block text-[10px] uppercase font-bold">Punto actual xₙ</span>
-            <span className="font-mono font-bold text-slate-900">{activeTangent.x_point.toFixed(5)}</span>
+            <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.x_point.toFixed(4)}</span>
           </div>
           <div>
-            <span className="text-slate-500 block text-[10px] uppercase font-bold">f(xₙ)</span>
-            <span className="font-mono font-bold text-slate-900">{activeTangent.y_point.toFixed(5)}</span>
+            <span className="text-slate-500 block text-[10px] uppercase font-bold">Altura f(xₙ)</span>
+            <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.y_point.toFixed(4)}</span>
           </div>
           <div>
             <span className="text-slate-500 block text-[10px] uppercase font-bold">Pendiente f'(xₙ)</span>
-            <span className="font-mono font-bold text-slate-900">{activeTangent.slope.toFixed(5)}</span>
+            <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.slope.toFixed(4)}</span>
           </div>
           <div>
-            <span className="text-slate-500 block text-[10px] uppercase font-bold">Próximo xₙ₊₁</span>
-            <span className="font-mono font-bold text-emerald-700">{activeTangent.x_intercept.toFixed(5)}</span>
+            <span className="text-slate-500 block text-[10px] uppercase font-bold">Próximo xₙ₊₁ (corte y=0)</span>
+            <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.x_intercept.toFixed(4)}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Graphical Explanation Banner */}
+      {activeTangent && (
+        <div className="bg-slate-100/70 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-700 flex items-start gap-2.5">
+          <HelpCircle size={16} className="text-slate-900 shrink-0 mt-0.5" />
+          <div>
+            <strong className="text-slate-900">¿Qué hace el algoritmo en el Paso {currentStepIndex + 1}?</strong>
+            <p className="mt-0.5 leading-relaxed">
+              Nos paramos en <InlineMath math={`x_${currentStepIndex} = ${activeTangent.x_point.toFixed(3)}`} />, evaluamos la curva y trazamos la recta tangente con inclinación <InlineMath math={`f'(x) = ${activeTangent.slope.toFixed(3)}`} />. La recta corta al eje <InlineMath math="y=0" /> proyectando el nuevo punto <InlineMath math={`x_${currentStepIndex + 1} = ${activeTangent.x_intercept.toFixed(3)}`} />.
+            </p>
           </div>
         </div>
       )}
 
       {/* Plot container */}
-      <div className="w-full h-[320px] sm:h-[400px]">
+      <div className="w-full h-[340px] sm:h-[420px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
@@ -215,11 +228,11 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
             {activeTangent && (
               <ReferenceLine
                 x={Number(activeTangent.x_intercept.toFixed(4))}
-                stroke="#10B981"
+                stroke="#475569"
                 strokeDasharray="4 4"
                 label={{
                   value: `xₙ₊₁=${activeTangent.x_intercept.toFixed(3)}`,
-                  fill: '#059669',
+                  fill: '#475569',
                   fontSize: 10,
                   position: 'bottom',
                 }}
@@ -230,12 +243,12 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
             {root !== null && (
               <ReferenceLine
                 x={Number(root.toFixed(4))}
-                stroke="#E11D48"
-                strokeWidth={1.5}
+                stroke="#0F172A"
+                strokeWidth={2}
                 label={{
                   value: `Raíz=${root.toFixed(4)}`,
-                  fill: '#E11D48',
-                  fontSize: 10,
+                  fill: '#0F172A',
+                  fontSize: 11,
                   position: 'insideTopRight',
                 }}
               />
@@ -245,9 +258,9 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
             <Line
               type="monotone"
               dataKey="f_x"
-              name="f(x)"
+              name="Curva f(x)"
               stroke="#0F172A"
-              strokeWidth={2.2}
+              strokeWidth={2.4}
               dot={false}
               isAnimationActive={false}
             />
@@ -259,7 +272,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
                 dataKey="tangente"
                 name={`Tangente (Paso ${currentStepIndex + 1})`}
                 stroke="#475569"
-                strokeWidth={2}
+                strokeWidth={2.2}
                 dot={false}
                 strokeDasharray="3 2"
                 isAnimationActive={false}
@@ -270,18 +283,18 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
       </div>
 
       {/* Legend & hints */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-slate-600 pt-2 border-t border-slate-100">
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-slate-900 rounded-full" />
-          <span>Curva f(x)</span>
+      <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-slate-700 pt-3 border-t border-slate-100">
+        <div className="flex items-center gap-2">
+          <span className="w-3.5 h-1 bg-slate-900 rounded-full" />
+          <span>Curva de la función f(x)</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-slate-600 rounded-full border-b border-dashed" />
+        <div className="flex items-center gap-2">
+          <span className="w-3.5 h-1 bg-slate-600 rounded-full border-b border-dashed" />
           <span>Recta Tangente Lₙ(x)</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-          <span>Intersección con eje (xₙ₊₁)</span>
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
+          <span>Raíz Buscada (f(x) = 0)</span>
         </div>
       </div>
     </div>

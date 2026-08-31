@@ -9,8 +9,9 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import { ChevronLeft, ChevronRight, Play, Pause, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Pause, RotateCcw, HelpCircle } from 'lucide-react';
 import type { FixedPointPlotData, FixedPointStep } from '../../services/api';
+import InlineMath from '../InlineMath';
 
 interface FixedPointInteractivePlotProps {
   plotData: FixedPointPlotData;
@@ -40,7 +41,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
           }
           return prev + 1;
         });
-      }, 1200);
+      }, 1400);
     }
     return () => {
       if (interval) clearInterval(interval);
@@ -70,26 +71,26 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
   });
 
   return (
-    <div className="w-full bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm space-y-4">
+    <div className="w-full bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm space-y-4">
       {/* Header & Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+          <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wider">
             Diagrama de Telaraña (Cobweb Plot)
           </h3>
-          <p className="text-xs text-slate-500">
-            Intersección entre <span className="font-mono text-slate-900 font-bold">y = g(x)</span> y la recta identidad <span className="font-mono text-slate-700">y = x</span>.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Intersección entre la curva <InlineMath math="y = g(x)" /> y la recta identidad <InlineMath math="y = x" />.
           </p>
         </div>
 
         {totalSteps > 0 && (
-          <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+          <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded-lg bg-white shadow-xs border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors"
+              className="p-2 rounded-xl bg-white shadow-xs border border-slate-200 text-slate-900 hover:bg-slate-900 hover:text-white transition-all cursor-pointer"
               title={isPlaying ? 'Pausar animación' : 'Reproducir animación'}
             >
-              {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+              {isPlaying ? <Pause size={16} /> : <Play size={16} />}
             </button>
 
             <button
@@ -98,14 +99,14 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
                 setCurrentStepIndex((prev) => Math.max(0, prev - 1));
               }}
               disabled={currentStepIndex === 0}
-              className="p-1.5 rounded-lg hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors cursor-pointer"
               title="Paso anterior"
             >
-              <ChevronLeft size={15} />
+              <ChevronLeft size={16} />
             </button>
 
-            <span className="text-xs font-bold text-slate-700 font-mono px-2">
-              Paso {currentStepIndex + 1} / {totalSteps}
+            <span className="text-xs font-black text-slate-900 font-mono px-3">
+              Paso {currentStepIndex + 1} de {totalSteps}
             </span>
 
             <button
@@ -114,10 +115,10 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
                 setCurrentStepIndex((prev) => Math.min(totalSteps - 1, prev + 1));
               }}
               disabled={currentStepIndex === totalSteps - 1}
-              className="p-1.5 rounded-lg hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-200 disabled:opacity-30 text-slate-700 transition-colors cursor-pointer"
               title="Paso siguiente"
             >
-              <ChevronRight size={15} />
+              <ChevronRight size={16} />
             </button>
 
             <button
@@ -125,51 +126,64 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
                 setIsPlaying(false);
                 setCurrentStepIndex(0);
               }}
-              className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
               title="Reiniciar"
             >
-              <RotateCcw size={14} />
+              <RotateCcw size={15} />
             </button>
           </div>
         )}
       </div>
 
       {/* Step and Convergence Indicator */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs">
         {activeStep && (
           <>
             <div>
               <span className="text-slate-500 block text-[10px] uppercase font-bold">Punto actual xₙ</span>
-              <span className="font-mono font-bold text-slate-900">{activeStep.xn.toFixed(5)}</span>
+              <span className="font-mono font-bold text-slate-900 text-sm">{activeStep.xn.toFixed(4)}</span>
             </div>
             <div>
               <span className="text-slate-500 block text-[10px] uppercase font-bold">g(xₙ) = xₙ₊₁</span>
-              <span className="font-mono font-bold text-slate-900">{activeStep.gxn.toFixed(5)}</span>
+              <span className="font-mono font-bold text-slate-900 text-sm">{activeStep.gxn.toFixed(4)}</span>
             </div>
           </>
         )}
         <div>
           <span className="text-slate-500 block text-[10px] uppercase font-bold">Constante |g'(x)|</span>
           <span
-            className={`font-mono font-bold ${
-              kConstantEst && kConstantEst < 1 ? 'text-emerald-700' : 'text-amber-700'
+            className={`font-mono font-bold text-sm ${
+              kConstantEst && kConstantEst < 1 ? 'text-slate-900' : 'text-slate-600'
             }`}
           >
             {kConstantEst !== null && kConstantEst !== undefined
-              ? `k ≈ ${kConstantEst.toFixed(3)} ${kConstantEst < 1 ? '(< 1 Converge)' : '(≥ 1 Diverge)'}`
+              ? `k ≈ ${kConstantEst.toFixed(3)} ${kConstantEst < 1 ? '(< 1)' : '(≥ 1)'}`
               : 'N/A'}
           </span>
         </div>
         <div>
           <span className="text-slate-500 block text-[10px] uppercase font-bold">Punto Fijo (Raíz)</span>
-          <span className="font-mono font-bold text-emerald-700">
-            {root !== null ? root.toFixed(5) : 'Buscando...'}
+          <span className="font-mono font-bold text-slate-900 text-sm">
+            {root !== null ? root.toFixed(4) : 'Buscando...'}
           </span>
         </div>
       </div>
 
+      {/* Graphical Explanation Banner */}
+      {activeStep && (
+        <div className="bg-slate-100/70 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-700 flex items-start gap-2.5">
+          <HelpCircle size={16} className="text-slate-900 shrink-0 mt-0.5" />
+          <div>
+            <strong className="text-slate-900">¿Cómo leer el Diagrama de Telaraña (Paso {currentStepIndex + 1})?</strong>
+            <p className="mt-0.5 leading-relaxed">
+              En cada iteración, subimos verticalmente hasta la curva <InlineMath math="y = g(x)" /> para obtener <InlineMath math={`g(x_${currentStepIndex}) = ${activeStep.gxn.toFixed(3)}`} />. Luego nos movemos horizontalmente hasta chocar con la recta <InlineMath math="y = x" />, proyectando la nueva posición <InlineMath math={`x_${currentStepIndex + 1}`} />.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Plot container */}
-      <div className="w-full h-[320px] sm:h-[400px]">
+      <div className="w-full h-[340px] sm:h-[420px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
@@ -220,12 +234,12 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
             {root !== null && (
               <ReferenceLine
                 x={Number(root.toFixed(4))}
-                stroke="#E11D48"
-                strokeWidth={1.5}
+                stroke="#0F172A"
+                strokeWidth={2}
                 label={{
                   value: `p=${root.toFixed(4)}`,
-                  fill: '#E11D48',
-                  fontSize: 10,
+                  fill: '#0F172A',
+                  fontSize: 11,
                   position: 'insideTopRight',
                 }}
               />
@@ -237,7 +251,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
               dataKey="y_eq_x"
               name="Recta Identidad y = x"
               stroke="#94A3B8"
-              strokeWidth={1.5}
+              strokeWidth={1.8}
               strokeDasharray="4 4"
               dot={false}
               isAnimationActive={false}
@@ -247,7 +261,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
             <Line
               type="monotone"
               dataKey="g_x"
-              name="g(x)"
+              name="Curva de iteración g(x)"
               stroke="#0F172A"
               strokeWidth={2.4}
               dot={false}
@@ -258,17 +272,17 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-slate-600 pt-2 border-t border-slate-100">
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-slate-900 rounded-full" />
+      <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-slate-700 pt-3 border-t border-slate-100">
+        <div className="flex items-center gap-2">
+          <span className="w-3.5 h-1 bg-slate-900 rounded-full" />
           <span>Curva de iteración y = g(x)</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-slate-400 rounded-full border-b border-dashed" />
+        <div className="flex items-center gap-2">
+          <span className="w-3.5 h-1 bg-slate-400 rounded-full border-b border-dashed" />
           <span>Recta Identidad y = x</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
           <span>Punto Fijo p tal que p = g(p)</span>
         </div>
       </div>

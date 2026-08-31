@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Home, Activity, Calculator, Music } from 'lucide-react';
+import { Home, Activity, Calculator, Music, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const GithubIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -19,69 +20,95 @@ const GithubIcon = ({ size = 20 }: { size?: number }) => (
 
 export default function Layout() {
   const location = useLocation();
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   const navItems = [
     { path: '/', icon: <Home size={20} />, label: 'Inicio' },
+    { path: '/roots', icon: <Calculator size={20} />, label: 'Método de Newton & Punto Fijo' },
     { path: '/fourier', icon: <Activity size={20} />, label: 'Fourier' },
     { path: '/harmonics', icon: <Music size={20} />, label: 'Armónicos' },
   ];
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background">
-      {/* Elegant Sidebar */}
-      <nav className="w-16 lg:w-64 bg-white border-r border-slate-100 flex flex-col py-6 px-3 gap-8 shrink-0 z-50 shadow-sm">
-        <div className="px-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-200">
+      {/* Elegant Collapsible Sidebar */}
+      <aside
+        className={`relative bg-white border-r border-slate-200 flex flex-col py-6 px-3 gap-8 shrink-0 z-50 shadow-sm transition-all duration-300 ${
+          isCollapsed ? 'w-16 lg:w-20' : 'w-16 lg:w-72'
+        }`}
+      >
+        {/* Toggle Collapse Button */}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:scale-110 shadow-md transition-all cursor-pointer z-50"
+          title={isCollapsed ? 'Expandir barra lateral' : 'Ocultar barra lateral (Modo Presentación)'}
+        >
+          {isCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
+        </button>
+
+        {/* Logo and Brand */}
+        <div className="px-2 flex items-center gap-3">
+          <Link to="/" className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-200 shrink-0">
             <Calculator size={20} />
-          </div>
-          <span className="text-xl font-bold tracking-tight hidden lg:block text-slate-900">Proyecto ANC</span>
+          </Link>
+          {!isCollapsed && (
+            <div className="hidden lg:block overflow-hidden">
+              <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight">Proyecto ANC</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Análisis & Métodos</span>
+            </div>
+          )}
         </div>
         
-        <div className="flex flex-col gap-2 w-full">
+        {/* Nav Items */}
+        <nav className="flex flex-col gap-1.5 w-full">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center p-3 rounded-xl transition-all duration-200 group ${
+                className={`flex items-center p-3 rounded-2xl transition-all duration-200 group ${
                   isActive 
-                    ? 'bg-primary/10 text-primary' 
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-slate-900 text-white shadow-sm font-bold' 
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
                 title={item.label}
               >
-                <div className={`${isActive ? 'text-primary' : 'text-slate-400 group-hover:text-slate-900'}`}>
+                <div className={`${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'} shrink-0`}>
                   {item.icon}
                 </div>
-                <span className="ml-3 text-sm font-semibold hidden lg:block">
-                  {item.label}
-                </span>
+                {!isCollapsed && (
+                  <span className="ml-3 text-xs font-bold hidden lg:block truncate">
+                    {item.label}
+                  </span>
+                )}
               </Link>
             );
           })}
-        </div>
+        </nav>
 
         {/* GitHub link at the bottom */}
-        <div className="mt-auto pt-4 border-t border-slate-50">
+        <div className="mt-auto pt-4 border-t border-slate-100">
           <a
             href="https://github.com/62Javi/proyect-anc"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center p-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200 group"
-            title="GitHub Repository"
+            className="flex items-center p-3 rounded-2xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 group"
+            title="Ver en GitHub"
           >
-            <div className="text-slate-400 group-hover:text-slate-900">
+            <div className="text-slate-400 group-hover:text-slate-900 shrink-0">
               <GithubIcon size={20} />
             </div>
-            <span className="ml-3 text-xs font-medium hidden lg:block text-slate-400 group-hover:text-slate-600">
-              Ver en GitHub
-            </span>
+            {!isCollapsed && (
+              <span className="ml-3 text-xs font-semibold hidden lg:block text-slate-500 group-hover:text-slate-900">
+                Ver en GitHub
+              </span>
+            )}
           </a>
         </div>
-      </nav>
+      </aside>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto relative bg-slate-50/50">
         <Outlet />
       </main>

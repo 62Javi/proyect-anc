@@ -6,6 +6,8 @@ import {
   type FixedPointResponse,
 } from '../../services/api';
 import FormulaDisplay from '../../components/FormulaDisplay';
+import UnifiedMathInput from '../../components/UnifiedMathInput';
+import InlineMath from '../../components/InlineMath';
 import NewtonInteractivePlot from '../../components/roots/NewtonInteractivePlot';
 import FixedPointInteractivePlot from '../../components/roots/FixedPointInteractivePlot';
 import RootsIterationTable from '../../components/roots/RootsIterationTable';
@@ -40,7 +42,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
     initialConfig?.tolerance ?? 1e-4
   );
   const [maxIterations, setMaxIterations] = useState<number>(
-    initialConfig?.maxIterations ?? 20
+    initialConfig?.maxIterations ?? 25
   );
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -111,31 +113,35 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
     handleCalculateWith(method, expression, x0, tolerance, maxIterations);
   };
 
-  // Quick preset presets
+  // Presets formatted with clean math
   const presets = [
     {
-      name: 'TP2: x² - 4x - 45 (x₀ = 4)',
+      name: 'x² - 4x - 45',
+      math: 'x^2 - 4x - 45',
       method: 'newton' as const,
       expr: 'x**2 - 4*x - 45',
       x0: 4.0,
       tol: 1e-4,
     },
     {
-      name: 'TP2: x - 0.8 - 0.2·sen(x)',
+      name: 'x - 0.8 - 0.2·sen(x)',
+      math: 'x - 0.8 - 0.2\\sin(x)',
       method: 'newton' as const,
       expr: 'x - 0.8 - 0.2*sin(x)',
       x0: 0.7854,
       tol: 1e-4,
     },
     {
-      name: 'TP2: x - cos(x) (Dottie)',
+      name: 'x - cos(x) (Dottie)',
+      math: 'x - \\cos(x)',
       method: 'newton' as const,
       expr: 'x - cos(x)',
       x0: 0.7854,
       tol: 1e-4,
     },
     {
-      name: 'Punto Fijo: g(x) = 0.8 + 0.2·sen(x)',
+      name: 'g(x) = 0.8 + 0.2·sen(x)',
+      math: 'g(x) = 0.8 + 0.2\\sin(x)',
       method: 'fixed-point' as const,
       expr: '0.8 + 0.2*sin(x)',
       x0: 0.7854,
@@ -144,24 +150,24 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
   ];
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-12">
-      {/* Method selector and Input form */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+    <div className="space-y-8 max-w-5xl mx-auto pb-16">
+      {/* Form Card */}
+      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
         {/* Method Toggle */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200">
-              <Calculator size={20} />
+            <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200">
+              <Calculator size={22} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Simulador Numérico de Raíces</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900">Simulador de Ecuaciones</h2>
+              <p className="text-xs sm:text-sm text-slate-500">
                 Calcula derivadas exactas con SymPy y genera proyecciones geométricas iterativas.
               </p>
             </div>
           </div>
 
-          <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 self-start sm:self-auto">
+          <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start sm:self-auto">
             <button
               onClick={() => {
                 setMethod('newton');
@@ -169,7 +175,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
                   setExpression('x**2 - 4*x - 45');
                 }
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 method === 'newton'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -184,7 +190,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
                   setExpression('0.8 + 0.2*sin(x)');
                 }
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 method === 'fixed-point'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -196,41 +202,45 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
         </div>
 
         {/* Form Fields */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="sm:col-span-2 space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="sm:col-span-2 space-y-2">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
               {method === 'newton' ? 'Función f(x) = 0' : 'Función de iteración g(x)'}
             </label>
-            <input
-              type="text"
+            <UnifiedMathInput
               value={expression}
-              onChange={(e) => setExpression(e.target.value)}
-              placeholder={method === 'newton' ? 'Ej: x**2 - 4*x - 45' : 'Ej: 0.8 + 0.2*sin(x)'}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
+              onChange={(_, ascii) => {
+                const pyExpr = ascii
+                  .replace(/·/g, '*')
+                  .replace(/÷/g, '/')
+                  .replace(/π/g, 'pi')
+                  .replace(/\\ /g, ' ');
+                setExpression(pyExpr);
+              }}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Valor Inicial (x₀)
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+              Semilla Inicial (<InlineMath math="x_0" />)
             </label>
             <input
               type="number"
               step="any"
               value={x0}
               onChange={(e) => setX0(parseFloat(e.target.value) || 0)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
+              className="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-mono font-bold text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Tolerancia (ε)
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+              Tolerancia (<InlineMath math="\varepsilon" />)
             </label>
             <select
               value={tolerance}
               onChange={(e) => setTolerance(parseFloat(e.target.value))}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
+              className="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-mono font-bold text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
             >
               <option value="1e-3">10⁻³ (0.001)</option>
               <option value="1e-4">10⁻⁴ (0.0001)</option>
@@ -240,11 +250,11 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
           </div>
         </div>
 
-        {/* Presets and Action buttons */}
+        {/* Quick Presets & Run Button */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
-              Ejemplos rápidos:
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">
+              Ejemplos Rápidos:
             </span>
             {presets.map((p, idx) => (
               <button
@@ -256,9 +266,9 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
                   setTolerance(p.tol);
                   handleCalculateWith(p.method, p.expr, p.x0, p.tol, maxIterations);
                 }}
-                className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-600 font-medium transition-colors cursor-pointer"
+                className="text-xs px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-semibold transition-all cursor-pointer"
               >
-                {p.name}
+                <InlineMath math={p.math} />
               </button>
             ))}
           </div>
@@ -266,13 +276,13 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
           <button
             onClick={handleCalculate}
             disabled={loading || !expression.trim()}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold uppercase tracking-wider shadow-md shadow-slate-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg shadow-slate-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             {loading ? (
               <span className="animate-pulse">Calculando...</span>
             ) : (
               <>
-                <Play size={15} />
+                <Play size={16} />
                 <span>Calcular Raíz</span>
               </>
             )}
@@ -282,8 +292,8 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
 
       {/* Error alert */}
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-900 p-4 rounded-2xl flex items-start gap-3 text-xs">
-          <AlertCircle className="text-rose-600 shrink-0 mt-0.5" size={16} />
+        <div className="bg-rose-50 border border-rose-200 text-rose-900 p-5 rounded-2xl flex items-start gap-3 text-xs sm:text-sm">
+          <AlertCircle className="text-rose-600 shrink-0 mt-0.5" size={18} />
           <div>
             <span className="font-bold block uppercase tracking-wider">Error en el cálculo:</span>
             {error}
@@ -294,24 +304,24 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       {/* Result Status Banner */}
       {(newtonResult || fixedPointResult) && (
         <div
-          className={`p-5 sm:p-6 rounded-3xl border shadow-sm space-y-4 ${
+          className={`p-6 sm:p-8 rounded-3xl border shadow-sm space-y-4 ${
             (newtonResult?.converged || fixedPointResult?.converged)
-              ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
-              : 'bg-amber-50/70 border-amber-200 text-amber-950'
+              ? 'bg-slate-900 text-white border-slate-900'
+              : 'bg-amber-50/90 border-amber-200 text-amber-950'
           }`}
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               {(newtonResult?.converged || fixedPointResult?.converged) ? (
-                <CheckCircle className="text-emerald-600" size={24} />
+                <CheckCircle className="text-white" size={28} />
               ) : (
-                <AlertCircle className="text-amber-600" size={24} />
+                <AlertCircle className="text-amber-600" size={28} />
               )}
               <div>
                 <span className="text-[10px] font-black uppercase tracking-widest block opacity-70">
                   Resultado del Cálculo
                 </span>
-                <h3 className="text-lg sm:text-xl font-bold">
+                <h3 className="text-xl sm:text-2xl font-black">
                   {(newtonResult?.converged || fixedPointResult?.converged)
                     ? `Raíz encontrada: ${(newtonResult?.root ?? fixedPointResult?.root)?.toFixed(6)}`
                     : 'No se alcanzó convergencia'}
@@ -320,7 +330,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold px-3 py-1.5 rounded-xl bg-white/80 border border-slate-200/60 shadow-xs">
+              <span className="text-xs font-mono font-bold px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/20">
                 {(newtonResult?.iterations_count ?? fixedPointResult?.iterations_count)} iteraciones
               </span>
             </div>
@@ -331,7 +341,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
           </p>
 
           {/* Formulas Render */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 bg-white p-3 rounded-2xl text-slate-900">
             {newtonResult && (
               <>
                 <FormulaDisplay label="f(x)" formula={newtonResult.latex_f} />

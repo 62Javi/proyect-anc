@@ -15,97 +15,102 @@ interface FailureCasesSectionProps {
 export const FailureCasesSection: React.FC<FailureCasesSectionProps> = ({ onLoadExample }) => {
   const cases = [
     {
-      title: '1. Derivada Nula (f\'(xₙ) = 0)',
-      icon: <AlertOctagon size={20} className="text-slate-900" />,
-      tag: 'División por Cero',
-      formula: 'f(x) = x^2 - 4',
+      title: '1. Derivada Nula (División por Cero)',
+      icon: <AlertOctagon size={22} className="text-slate-900" />,
+      tag: 'f\'(xₙ) = 0',
+      formula: 'x^2 - 4',
       exprRaw: 'x**2 - 4',
       x0: 0.0,
       sabotageLabel: '💥 Sabotear con Tangente Horizontal',
       description:
-        'Si en alguna iteración la recta tangente es completamente horizontal (f\'(xₙ) = 0), la fórmula de Newton xₙ₊₁ = xₙ - f(xₙ)/0 genera una indeterminación inmediata y el método no puede intersectar el eje horizontal.',
+        'Si la recta tangente es horizontal (f\'(xₙ) = 0), la fórmula xₙ₊₁ = xₙ - f(xₙ)/0 genera una indeterminación inmediata porque la recta es paralela al eje horizontal y nunca lo corta.',
       recommendation:
-        'Desplazar la estimación inicial x₀ hacia una región con pendiente no nula.',
+        'Mover la semilla x₀ a un punto donde f\'(x₀) ≠ 0.',
     },
     {
       title: '2. Ciclos Oscilatorios Infinitos (Bucles)',
-      icon: <RotateCw size={20} className="text-slate-900" />,
-      tag: 'Bucle Cerrado',
-      formula: 'f(x) = x^3 - x - 3',
+      icon: <RotateCw size={22} className="text-slate-900" />,
+      tag: 'Bucle Periódico',
+      formula: 'x^3 - x - 3',
       exprRaw: 'x**3 - x - 3',
       x0: 0.0,
       sabotageLabel: '🌀 Sabotear con Bucle Oscilatorio',
       description:
-        'En ciertas funciones y puntos iniciales específicos, la recta tangente proyecta exactamente de un punto a otro que a su vez vuelve a proyectar al punto original (bucle cerrado infinito entre dos valores sin aproximar la raíz).',
+        'En ciertas funciones simétricas, la recta tangente proyecta a un valor que en el siguiente paso vuelve a proyectar exactamente al punto inicial, quedando atrapado en un bucle infinito entre dos valores.',
       recommendation:
-        'Alterar ligeramente x₀ para romper la simetría periódica del ciclo oscilatorio.',
+        'Perturbar ligeramente x₀ para romper la simetría periódica.',
     },
     {
-      title: '3. Divergencia por Pendiente Decreciente',
-      icon: <TrendingDown size={20} className="text-slate-900" />,
-      tag: 'Divergencia al Infinito',
-      formula: 'f(x) = x^3 - 5x',
+      title: '3. Disparo al Infinito (Divergencia)',
+      icon: <TrendingDown size={22} className="text-slate-900" />,
+      tag: 'Divergencia',
+      formula: 'x^3 - 5x',
       exprRaw: 'x**3 - 5*x',
       x0: 1.0,
       sabotageLabel: '🚀 Sabotear con Disparo al Infinito',
       description:
-        'Si el punto inicial se ubica cerca de un punto de inflexión o donde la pendiente envía la proyección cada vez más lejos de las raíces existentes, la sucesión de Newton diverge exponencialmente.',
+        'Cerca de puntos de inflexión con pendiente muy pequeña, la tangente proyecta valores astronómicos cada vez más alejados de las raíces reales.',
       recommendation:
-        'Realizar un análisis previo de la función para escoger un x₀ dentro de la cuenca de atracción de la raíz.',
+        'Realizar un bosquejo de la función para situar x₀ dentro del intervalo de atracción.',
     },
     {
-      title: '4. Divergencia en Punto Fijo (|g\'(x)| ≥ 1)',
-      icon: <AlertOctagon size={20} className="text-slate-900" />,
-      tag: 'Condición de Lipschitz Violada',
-      formula: 'g(x) = x^2 - 2',
+      title: '4. Telaraña Expansiva en Punto Fijo',
+      icon: <AlertOctagon size={22} className="text-slate-900" />,
+      tag: '|g\'(x)| ≥ 1',
+      formula: 'x^2 - 2',
       exprRaw: 'x**2 - 2',
       x0: 2.5,
       sabotageLabel: '🕸️ Sabotear con Telaraña Expansiva',
       description:
-        'Si la derivada de la función de iteración cumple |g\'(x)| ≥ 1, el diagrama de telaraña se expande en espiral alejándose del punto fijo en cada iteración.',
+        'Si la derivada de la función de iteración cumple |g\'(x)| ≥ 1, se viola el Teorema 1 y la telaraña se abre en una espiral que huye del punto fijo.',
       recommendation:
-        'Reordenar algebraicamente la ecuación f(x) = 0 para obtener otra g(x) alternativa que satisfaga |g\'(x)| < 1.',
+        'Reordenar algebraicamente f(x) = 0 para obtener un despeje g(x) alternativo con pendiente menor a 1.',
     },
   ];
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto pb-12">
+    <div className="space-y-8 max-w-5xl mx-auto pb-16">
       {/* Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-2">
-        <div className="flex items-center gap-2 text-slate-900 mb-1">
-          <Bomb size={22} />
-          <h2 className="text-xl font-bold text-slate-900">Laboratorio de Sabotaje y Casos de Fallo</h2>
+      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-3">
+        <div className="flex items-center gap-3 text-slate-900">
+          <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
+            <Bomb size={24} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black text-slate-900">Laboratorio de Sabotaje & Casos de Fallo</h2>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Demostraciones en vivo</p>
+          </div>
         </div>
-        <p className="text-slate-600 text-sm leading-relaxed">
-          Aunque el método de Newton posee convergencia cuadrática local, no siempre garantiza converger. Usa los botones de <strong>Sabotaje en Vivo</strong> para forzar los fallos matemáticos en el simulador y mostrarlos durante la clase.
+        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+          Los métodos numéricos no son mágicos. Tienen condiciones matemáticas estrictas para converger. Usa los botones de <strong>Sabotaje</strong> para provocar los fallos en vivo y mostrarle a la clase qué ocurre cuando se violan las hipótesis de los teoremas.
         </p>
       </div>
 
-      {/* Failure Cards */}
+      {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {cases.map((c, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:border-slate-400 hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+            className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm hover:border-slate-400 hover:shadow-md transition-all flex flex-col justify-between space-y-5"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   {c.icon}
-                  <h3 className="text-sm font-bold text-slate-900">{c.title}</h3>
+                  <h3 className="text-base font-bold text-slate-900">{c.title}</h3>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                <span className="text-xs font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                   {c.tag}
                 </span>
               </div>
 
-              <FormulaDisplay label="Función de Prueba" formula={c.formula} />
+              <FormulaDisplay label="Función" formula={c.formula} />
 
-              <p className="text-xs text-slate-600 leading-relaxed">{c.description}</p>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{c.description}</p>
 
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700">
-                <span className="font-bold block text-[10px] uppercase text-slate-900">Solución:</span>
-                {c.recommendation}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-1">
+                <span className="font-black block text-[10px] uppercase text-slate-900 tracking-wider">¿Cómo solucionarlo en la práctica?</span>
+                <p>{c.recommendation}</p>
               </div>
             </div>
 
@@ -119,9 +124,9 @@ export const FailureCasesSection: React.FC<FailureCasesSectionProps> = ({ onLoad
                   maxIterations: 10,
                 })
               }
-              className="w-full flex items-center justify-center gap-2 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-md shadow-slate-200 cursor-pointer"
             >
-              <Zap size={14} />
+              <Zap size={15} />
               <span>{c.sabotageLabel}</span>
             </button>
           </div>

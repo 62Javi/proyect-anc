@@ -1,0 +1,39 @@
+import React, { useEffect, useRef } from 'react';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+
+interface InlineMathProps {
+  math: string;
+  className?: string;
+  block?: boolean;
+}
+
+export const InlineMath: React.FC<InlineMathProps> = ({ math, className = '', block = false }) => {
+  const spanRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (spanRef.current) {
+      // Clean standard raw python notation into LaTeX if needed
+      let formatted = math
+        .replace(/\*\*/g, '^')
+        .replace(/\*/g, ' \\cdot ')
+        .replace(/exp\(([^)]+)\)/g, 'e^{$1}')
+        .replace(/sin\(([^)]+)\)/g, '\\sin($1)')
+        .replace(/cos\(([^)]+)\)/g, '\\cos($1)')
+        .replace(/sqrt\(([^)]+)\)/g, '\\sqrt{$1}');
+
+      try {
+        katex.render(formatted, spanRef.current, {
+          throwOnError: false,
+          displayMode: block,
+        });
+      } catch (err) {
+        spanRef.current.innerText = math;
+      }
+    }
+  }, [math, block]);
+
+  return <span ref={spanRef} className={`inline-block ${className}`} />;
+};
+
+export default InlineMath;
