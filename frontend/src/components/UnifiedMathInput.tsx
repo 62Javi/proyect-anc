@@ -39,11 +39,15 @@ export default function UnifiedMathInput({ value, onChange, className = "", hide
       }
       if (isInternalChange.current) {
         isInternalChange.current = false;
-      } else if (mfRef.current.getValue('ascii-math') !== value) {
-        mfRef.current.setValue(value, { format: 'ascii-math' });
+      } else {
+        const asciiCurrent = mfRef.current.getValue('ascii-math');
+        const formattedValue = value.replace(/\*\*/g, '^');
+        if (asciiCurrent !== formattedValue && asciiCurrent !== value) {
+          mfRef.current.setValue(formattedValue, { format: 'ascii-math' });
+        }
       }
     }
-  }, [value]);
+  }, [value, hideMenu]);
 
   const MathField = 'math-field' as any;
 
