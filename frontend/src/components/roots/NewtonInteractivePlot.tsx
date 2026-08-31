@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -24,7 +24,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
 }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const totalTangents = plotData.tangents.length;
+  const totalTangents = plotData?.tangents?.length || 0;
 
   React.useEffect(() => {
     let interval: any = null;
@@ -43,6 +43,28 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
       if (interval) clearInterval(interval);
     };
   }, [isPlaying, totalTangents]);
+
+  // Compute a FIXED, stable Y-domain so the axes and the curve NEVER jump or shift between steps
+  const { yMin, yMax } = useMemo(() => {
+    if (!plotData || !plotData.curve_y || plotData.curve_y.length === 0) {
+      return { yMin: -10, yMax: 10 };
+    }
+
+    let min = Math.min(...plotData.curve_y);
+    let max = Math.max(...plotData.curve_y);
+
+    // Include y = 0
+    if (min > 0) min = 0;
+    if (max < 0) max = 0;
+
+    const span = max - min || 2;
+    const padding = span * 0.15;
+
+    return {
+      yMin: Math.floor(min - padding),
+      yMax: Math.ceil(max + padding),
+    };
+  }, [plotData]);
 
   if (!plotData || plotData.curve_x.length === 0) {
     return (
@@ -64,7 +86,9 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
       const tVal =
         activeTangent.y_point +
         activeTangent.slope * (xVal - activeTangent.x_point);
-      if (Math.abs(tVal) < 1e4) {
+      
+      // Keep tangent values within reasonable bounds of the fixed viewport
+      if (tVal >= yMin * 2 && tVal <= yMax * 2) {
         yTangent = tVal;
       }
     }
@@ -181,7 +205,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 15, right: 15, left: -20, bottom: 5 }}
+            margin={{ top: 15, right: 15, left: -10, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
             <XAxis
@@ -192,6 +216,8 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
               minTickGap={45}
             />
             <YAxis
+              domain={[yMin, yMax]}
+              allowDataOverflow={true}
               tick={{ fill: '#64748B', fontSize: 11 }}
               axisLine={{ stroke: '#CBD5E1' }}
               tickLine={false}

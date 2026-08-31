@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -28,7 +28,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
 }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const totalSteps = steps.length;
+  const totalSteps = steps?.length || 0;
 
   React.useEffect(() => {
     let interval: any = null;
@@ -47,6 +47,28 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
       if (interval) clearInterval(interval);
     };
   }, [isPlaying, totalSteps]);
+
+  // Compute a FIXED, stable Y-domain so the axes and curves NEVER jump or shift between steps
+  const { yMin, yMax } = useMemo(() => {
+    if (!plotData || !plotData.curve_y || plotData.curve_y.length === 0) {
+      return { yMin: -10, yMax: 10 };
+    }
+
+    const allY = [...plotData.curve_y, ...plotData.line_y_eq_x];
+    let min = Math.min(...allY);
+    let max = Math.max(...allY);
+
+    if (min > 0) min = 0;
+    if (max < 0) max = 0;
+
+    const span = max - min || 2;
+    const padding = span * 0.15;
+
+    return {
+      yMin: Math.floor(min - padding),
+      yMax: Math.ceil(max + padding),
+    };
+  }, [plotData]);
 
   if (!plotData || plotData.curve_x.length === 0) {
     return (
@@ -187,7 +209,7 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 15, right: 15, left: -20, bottom: 5 }}
+            margin={{ top: 15, right: 15, left: -10, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
             <XAxis
@@ -198,6 +220,8 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
               minTickGap={45}
             />
             <YAxis
+              domain={[yMin, yMax]}
+              allowDataOverflow={true}
               tick={{ fill: '#64748B', fontSize: 11 }}
               axisLine={{ stroke: '#CBD5E1' }}
               tickLine={false}
