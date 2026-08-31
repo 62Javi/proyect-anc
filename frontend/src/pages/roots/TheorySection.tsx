@@ -45,7 +45,7 @@ export const TheorySection: React.FC = () => {
         <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
           Dada una función continua <InlineMath math="f(x)" /> en un dominio real, se denominan <strong>raíces o ceros</strong> de la función a todos aquellos valores <InlineMath math="r" /> que anulan la expresión:
         </p>
-        <FormulaDisplay label="Condición de Raíz" formula="f(r) = 0" />
+        <FormulaDisplay formula="f(r) = 0" />
         <p className="text-slate-600 text-sm leading-relaxed">
           Cuando las ecuaciones son no lineales o trascendentes (por ejemplo <InlineMath math="x = \cos(x)" /> o <InlineMath math="e^x + 2x = 6" />), no existen fórmulas analíticas cerradas. Por ello, recurrimos a <strong>métodos numéricos iterativos</strong> que construyen una sucesión de aproximaciones <InlineMath math="\{x_n\}" /> que converge a la raíz buscada.
         </p>
@@ -67,15 +67,15 @@ export const TheorySection: React.FC = () => {
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
             En cada iteración, se reemplaza la curva <InlineMath math="f(x)" /> por su <strong>recta tangente</strong> <InlineMath math="L_n(x)" /> trazada en el punto actual <InlineMath math="(x_n, f(x_n))" />:
           </p>
-          <FormulaDisplay label="Recta Tangente L_n(x)" formula="y - f(x_n) = f'(x_n) \cdot (x - x_n)" />
+          <FormulaDisplay formula="y - f(x_n) = f'(x_n) \cdot (x - x_n)" />
           <p className="text-slate-600 text-sm leading-relaxed">
             El siguiente valor <InlineMath math="x_{n+1}" /> se define como el punto exacto donde esta recta tangente corta al eje horizontal (<InlineMath math="y = 0" />):
           </p>
-          <FormulaDisplay label="Corte con y = 0" formula="0 - f(x_n) = f'(x_n) \cdot (x_{n+1} - x_n)" />
+          <FormulaDisplay formula="0 - f(x_n) = f'(x_n) \cdot (x_{n+1} - x_n)" />
           <p className="text-slate-600 text-sm leading-relaxed">
             Despejando algebraicamente <InlineMath math="x_{n+1}" /> obtenemos la <strong>fórmula recursiva de Newton</strong>:
           </p>
-          <FormulaDisplay label="Fórmula de Newton" formula="x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}" />
+          <FormulaDisplay formula="x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}" />
         </div>
 
         <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
@@ -107,11 +107,11 @@ export const TheorySection: React.FC = () => {
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
             Cualquier ecuación <InlineMath math="f(x) = 0" /> puede reformularse algebraicamente despejando <InlineMath math="x" /> de forma equivalente:
           </p>
-          <FormulaDisplay label="Ecuación de Punto Fijo" formula="x = g(x)" />
+          <FormulaDisplay formula="x = g(x)" />
           <p className="text-slate-600 text-sm leading-relaxed">
             A partir de una semilla inicial <InlineMath math="x_0" />, se calcula la sucesión recurrente:
           </p>
-          <FormulaDisplay label="Sucesión Iterativa" formula="x_{n+1} = g(x_n), \quad \forall n \ge 0" />
+          <FormulaDisplay formula="x_{n+1} = g(x_n), \quad \forall n \ge 0" />
           <p className="text-slate-600 text-sm leading-relaxed">
             Si la sucesión converge a un número <InlineMath math="p" />, entonces <InlineMath math="p = g(p)" /> y por lo tanto <InlineMath math="p" /> es la raíz de la ecuación original.
           </p>
@@ -127,7 +127,7 @@ export const TheorySection: React.FC = () => {
             El Método de Newton es un caso especial de Punto Fijo con la función de iteración:
           </p>
           <div className="bg-slate-800 p-2 rounded-xl text-white">
-            <FormulaDisplay label="g(x) de Newton" formula="g(x) = x - \frac{f(x)}{f'(x)}" />
+            <FormulaDisplay formula="g(x) = x - \frac{f(x)}{f'(x)}" />
           </div>
           <p className="text-xs text-slate-300 leading-relaxed">
             Al derivar esta <InlineMath math="g(x)" />, obtenemos <InlineMath math="g'(x) = \frac{f(x)f''(x)}{[f'(x)]^2}" />. En la raíz <InlineMath math="p" />, dado que <InlineMath math="f(p) = 0" />, se cumple exactamente <strong><InlineMath math="g'(p) = 0" /></strong>. Esta anulación de la derivada en la raíz es lo que le otorga su velocidad <strong>cuadrática</strong>.
@@ -163,7 +163,7 @@ export const TheorySection: React.FC = () => {
             <p>
               <strong>b) Unicidad:</strong> Si además <InlineMath math="g'(x)" /> existe en <InlineMath math="(a, b)" /> y existe una constante positiva <InlineMath math="k < 1" /> tal que:
             </p>
-            <FormulaDisplay label="Condición de Lipschitz" formula="|g'(x)| \le k < 1, \quad \forall x \in (a, b)" />
+            <FormulaDisplay formula="|g'(x)| \le k < 1, \quad \forall x \in (a, b)" />
             <p>
               Entonces el punto fijo <InlineMath math="p \in [a, b]" /> es estrictamente <strong>único</strong>.
             </p>
@@ -183,7 +183,7 @@ export const TheorySection: React.FC = () => {
             <p>
               Cumplidas las condiciones del Teorema 1, para cualquier valor inicial <InlineMath math="x_0 \in [a, b]" />, la sucesión <InlineMath math="x_{n+1} = g(x_n)" /> converge al único punto fijo <InlineMath math="p" /> con la siguiente cota de error:
             </p>
-            <FormulaDisplay label="Cota de Error" formula="|x_n - p| \le k^n |x_0 - p| \xrightarrow{n \to \infty} 0" />
+            <FormulaDisplay formula="|x_n - p| \le k^n |x_0 - p| \xrightarrow{n \to \infty} 0" />
           </div>
         </div>
 
@@ -200,7 +200,7 @@ export const TheorySection: React.FC = () => {
             <p>
               Sea <InlineMath math="f \in C^2[a, b]" />. Si <InlineMath math="f(p) = 0" /> y <InlineMath math="f'(p) \ne 0" />, existe un entorno donde la sucesión de Newton converge con orden cuadrático (<InlineMath math="p = 2" />):
             </p>
-            <FormulaDisplay label="Límite Cuadrático" formula="\lim_{n \to \infty} \frac{|x_{n+1} - p|}{|x_n - p|^2} = \left| \frac{f''(p)}{2 f'(p)} \right|" />
+            <FormulaDisplay formula="\lim_{n \to \infty} \frac{|x_{n+1} - p|}{|x_n - p|^2} = \left| \frac{f''(p)}{2 f'(p)} \right|" />
             <p className="text-slate-600 font-medium">
               Esto demuestra matemáticamente por qué el número de decimales exactos se duplica en cada iteración de Newton.
             </p>

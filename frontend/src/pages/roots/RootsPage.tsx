@@ -3,7 +3,6 @@ import {
   Calculator,
   BookOpen,
   FileCheck2,
-  Sparkles,
   Printer,
 } from 'lucide-react';
 import InteractiveSolver from './InteractiveSolver';
@@ -61,35 +60,25 @@ export const RootsPage: React.FC = () => {
       <div className="max-w-5xl mx-auto w-full space-y-6 mb-8 print:hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                Grupo 1 • Análisis Numérico
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Exposición 07/09/2026
-              </span>
-            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+              Análisis Numérico
+            </span>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               Método de Newton & Punto Fijo
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm max-w-2xl font-medium">
-              Plataforma interactiva para el cálculo de raíces no lineales, teoremas de convergencia de la cátedra, visualización geométrica de tangentes y diagramas de telaraña.
+              Cálculo de raíces para ecuaciones no lineales continuas con rectas tangentes y diagramas de telaraña.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl text-xs font-bold transition-all hover:scale-105 active:scale-95 border border-slate-200 cursor-pointer"
-              title="Imprimir o guardar la guía en PDF"
-            >
-              <Printer size={16} />
-              <span>Descargar / Imprimir PDF</span>
-            </button>
-            <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-lg shadow-slate-200">
-              <Sparkles size={24} />
-            </div>
-          </div>
+          <button
+            onClick={handlePrint}
+            className="flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer self-start sm:self-auto"
+            title="Imprimir o guardar la guía en PDF"
+          >
+            <Printer size={16} />
+            <span>Descargar / Imprimir PDF</span>
+          </button>
         </div>
 
         {/* Tab Navigation */}

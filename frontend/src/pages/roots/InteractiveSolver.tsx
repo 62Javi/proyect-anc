@@ -161,9 +161,6 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900">Simulador de Ecuaciones</h2>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Calcula derivadas exactas con SymPy y genera proyecciones geométricas iterativas.
-              </p>
             </div>
           </div>
 
