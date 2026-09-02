@@ -2,6 +2,7 @@ import React from 'react';
 import FormulaDisplay from '../../components/FormulaDisplay';
 import InlineMath from '../../components/InlineMath';
 import { BookOpen, CheckCircle, AlertTriangle, Sparkles, FileText, Printer } from 'lucide-react';
+import NewtonGeometricDemo from '../../components/roots/NewtonGeometricDemo';
 
 export const TheorySection: React.FC = () => {
   const handlePrint = () => {
@@ -14,7 +15,7 @@ export const TheorySection: React.FC = () => {
       <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-slate-200 print:hidden">
         <div className="space-y-1">
           <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-800 px-3 py-1 rounded-full">
-            Material de Estudio & Resumen
+            Material de Estudio & Cátedra UTN
           </span>
           <h2 className="text-xl sm:text-2xl font-black">Guía Teórica de Análisis Numérico</h2>
           <p className="text-xs sm:text-sm text-slate-300">
@@ -65,27 +66,33 @@ export const TheorySection: React.FC = () => {
 
         <div className="space-y-4">
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            En cada iteración, se reemplaza la curva <InlineMath math="f(x)" /> por su <strong>recta tangente</strong> <InlineMath math="L_n(x)" /> trazada en el punto actual <InlineMath math="(x_n, f(x_n))" />:
+            El método de Newton aplicado a una función de una sola variable consiste en cada iteración aproximar <InlineMath math="f(x)" /> por una <strong>linealización <InlineMath math="L_n" /></strong>:
           </p>
-          <FormulaDisplay formula="y - f(x_n) = f'(x_n) \cdot (x - x_n)" />
+          <FormulaDisplay formula="L_n(x) = f(x_n) + f'(x_n) \cdot (x - x_n)" />
           <p className="text-slate-600 text-sm leading-relaxed">
-            El siguiente valor <InlineMath math="x_{n+1}" /> se define como el punto exacto donde esta recta tangente corta al eje horizontal (<InlineMath math="y = 0" />):
+            siendo esta última la ecuación de la recta tangente a <InlineMath math="f(x)" /> en el punto <InlineMath math="(x_n ; f(x_n))" />.
           </p>
-          <FormulaDisplay formula="0 - f(x_n) = f'(x_n) \cdot (x_{n+1} - x_n)" />
           <p className="text-slate-600 text-sm leading-relaxed">
-            Despejando algebraicamente <InlineMath math="x_{n+1}" /> obtenemos la <strong>fórmula recursiva de Newton</strong>:
+            El próximo punto <InlineMath math="x_{n+1}" /> del proceso iterativo se define como la intersección de la linealización <InlineMath math="L_n(x)" /> con el eje de las <InlineMath math="x" />, el cual se obtiene de la siguiente ecuación:
+          </p>
+          <FormulaDisplay formula="L_n(x_{n+1}) = f(x_n) + f'(x_n) \cdot (x_{n+1} - x_n) = 0" />
+          <p className="text-slate-600 text-sm leading-relaxed">
+            Despejando <InlineMath math="x_{n+1}" /> se genera la <strong>fórmula recursiva de Newton</strong>:
           </p>
           <FormulaDisplay formula="x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}" />
         </div>
 
+        {/* Interactive Geometric Simulator */}
+        <NewtonGeometricDemo />
+
         <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-          <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest">Criterios de Paro Computacionales</h4>
+          <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest">Criterios de Paro (Cátedra UTN)</h4>
           <ul className="text-xs sm:text-sm text-slate-700 space-y-2 list-disc list-inside">
             <li>
-              <strong>Por Cota de Error:</strong> Se detiene cuando <InlineMath math="|x_{n+1} - x_n| < \varepsilon" /> (ej. <InlineMath math="\varepsilon = 10^{-4}" />).
+              <strong>Por Cota de Error:</strong> Se detiene cuando <InlineMath math="|x_{n+1} - x_n| < e" /> (donde <InlineMath math="e" /> es un valor de tolerancia muy pequeño, ej. <InlineMath math="e = 10^{-3}" /> o <InlineMath math="10^{-4}" />). Paramos cuando la diferencia en valor absoluto entre aproximaciones consecutivas es prácticamente cero.
             </li>
             <li>
-              <strong>Por Máximo de Iteraciones:</strong> Límite de seguridad <InlineMath math="N_{\text{max}}" /> para abortar si el método cae en indeterminación o divergencia.
+              <strong>Por Máximo de Iteraciones:</strong> Límite de pasos <InlineMath math="N_{\text{max}}" /> con fines prácticos y de seguridad para abortar si el método cae en indeterminación o ciclo infinito.
             </li>
           </ul>
         </div>
@@ -193,16 +200,22 @@ export const TheorySection: React.FC = () => {
             <span className="text-xs font-black uppercase tracking-widest text-slate-900 bg-slate-200 px-3 py-1 rounded-full">
               Teorema 3
             </span>
-            <span className="text-xs font-bold text-slate-500">Rapidez de Convergencia</span>
+            <span className="text-xs font-bold text-slate-500">Convergencia Local de Newton</span>
           </div>
-          <h4 className="text-base font-bold text-slate-900">Convergencia Cuadrática de Newton</h4>
+          <h4 className="text-base font-bold text-slate-900">Teorema de Convergencia del Método de Newton</h4>
           <div className="text-xs sm:text-sm text-slate-700 space-y-2 leading-relaxed">
             <p>
-              Sea <InlineMath math="f \in C^2[a, b]" />. Si <InlineMath math="f(p) = 0" /> y <InlineMath math="f'(p) \ne 0" />, existe un entorno donde la sucesión de Newton converge con orden cuadrático (<InlineMath math="p = 2" />):
+              Sea <InlineMath math="f(x) \in C^2[a, b]" /> (la función es continua, su derivada 1ra es continua y su derivada 2da también).
             </p>
-            <FormulaDisplay formula="\lim_{n \to \infty} \frac{|x_{n+1} - p|}{|x_n - p|^2} = \left| \frac{f''(p)}{2 f'(p)} \right|" />
-            <p className="text-slate-600 font-medium">
-              Esto demuestra matemáticamente por qué el número de decimales exactos se duplica en cada iteración de Newton.
+            <p>
+              Si <InlineMath math="p \in [a, b]" /> y es tal que <InlineMath math="f(p) = 0" /> (es decir, <InlineMath math="p" /> es raíz de <InlineMath math="f(x)" />) y <InlineMath math="f'(p) \ne 0" />:
+            </p>
+            <p>
+              Entonces podemos decir que existe un <InlineMath math="\delta > 0" /> tal que el método de Newton:
+            </p>
+            <FormulaDisplay formula="p_{n+1} = g(p_n) = p_n - \frac{f(p_n)}{f'(p_n)}" />
+            <p>
+              genera una sucesión <InlineMath math="\{p_n\}_{n=1}^{\infty}" /> que <strong>converge a <InlineMath math="p" /></strong>, para cualquier punto inicial <InlineMath math="p_0 \in [p - \delta ; p + \delta]" />.
             </p>
           </div>
         </div>
@@ -210,27 +223,26 @@ export const TheorySection: React.FC = () => {
 
       {/* Comparison Table */}
       <section className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
-        <h3 className="text-xl font-black text-slate-900">Comparativa Directa: Newton vs Punto Fijo</h3>
+        <h3 className="text-xl font-black text-slate-900">Ventajas y Desventajas del Método de Newton (Apunte Cátedra)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
           <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
             <h4 className="font-bold text-slate-900 flex items-center gap-2">
-              <CheckCircle size={18} /> Ventajas de Newton
+              <CheckCircle size={18} /> Ventajas
             </h4>
             <ul className="space-y-2 text-slate-700 list-disc list-inside">
-              <li>Convergencia extraordinariamente rápida (orden cuadrático).</li>
-              <li>Solo requiere un valor inicial <InlineMath math="x_0" /> en vez de un intervalo acotado.</li>
-              <li>Ideal para ingeniería donde se requieren tolerancias estrictas (<InlineMath math="10^{-6}" />).</li>
+              <li>Si el valor inicial está cerca de la raíz y la derivada de la función es no nula, el método converge directamente a la raíz.</li>
+              <li>El número de cifras significativas se duplica en cada iteración (convergencia cuadrática).</li>
             </ul>
           </div>
 
           <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
             <h4 className="font-bold text-slate-900 flex items-center gap-2">
-              <AlertTriangle size={18} /> Limitaciones y Casos de Cuidado
+              <AlertTriangle size={18} /> Desventajas y Casos de Falla
             </h4>
             <ul className="space-y-2 text-slate-700 list-disc list-inside">
-              <li>Si <InlineMath math="f'(x_n) = 0" />, el método falla por división por cero.</li>
-              <li>Requiere calcular la derivada analítica <InlineMath math="f'(x)" />.</li>
-              <li>Si <InlineMath math="x_0" /> está lejos, puede diverger o caer en ciclos oscilatorios.</li>
+              <li>A diferencia de bisección, al tener solo un valor inicial en vez de un intervalo, no se puede aplicar el teorema de Bolzano para garantizar que exista una raíz.</li>
+              <li>Si <InlineMath math="f'(x) = 0" /> el método no se puede aplicar (división por cero).</li>
+              <li>Existen casos en los que el método puede caer en procesos iterativos infinitos o ciclos oscilatorios.</li>
             </ul>
           </div>
         </div>
@@ -253,4 +265,5 @@ export const TheorySection: React.FC = () => {
     </div>
   );
 };
+
 export default TheorySection;
