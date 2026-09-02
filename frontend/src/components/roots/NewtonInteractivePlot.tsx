@@ -9,7 +9,14 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import { ChevronLeft, ChevronRight, Play, Pause, RotateCcw, HelpCircle } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  RotateCcw,
+  HelpCircle,
+} from 'lucide-react';
 import type { NewtonPlotData } from '../../services/api';
 import InlineMath from '../InlineMath';
 
@@ -20,7 +27,6 @@ interface NewtonInteractivePlotProps {
 
 export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
   plotData,
-  root,
 }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -44,7 +50,14 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
     };
   }, [isPlaying, totalTangents]);
 
-  // Compute a FIXED, stable Y-domain so the axes and the curve NEVER jump or shift between steps
+  React.useEffect(() => {
+    setCurrentStepIndex(0);
+  }, [plotData]);
+
+  const activeTangent = plotData?.tangents?.[currentStepIndex];
+  const prevTangent = currentStepIndex > 0 ? plotData?.tangents?.[currentStepIndex - 1] : null;
+
+  // Compute stable Y-domain
   const { yMin, yMax } = useMemo(() => {
     if (!plotData || !plotData.curve_y || plotData.curve_y.length === 0) {
       return { yMin: -10, yMax: 10 };
@@ -53,7 +66,6 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
     let min = Math.min(...plotData.curve_y);
     let max = Math.max(...plotData.curve_y);
 
-    // Include y = 0
     if (min > 0) min = 0;
     if (max < 0) max = 0;
 
@@ -74,22 +86,27 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
     );
   }
 
-  const activeTangent = plotData.tangents[currentStepIndex];
-
-  // Build chart dataset with f(x) and the active tangent line
+  // Build chart dataset with f(x), active tangent line, and previous tangent line
   const chartData = plotData.curve_x.map((xVal, idx) => {
     const yCurve = plotData.curve_y[idx];
     let yTangent: number | null = null;
+    let yPrevTangent: number | null = null;
 
     if (activeTangent) {
-      // y = f(xn) + f'(xn) * (x - xn)
       const tVal =
         activeTangent.y_point +
         activeTangent.slope * (xVal - activeTangent.x_point);
-      
-      // Keep tangent values within reasonable bounds of the fixed viewport
       if (tVal >= yMin * 2 && tVal <= yMax * 2) {
         yTangent = tVal;
+      }
+    }
+
+    if (prevTangent) {
+      const ptVal =
+        prevTangent.y_point +
+        prevTangent.slope * (xVal - prevTangent.x_point);
+      if (ptVal >= yMin * 2 && ptVal <= yMax * 2) {
+        yPrevTangent = ptVal;
       }
     }
 
@@ -97,6 +114,7 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
       x: Number(xVal.toFixed(4)),
       f_x: Number(yCurve.toFixed(4)),
       tangente: yTangent !== null ? Number(yTangent.toFixed(4)) : undefined,
+      prevTangente: yPrevTangent !== null ? Number(yPrevTangent.toFixed(4)) : undefined,
     };
   });
 
@@ -235,51 +253,6 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
             {/* Axis Y = 0 */}
             <ReferenceLine y={0} stroke="#94A3B8" strokeWidth={1.5} />
 
-            {/* Current xn marker */}
-            {activeTangent && (
-              <ReferenceLine
-                x={Number(activeTangent.x_point.toFixed(4))}
-                stroke="#0F172A"
-                strokeDasharray="4 4"
-                label={{
-                  value: `xₙ=${activeTangent.x_point.toFixed(3)}`,
-                  fill: '#0F172A',
-                  fontSize: 10,
-                  position: 'top',
-                }}
-              />
-            )}
-
-            {/* Next xn+1 marker */}
-            {activeTangent && (
-              <ReferenceLine
-                x={Number(activeTangent.x_intercept.toFixed(4))}
-                stroke="#475569"
-                strokeDasharray="4 4"
-                label={{
-                  value: `xₙ₊₁=${activeTangent.x_intercept.toFixed(3)}`,
-                  fill: '#475569',
-                  fontSize: 10,
-                  position: 'bottom',
-                }}
-              />
-            )}
-
-            {/* Final Root marker */}
-            {root !== null && (
-              <ReferenceLine
-                x={Number(root.toFixed(4))}
-                stroke="#0F172A"
-                strokeWidth={2}
-                label={{
-                  value: `Raíz=${root.toFixed(4)}`,
-                  fill: '#0F172A',
-                  fontSize: 11,
-                  position: 'insideTopRight',
-                }}
-              />
-            )}
-
             {/* Curve f(x) */}
             <Line
               type="monotone"
@@ -291,13 +264,27 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
               isAnimationActive={false}
             />
 
-            {/* Tangent Line Ln(x) */}
+            {/* Previous Tangent Line (Blue dashed) */}
+            {prevTangent && (
+              <Line
+                type="linear"
+                dataKey="prevTangente"
+                name={`Tangente Anterior (Paso ${currentStepIndex})`}
+                stroke="#3B82F6"
+                strokeWidth={2.0}
+                dot={false}
+                strokeDasharray="4 4"
+                isAnimationActive={false}
+              />
+            )}
+
+            {/* Current Tangent Line Ln(x) (Red dashed) */}
             {activeTangent && (
               <Line
                 type="linear"
                 dataKey="tangente"
-                name={`Tangente (Paso ${currentStepIndex + 1})`}
-                stroke="#475569"
+                name={`Tangente Actual (Paso ${currentStepIndex + 1})`}
+                stroke="#EF4444"
                 strokeWidth={2.2}
                 dot={false}
                 strokeDasharray="3 2"
@@ -315,15 +302,18 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
           <span>Curva de la función f(x)</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-3.5 h-1 bg-slate-600 rounded-full border-b border-dashed" />
-          <span>Recta Tangente Lₙ(x)</span>
+          <span className="w-3.5 h-1 bg-rose-500 rounded-full border-b border-dashed" />
+          <span>Recta Tangente Actual Lₙ(x) (Rojo)</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
-          <span>Raíz Buscada (f(x) = 0)</span>
-        </div>
+        {prevTangent && (
+          <div className="flex items-center gap-2">
+            <span className="w-3.5 h-1 bg-blue-500 rounded-full border-b border-dashed" />
+            <span>Recta Tangente Anterior Lₙ₋₁(x) (Azul)</span>
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
 export default NewtonInteractivePlot;

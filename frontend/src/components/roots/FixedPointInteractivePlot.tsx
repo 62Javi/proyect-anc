@@ -9,7 +9,14 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import { ChevronLeft, ChevronRight, Play, Pause, RotateCcw, HelpCircle } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  RotateCcw,
+  HelpCircle,
+} from 'lucide-react';
 import type { FixedPointPlotData, FixedPointStep } from '../../services/api';
 import InlineMath from '../InlineMath';
 
@@ -48,7 +55,13 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
     };
   }, [isPlaying, totalSteps]);
 
-  // Compute a FIXED, stable Y-domain so the axes and curves NEVER jump or shift between steps
+  React.useEffect(() => {
+    setCurrentStepIndex(0);
+  }, [plotData]);
+
+  const activeStep = steps[currentStepIndex];
+
+  // Compute a FIXED, stable Y-domain
   const { yMin, yMax } = useMemo(() => {
     if (!plotData || !plotData.curve_y || plotData.curve_y.length === 0) {
       return { yMin: -10, yMax: 10 };
@@ -77,8 +90,6 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
       </div>
     );
   }
-
-  const activeStep = steps[currentStepIndex];
 
   // Build chart dataset with g(x) and y = x
   const chartData = plotData.curve_x.map((xVal, idx) => {
@@ -239,36 +250,6 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
             {/* Reference line y = 0 */}
             <ReferenceLine y={0} stroke="#94A3B8" strokeWidth={1} />
 
-            {/* Active step marker */}
-            {activeStep && (
-              <ReferenceLine
-                x={Number(activeStep.xn.toFixed(4))}
-                stroke="#0F172A"
-                strokeDasharray="4 4"
-                label={{
-                  value: `xₙ=${activeStep.xn.toFixed(3)}`,
-                  fill: '#0F172A',
-                  fontSize: 10,
-                  position: 'top',
-                }}
-              />
-            )}
-
-            {/* Final Fixed point marker */}
-            {root !== null && (
-              <ReferenceLine
-                x={Number(root.toFixed(4))}
-                stroke="#0F172A"
-                strokeWidth={2}
-                label={{
-                  value: `p=${root.toFixed(4)}`,
-                  fill: '#0F172A',
-                  fontSize: 11,
-                  position: 'insideTopRight',
-                }}
-              />
-            )}
-
             {/* Reference Line y = x */}
             <Line
               type="monotone"
@@ -305,12 +286,9 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
           <span className="w-3.5 h-1 bg-slate-400 rounded-full border-b border-dashed" />
           <span>Recta Identidad y = x</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
-          <span>Punto Fijo p tal que p = g(p)</span>
-        </div>
       </div>
     </div>
   );
 };
+
 export default FixedPointInteractivePlot;
