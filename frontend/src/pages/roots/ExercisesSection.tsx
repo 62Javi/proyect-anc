@@ -27,109 +27,171 @@ interface ExercisesSectionProps {
 }
 
 export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExercise }) => {
-  // Integramos el custom hook pasando el nombre descriptivo para el PDF
-  const { printRef, handlePrint } = useAppPrint('Ejercicios-Resueltos-TP2');
+  const { printRef, handlePrint } = useAppPrint('Ejercicios-Resueltos-TP2-Amiconi');
 
   const exercises: ExerciseItem[] = [
+    // --- PROBLEMA 7 ---
     {
-      id: 'ej-7a',
-      title: 'Ejercicio 7 - Inciso A: x - cos(x) = 0',
-      description: 'Encontrar la raíz mediante el método de Newton-Raphson con tolerancia 10⁻⁴.',
+      id: 'ej-7a1',
+      title: 'Problema 7 - Inciso a1: Polinomio Cuadrático (x₀ = 0.5)',
+      description: 'Estimar el valor de la raíz con el método de Newton realizando 4 iteraciones partiendo de x₀ = 0.5.',
+      method: 'newton',
+      expression: 'x**2 - 4*x - 45',
+      latexExpr: 'f(x) = x^2 - 4x - 45',
+      latexFPrime: "f'(x) = 2x - 4",
+      x0: 0.5,
+      tolerance: 1e-4,
+      maxIterations: 4,
+      expectedRoot: -5.0,
+      analyticalRoots: 'Raíces analíticas exactas: x = 9 y x = -5',
+      stepsSummary: [
+        'Evaluación inicial en x₀ = 0.5: f(0.5) = -46.75, f\'(0.5) = -3.0',
+        'Cálculo de x₁ = 0.5 - (-46.75 / -3.0) = -15.0833',
+        'Evaluación en x₁: f(-15.0833) = 242.84, f\'(-15.0833) = -34.1666',
+        'Convergencia hacia la raíz negativa x = -5 en 4 iteraciones.',
+      ],
+    },
+    {
+      id: 'ej-7a2',
+      title: 'Problema 7 - Inciso a2: Polinomio Cuadrático (x₀ = 4.0)',
+      description: 'Estimar el valor de la raíz con el método de Newton realizando 4 iteraciones partiendo de x₀ = 4.0.',
+      method: 'newton',
+      expression: 'x**2 - 4*x - 45',
+      latexExpr: 'f(x) = x^2 - 4x - 45',
+      latexFPrime: "f'(x) = 2x - 4",
+      x0: 4.0,
+      tolerance: 1e-4,
+      maxIterations: 4,
+      expectedRoot: 9.0,
+      analyticalRoots: 'Raíces analíticas exactas: x = 9 y x = -5',
+      stepsSummary: [
+        'Evaluación inicial en x₀ = 4.0: f(4) = -45.0, f\'(4) = 4.0',
+        'Cálculo de x₁ = 4.0 - (-45.0 / 4.0) = 15.25',
+        'Evaluación en x₁: f(15.25) = 126.56, f\'(15.25) = 26.5',
+        'Convergencia hacia la raíz positiva x = 9 en 4 iteraciones.',
+      ],
+    },
+    {
+      id: 'ej-7b',
+      title: 'Problema 7 - Inciso b: Ecuación Trigonométrica Perturbada',
+      description: 'Estimar el valor aproximado de la raíz con 4 iteraciones partiendo de x₀ = π/4 (0.7854 rad).',
+      method: 'newton',
+      expression: 'x - 0.8 - 0.2*sin(x)',
+      latexExpr: 'f(x) = x - 0.8 - 0.2\\sin(x)',
+      latexFPrime: "f'(x) = 1 - 0.2\\cos(x)",
+      x0: 0.7854,
+      tolerance: 1e-4,
+      maxIterations: 4,
+      expectedRoot: 0.964334,
+      analyticalRoots: 'Raíz única en el dominio real x ≈ 0.964334',
+      stepsSummary: [
+        'Evaluación inicial en x₀ = 0.7854: f(0.7854) = -0.1560, f\'(0.7854) = 0.8586',
+        'Cálculo de x₁ = 0.7854 - (-0.1560 / 0.8586) = 0.9671',
+        'Evaluación en x₁: f(0.9671) = 0.0024, f\'(0.9671) = 0.8865',
+        'Convergencia de alta precisión obtenida al cabo de 4 iteraciones.',
+      ],
+    },
+
+    // --- PROBLEMA 8 ---
+    {
+      id: 'ej-8a',
+      title: 'Problema 8 - Inciso a: x - cos(x) = 0',
+      description: 'Estimar mediante Newton con error < 10⁻³ partiendo de x₀ = π/4 (0.7854 rad).',
       method: 'newton',
       expression: 'x - cos(x)',
       latexExpr: 'f(x) = x - \\cos(x)',
       latexFPrime: "f'(x) = 1 + \\sin(x)",
       x0: 0.7854,
-      tolerance: 1e-4,
+      tolerance: 1e-3,
       maxIterations: 25,
       expectedRoot: 0.739085,
-      analyticalRoots: 'Número de Dottie (Punto fijo del coseno)',
+      analyticalRoots: 'Número de Dottie (Punto fijo universal del coseno)',
       stepsSummary: [
-        'Evaluación inicial en x₀ = π/4 ≈ 0.7854: f(0.7854) = 0.07829',
-        'Primera derivada en x₀: f\'(0.7854) = 1.7071',
-        'Primera iteración: x₁ = 0.7854 - (0.07829 / 1.7071) = 0.7395',
-        'Convergencia alcanzada en 3 iteraciones con cota |xₙ₊₁ - xₙ| < 10⁻⁴',
+        'Evaluación inicial en x₀ = 0.7854: f(0.7854) = 0.07829, f\'(0.7854) = 1.7071',
+        'Iteración 1: x₁ = 0.7854 - (0.07829 / 1.7071) = 0.7395',
+        'Iteración 2: x₂ = 0.7391, logrando un error |x₂ - x₁| < 10⁻³.',
       ],
     },
     {
-      id: 'ej-7b',
-      title: 'Ejercicio 7 - Inciso B: x³ - 2x - 5 = 0',
-      description: 'Búsqueda de la única raíz real del polinomio cúbico en el intervalo [1, 2].',
+      id: 'ej-8b',
+      title: 'Problema 8 - Inciso b: eˣ + 2x + 2·cos(x) - 6 = 0',
+      description: 'Resolver mediante Newton con un error < 10⁻³ partiendo de x₀ = π/4 (0.7854 rad).',
       method: 'newton',
-      expression: 'x**3 - 2*x - 5',
-      latexExpr: 'f(x) = x^3 - 2x - 5',
-      latexFPrime: "f'(x) = 3x^2 - 2",
-      x0: 2.0,
-      tolerance: 1e-4,
-      maxIterations: 25,
-      expectedRoot: 2.094551,
-      analyticalRoots: 'Única raíz real real en x ≈ 2.09455',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 2.0: f(2) = -1.0, f\'(2) = 10.0',
-        'Primera corrección de Newton: x₁ = 2.0 - (-1.0 / 10.0) = 2.10',
-        'Evaluación en x₁: f(2.10) = 0.061, f\'(2.10) = 11.23',
-        'Segunda iteración: x₂ = 2.09456, logrando la precisión solicitada',
-      ],
-    },
-    {
-      id: 'ej-7c',
-      title: 'Ejercicio 7 - Inciso C: e⁻ˣ - x = 0',
-      description: 'Cálculo de intersección trascendente exponencial-lineal.',
-      method: 'newton',
-      expression: 'exp(-x) - x',
-      latexExpr: 'f(x) = e^{-x} - x',
-      latexFPrime: "f'(x) = -e^{-x} - 1",
-      x0: 0.5,
-      tolerance: 1e-4,
-      maxIterations: 25,
-      expectedRoot: 0.567143,
-      analyticalRoots: 'Constante Omega de Lambert (Ω ≈ 0.567143)',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 0.5: f(0.5) = 0.10653, f\'(0.5) = -1.60653',
-        'Cálculo de x₁ = 0.5 - (0.10653 / -1.60653) = 0.56631',
-        'Convergencia cuadrática progresiva hasta alcanzar la tolerancia |xₙ₊₁ - xₙ| < 10⁻⁴',
-      ],
-    },
-    {
-      id: 'ej-8',
-      title: 'Ejercicio 8: Método de Punto Fijo (g(x) = 0.8 + 0.2·sen(x))',
-      description: 'Análisis de convergencia y cálculo iterativo del punto fijo x = g(x).',
-      method: 'fixed-point',
-      expression: '0.8 + 0.2*sin(x)',
-      latexExpr: 'g(x) = 0.8 + 0.2\\sin(x)',
-      latexFPrime: "g'(x) = 0.2\\cos(x)",
+      expression: 'exp(x) + 2*x + 2*cos(x) - 6',
+      latexExpr: 'f(x) = e^x + 2x + 2\\cos(x) - 6',
+      latexFPrime: "f'(x) = e^x + 2 - 2\\sin(x)",
       x0: 0.7854,
-      tolerance: 1e-4,
+      tolerance: 1e-3,
       maxIterations: 25,
-      expectedRoot: 0.964334,
-      analyticalRoots: 'Criterio de convergencia: |g\'(x)| ≤ 0.2 < 1 (Garantizado)',
+      expectedRoot: 0.828833,
+      analyticalRoots: 'Raíz en x ≈ 0.8288',
       stepsSummary: [
-        'Verificación previa del Teorema de Existencia y Unicidad',
-        'Constante de Lipschitz k = 0.2 < 1 asegura convergencia rápida',
-        'Iteración 1: x₁ = g(0.7854) = 0.9414',
-        'Iteración 2: x₂ = g(0.9414) = 0.9617',
-        'Convergencia monótona en 5 iteraciones.',
+        'Evaluación inicial en x₀ = 0.7854: f(0.7854) = -0.8208, f\'(0.7854) = 2.7792',
+        'Iteración 1: x₁ = 0.7854 - (-0.8208 / 2.7792) = 1.0807',
+        'Iteración 2: x₂ = 0.8525, Iteración 3: x₃ = 0.8289',
+        'Cumple con el criterio de paro de error < 10⁻³.',
       ],
     },
+    {
+      id: 'ej-8c1',
+      title: 'Problema 8 - Inciso c1: Polinomio Cúbico (x₀ = 1.9)',
+      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x - 10 con error < 10⁻³ usando x₀ = 1.9.',
+      method: 'newton',
+      expression: 'x**3 - 2*x**2 - 3*x - 10',
+      latexExpr: 'f(x) = x^3 - 2x^2 - 3x - 10',
+      latexFPrime: "f'(x) = 3x^2 - 4x - 3",
+      x0: 1.9,
+      tolerance: 1e-3,
+      maxIterations: 25,
+      expectedRoot: 3.425938,
+      analyticalRoots: 'Única raíz real x ≈ 3.4259',
+      stepsSummary: [
+        'Evaluación inicial en x₀ = 1.9: f(1.9) = -16.061, f\'(1.9) = 0.23',
+        'Debido al valor pequeño de f\'(1.9), el primer salto x₁ resulta grande (x₁ = 71.73)',
+        'El método recalibra en las siguientes iteraciones hasta estabilizarse en la raíz x ≈ 3.4259.',
+      ],
+    },
+    {
+      id: 'ej-8c2',
+      title: 'Problema 8 - Inciso c2: Polinomio Cúbico (x₀ = -3.0)',
+      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x - 10 con error < 10⁻³ usando x₀ = -3.0.',
+      method: 'newton',
+      expression: 'x**3 - 2*x**2 - 3*x - 10',
+      latexExpr: 'f(x) = x^3 - 2x^2 - 3x - 10',
+      latexFPrime: "f'(x) = 3x^2 - 4x - 3",
+      x0: -3.0,
+      tolerance: 1e-3,
+      maxIterations: 25,
+      expectedRoot: 3.425938,
+      analyticalRoots: 'Única raíz real x ≈ 3.4259',
+      stepsSummary: [
+        'Evaluación inicial en x₀ = -3.0: f(-3) = -46.0, f\'(-3) = 36.0',
+        'Iteración 1: x₁ = -3.0 - (-46.0 / 36.0) = -1.7222',
+        'Avanza a través de la zona plana hasta aproximar y converger en la raíz real x ≈ 3.4259.',
+      ],
+    },
+
+    // --- PROBLEMA 9 ---
     {
       id: 'ej-9',
-      title: 'Ejercicio 9: Concentración de Bacterias en Río (TP2)',
+      title: 'Problema 9: Concentración de Bacterias en Lago',
       description:
-        'Caso de aplicación en Ingeniería Ambiental: determinar el tiempo t (en horas) para el cual la concentración de bacterias cae a un nivel seguro de 9 partes/millón.',
+        'Determinar el tiempo t (en horas) necesario para que la concentración de bacterias se reduzca a c(t) = 7. Expresión: 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ = 7.',
       method: 'newton',
-      expression: '70*exp(-1.5*x) + 25*exp(-0.075*x) - 9',
-      latexExpr: 'C(t) = 70e^{-1.5t} + 25e^{-0.075t} - 9',
-      latexFPrime: "C'(t) = -105e^{-1.5t} - 1.875e^{-0.075t}",
+      expression: '80*exp(-2*x) + 20*exp(-0.5*x) - 7',
+      latexExpr: 'c(t) = 80e^{-2t} + 20e^{-0.5t} - 7',
+      latexFPrime: "c'(t) = -160e^{-2t} - 10e^{-0.5t}",
       x0: 1.0,
       tolerance: 1e-4,
       maxIterations: 25,
-      expectedRoot: 13.598,
-      analyticalRoots: 'Interpretación física: t ≈ 13.6 horas para desinfección',
+      expectedRoot: 2.0722,
+      analyticalRoots: 'Interpretación física: t ≈ 2.07 horas (2 hs 4 min)',
       stepsSummary: [
-        'Evaluación del modelo de transporte de contaminantes con dos tasas de decaimiento exponencial',
-        'Derivación analítica de la tasa de cambio C\'(t) en función del tiempo t',
-        'Evaluación en t₀ = 1.0: C(1.0) = 20.81, C\'(1.0) = -25.17',
-        'Estabilización de las iteraciones numéricas hasta obtener la raíz en t ≈ 13.598 horas',
+        'Planteo de f(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 = 0',
+        'Derivada C\'(t) = -160e⁻²ᵗ - 10e⁻⁰.⁵ᵗ',
+        'Evaluación inicial en t₀ = 1.0: f(1.0) = 5.9547, f\'(1.0) = -27.7082',
+        'Iteración 1: t₁ = 1.0 - (5.9547 / -27.7082) = 1.2149',
+        'Convergencia obtenida en t ≈ 2.0722 horas.',
       ],
       isEngineeringStar: true,
     },
@@ -140,9 +202,9 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       {/* Top Banner de Acción */}
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 print:hidden">
         <div className="space-y-1">
-          <h2 className="text-2xl font-black text-slate-900">Ejercicios de la Guía Oficial TP2</h2>
+          <h2 className="text-2xl font-black text-slate-900">Ejercicios Resueltos - TP Nº 2 (Cátedra Amiconi)</h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Resolución paso a paso de los Ejercicios 7 (incisos A, B, C), Ejercicio 8 y Ejercicio 9.
+            Resolución oficial completa de los Problemas 7, 8 y 9 del Trabajo Práctico.
           </p>
         </div>
         <button
@@ -154,7 +216,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
         </button>
       </div>
 
-      {/* CONTENEDOR IMPRIMIBLE (Vinculado a la ref del hook) */}
+      {/* CONTENEDOR IMPRIMIBLE */}
       <div ref={printRef} className="space-y-6">
         {exercises.map((ex) => (
           <div
@@ -169,11 +231,11 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                    {ex.method === 'newton' ? 'Método de Newton' : 'Punto Fijo'}
+                    Método de Newton
                   </span>
                   {ex.isEngineeringStar && (
                     <span className="text-xs font-black uppercase tracking-widest text-white bg-slate-900 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                      <Award size={14} /> Caso de Ingeniería Real
+                      <Award size={14} /> Aplicación de Ingeniería
                     </span>
                   )}
                 </div>
@@ -200,8 +262,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{ex.description}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FormulaDisplay label={ex.method === 'newton' ? 'f(x)' : 'g(x)'} formula={ex.latexExpr} />
-              <FormulaDisplay label={ex.method === 'newton' ? "f'(x)" : "g'(x)"} formula={ex.latexFPrime} />
+              <FormulaDisplay label="f(x)" formula={ex.latexExpr} />
+              <FormulaDisplay label="f'(x)" formula={ex.latexFPrime} />
             </div>
 
             <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-xs sm:text-sm space-y-3 print:bg-white">

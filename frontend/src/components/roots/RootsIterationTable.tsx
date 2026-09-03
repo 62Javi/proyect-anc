@@ -59,7 +59,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
           </thead>
           <tbody className="divide-y divide-slate-100 font-mono">
             {type === 'newton'
-              ? newtonSteps.map((step) => {
+              ? newtonSteps.map((step, index) => {
                   const isSelected = activeStep === step.iteration;
                   return (
                     <tr
@@ -72,7 +72,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                       }`}
                     >
                       <td className="py-2.5 px-4 text-center text-slate-500 font-sans font-bold">
-                        {step.iteration}
+                        {index}
                       </td>
                       <td className="py-2.5 px-4 text-slate-900">{step.xn.toFixed(6)}</td>
                       <td className="py-2.5 px-4 text-slate-600">{step.fxn.toFixed(6)}</td>
@@ -95,7 +95,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                     </tr>
                   );
                 })
-              : fixedPointSteps.map((step) => {
+              : fixedPointSteps.map((step, index) => {
                   const isSelected = activeStep === step.iteration;
                   return (
                     <tr
@@ -108,7 +108,7 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                       }`}
                     >
                       <td className="py-2.5 px-4 text-center text-slate-500 font-sans font-bold">
-                        {step.iteration}
+                        {index}
                       </td>
                       <td className="py-2.5 px-4 text-slate-900">{step.xn.toFixed(6)}</td>
                       <td className="py-2.5 px-4 text-slate-600">{step.gxn.toFixed(6)}</td>
@@ -136,4 +136,5 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
     </div>
   );
 };
+
 export default RootsIterationTable;

@@ -33,7 +33,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
   );
   const [x0, setX0] = useState<number>(initialConfig?.x0 ?? 4.0);
   const [tolerance, setTolerance] = useState<number>(
-    initialConfig?.tolerance ?? 1e-4
+    initialConfig?.tolerance ?? 0.1 // Mayor tasa de error por defecto (10⁻¹)
   );
   const [maxIterations, setMaxIterations] = useState<number>(
     initialConfig?.maxIterations ?? 25
@@ -46,24 +46,6 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
   const [fixedPointResult, setFixedPointResult] =
     useState<FixedPointResponse | null>(null);
   const [activeStep, setActiveStep] = useState<number | undefined>(undefined);
-
-  // Sync con prop de ejercicios
-  useEffect(() => {
-    if (initialConfig) {
-      setMethod(initialConfig.method);
-      setExpression(initialConfig.expression);
-      setX0(initialConfig.x0);
-      setTolerance(initialConfig.tolerance);
-      setMaxIterations(initialConfig.maxIterations);
-      handleCalculateWith(
-        initialConfig.method,
-        initialConfig.expression,
-        initialConfig.x0,
-        initialConfig.tolerance,
-        initialConfig.maxIterations
-      );
-    }
-  }, [initialConfig]);
 
   const handleCalculateWith = async (
     curMethod: RootMethod,
@@ -107,6 +89,25 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
     }
   };
 
+  // Sincronización cuando cambia la prop initialConfig
+  useEffect(() => {
+    if (initialConfig) {
+      setMethod(initialConfig.method);
+      setExpression(initialConfig.expression);
+      setX0(initialConfig.x0);
+      setTolerance(initialConfig.tolerance);
+      setMaxIterations(initialConfig.maxIterations);
+
+      handleCalculateWith(
+        initialConfig.method,
+        initialConfig.expression,
+        initialConfig.x0,
+        initialConfig.tolerance,
+        initialConfig.maxIterations
+      );
+    }
+  }, [initialConfig]);
+
   const handleCalculate = () => {
     handleCalculateWith(method, expression, x0, tolerance, maxIterations);
   };
@@ -125,7 +126,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       method: 'newton',
       expr: 'x**2 - 4*x - 45',
       x0: 4.0,
-      tol: 1e-4,
+      tol: 0.1,
     },
     {
       name: 'x - 0.8 - 0.2·sen(x)',
@@ -133,7 +134,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       method: 'newton',
       expr: 'x - 0.8 - 0.2*sin(x)',
       x0: 0.7854,
-      tol: 1e-4,
+      tol: 0.1,
     },
     {
       name: 'x - cos(x) (Dottie)',
@@ -141,7 +142,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       method: 'newton',
       expr: 'x - cos(x)',
       x0: 0.7854,
-      tol: 1e-4,
+      tol: 0.1,
     },
     {
       name: 'g(x) = 0.8 + 0.2·sen(x)',
@@ -149,7 +150,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       method: 'fixed-point',
       expr: '0.8 + 0.2*sin(x)',
       x0: 0.7854,
-      tol: 1e-4,
+      tol: 0.1,
     },
     {
       name: 'TP2 Ej. 9: Bacterias Río',
@@ -157,7 +158,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       method: 'newton',
       expr: '70*exp(-1.5*x) + 25*exp(-0.075*x) - 9',
       x0: 1.0,
-      tol: 1e-4,
+      tol: 0.1,
     },
   ];
 
@@ -224,7 +225,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
           </div>
 
           {/* Form Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
             <div className="sm:col-span-2 space-y-2">
               <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                 {method === 'newton' ? 'Función f(x) = 0' : 'Función de iteración g(x)'}
@@ -260,15 +261,32 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
                 Tolerancia (<InlineMath math="\varepsilon" />)
               </label>
               <select
-                value={tolerance}
-                onChange={(e) => setTolerance(parseFloat(e.target.value))}
-                className="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-mono font-bold text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
+                value={String(tolerance)}
+                onChange={(e) => setTolerance(Number(e.target.value))}
+                className="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-mono font-bold text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900 cursor-pointer"
               >
-                <option value="1e-3">10⁻³ (0.001)</option>
-                <option value="1e-4">10⁻⁴ (0.0001)</option>
-                <option value="1e-6">10⁻⁶ (0.000001)</option>
-                <option value="1e-8">10⁻⁸</option>
+                <option value="0.1">10⁻¹ (0.1)</option>
+                <option value="0.01">10⁻² (0.01)</option>
+                <option value="0.001">10⁻³ (0.001)</option>
+                <option value="0.0001">10⁻⁴ (0.0001)</option>
+                <option value="0.000001">10⁻⁶ (0.000001)</option>
+                <option value="0.00000001">10⁻⁸ (0.00000001)</option>
               </select>
+            </div>
+
+            {/* Máximo de Iteraciones */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                Max. Iteraciones
+              </label>
+              <input
+                type="number"
+                min={1}
+                max={500}
+                value={maxIterations}
+                onChange={(e) => setMaxIterations(parseInt(e.target.value, 10) || 1)}
+                className="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-mono font-bold text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
+              />
             </div>
           </div>
 
