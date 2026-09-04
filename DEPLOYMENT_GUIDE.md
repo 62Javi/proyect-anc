@@ -3,7 +3,7 @@
 Este documento detalla las restricciones y la configuración necesaria para que el proyecto funcione correctamente en la Raspberry Pi (Entorno de Producción).
 
 ## ⚠️ El error de la "Pantalla en Blanco"
-Si el proyecto funciona en `localhost` pero muestra una pantalla en blanco en `anc.sixtor.site`, se debe generalmente a que se está intentando usar el servidor de desarrollo en lugar del de producción.
+Si el proyecto funciona en `localhost` pero muestra una pantalla en blanco en `anc.sixtor.com`, se debe generalmente a que se está intentando usar el servidor de desarrollo en lugar del de producción.
 
 ### ¿Por qué ocurre?
 1. **Vite Dev Server vs Túneles**: Vite en desarrollo sirve archivos como módulos ESM. Cloudflare y los túneles tienen dificultades para manejar cientos de peticiones de módulos simultáneas, lo que causa errores de carga.
@@ -28,7 +28,7 @@ En la Raspberry Pi, el frontend **DEBE** ser compilado y servido por Nginx.
 
 ### 2. Backend (FastAPI)
 - **Puerto**: Interno `8000`, mapeado al **8003** externo.
-- **CORS**: El backend debe permitir explícitamente el origen `https://anc.sixtor.site`.
+- **CORS**: El backend debe permitir explícitamente el origen `https://anc.sixtor.com`.
 
 ### 3. Puertos Críticos
 Para mantener la compatibilidad con el túnel de Cloudflare, **NO CAMBIAR** los puertos externos:
