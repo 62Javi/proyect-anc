@@ -119,10 +119,10 @@ La aplicacion se encuentra operativa en servidor dedicado:
 
 | Integrante | Legajo |
 | :--- | :--- |
-| Sixto Javier Castro Cope | 32797 |
-| [Nombre y Apellido] | [Legajo] |
-| [Nombre y Apellido] | [Legajo] |
-| [Nombre y Apellido] | [Legajo] |
+| Castro Cope Sixto Javier | 32797 |
+| Figueroa Rodrigo Ivan | 31839 |
+| Orellana Maximiliano Octavio | 32803 |
+| Portillo Franco Javier | 31089 |
 
 ---
 
