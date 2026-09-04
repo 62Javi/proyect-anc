@@ -11,7 +11,6 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 
 ## Specialized Skills (Installed in .agents/skills/)
 - **UI/UX Pro Max**: MUST be used for all visual design decisions (colors, typography, spacing). Always prioritize mobile-specific rules and "Phone-First" philosophy.
-- **Tavily Search/Research**: Use for deep technical investigations or finding updated documentation for backend libraries.
 - **Universal Verify (Global)**: Use the `verify` command in any project to auto-validate code. It supports Rust, Python, and Node.js. It helps me auto-correct my own errors before delivery.
 
 ## Docker-First Mandate (CRITICAL)
@@ -28,7 +27,7 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 - **Local Development**: 
   - Developers may change external ports in `docker-compose.yml` (e.g., `8000:8000`) for local testing if needed.
   - **MANDATORY**: All changes must be reverted to `8003/8083` before pushing or deploying to the Raspberry Pi to maintain Cloudflare Tunnel compatibility.
-- **Cloudflare Tunnel**: `anc.sixtor.site` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
+- **Cloudflare Tunnel**: `anc.sixtor.com` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
 - **Image Strategy**: Built locally on Pi due to network/arch specificities.
 
 ## Project Structure
@@ -69,6 +68,8 @@ frontend/
 - `001-fourier-visualization`: Implemented end-to-end Fourier series analyzer.
 - `002-pi-deployment`: Optimized Docker for Raspberry Pi (ports 8003/8083) and configured Cloudflare Tunnel.
 - `003-multi-tool-restructuring`: Refactored frontend with React Router and established a multi-page architecture for future tools.
+- `004-roots-step-by-step-latex`: Implemented clean collapsible step-by-step resolution with LaTeX formula substitutions for Newton iterations.
+- `005-dev-hot-reload`: Enabled instant Hot-Reload (Vite HMR on frontend and Uvicorn --reload on backend) via Docker volumes and override configuration, eliminating image rebuilds during local development.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

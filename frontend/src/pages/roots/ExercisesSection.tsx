@@ -1,11 +1,11 @@
 import React from 'react';
 import FormulaDisplay from '../../components/FormulaDisplay';
-import InlineMath from '../../components/InlineMath';
-import { ArrowRight, CheckCircle2, Play, Award, Printer } from 'lucide-react';
+import { Play, Award, Printer } from 'lucide-react';
 import { useAppPrint } from '../../hooks/useAppPrint';
 import type { SolverConfig, RootMethod } from '../../types/roots';
+import ExerciseStepAccordion from '../../components/roots/ExerciseStepAccordion';
 
-interface ExerciseItem {
+export interface ExerciseItem {
   id: string;
   title: string;
   description: string;
@@ -17,8 +17,8 @@ interface ExerciseItem {
   tolerance: number;
   maxIterations: number;
   expectedRoot: number;
-  analyticalRoots: string;
-  stepsSummary: string[];
+  analyticalRoots?: string;
+  iterations: string[];
   isEngineeringStar?: boolean;
 }
 
@@ -27,14 +27,14 @@ interface ExercisesSectionProps {
 }
 
 export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExercise }) => {
-  const { printRef, handlePrint } = useAppPrint('Ejercicios-Resueltos-TP2-Amiconi');
+  const { printRef, handlePrint } = useAppPrint('Ejercicios-Resueltos-TP2');
 
   const exercises: ExerciseItem[] = [
     // --- PROBLEMA 7 ---
     {
       id: 'ej-7a1',
-      title: 'Problema 7 - Inciso a1: Polinomio Cuadrático (x₀ = 0.5)',
-      description: 'Estimar el valor de la raíz con el método de Newton realizando 4 iteraciones partiendo de x₀ = 0.5.',
+      title: 'Problema 7 - Inciso a1: f(x) = x² - 4x - 45 (x₀ = 0.5)',
+      description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de x₀ = 0.5.',
       method: 'newton',
       expression: 'x**2 - 4*x - 45',
       latexExpr: 'f(x) = x^2 - 4x - 45',
@@ -43,18 +43,17 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       tolerance: 1e-4,
       maxIterations: 4,
       expectedRoot: -5.0,
-      analyticalRoots: 'Raíces analíticas exactas: x = 9 y x = -5',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 0.5: f(0.5) = -46.75, f\'(0.5) = -3.0',
-        'Cálculo de x₁ = 0.5 - (-46.75 / -3.0) = -15.0833',
-        'Evaluación en x₁: f(-15.0833) = 242.84, f\'(-15.0833) = -34.1666',
-        'Convergencia hacia la raíz negativa x = -5 en 4 iteraciones.',
+      iterations: [
+        'x_0 = 0.5 - \\frac{(0.5)^2 - 4(0.5) - 45}{2(0.5) - 4} = 0.5 - \\frac{-46.75}{-3.0} = -15.0833',
+        'x_1 = -15.0833 - \\frac{(-15.0833)^2 - 4(-15.0833) - 45}{2(-15.0833) - 4} = -15.0833 - \\frac{242.84}{-34.17} = -7.9758',
+        'x_2 = -7.9758 - \\frac{(-7.9758)^2 - 4(-7.9758) - 45}{2(-7.9758) - 4} = -7.9758 - \\frac{50.52}{-19.95} = -5.4438',
+        'x_3 = -5.4438 - \\frac{(-5.4438)^2 - 4(-5.4438) - 45}{2(-5.4438) - 4} = -5.4438 - \\frac{6.41}{-14.89} = -5.0132 \\approx -5',
       ],
     },
     {
       id: 'ej-7a2',
-      title: 'Problema 7 - Inciso a2: Polinomio Cuadrático (x₀ = 4.0)',
-      description: 'Estimar el valor de la raíz con el método de Newton realizando 4 iteraciones partiendo de x₀ = 4.0.',
+      title: 'Problema 7 - Inciso a2: f(x) = x² - 4x - 45 (x₀ = 4)',
+      description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de x₀ = 4.',
       method: 'newton',
       expression: 'x**2 - 4*x - 45',
       latexExpr: 'f(x) = x^2 - 4x - 45',
@@ -63,17 +62,16 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       tolerance: 1e-4,
       maxIterations: 4,
       expectedRoot: 9.0,
-      analyticalRoots: 'Raíces analíticas exactas: x = 9 y x = -5',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 4.0: f(4) = -45.0, f\'(4) = 4.0',
-        'Cálculo de x₁ = 4.0 - (-45.0 / 4.0) = 15.25',
-        'Evaluación en x₁: f(15.25) = 126.56, f\'(15.25) = 26.5',
-        'Convergencia hacia la raíz positiva x = 9 en 4 iteraciones.',
+      iterations: [
+        'x_0 = 4 - \\frac{4^2 - 4(4) - 45}{2(4) - 4} = 4 - \\frac{-45.0}{4.0} = 15.2500',
+        'x_1 = 15.25 - \\frac{(15.25)^2 - 4(15.25) - 45}{2(15.25) - 4} = 15.25 - \\frac{126.56}{26.50} = 10.4741',
+        'x_2 = 10.4741 - \\frac{(10.4741)^2 - 4(10.4741) - 45}{2(10.4741) - 4} = 10.4741 - \\frac{22.81}{16.95} = 9.1282',
+        'x_3 = 9.1282 - \\frac{(9.1282)^2 - 4(9.1282) - 45}{2(9.1282) - 4} = 9.1282 - \\frac{1.81}{14.26} = 9.0012 \\approx 9',
       ],
     },
     {
       id: 'ej-7b',
-      title: 'Problema 7 - Inciso b: Ecuación Trigonométrica Perturbada',
+      title: 'Problema 7 - Inciso b: f(x) = x - 0.8 - 0.2·sen(x) (x₀ = π/4)',
       description: 'Estimar el valor aproximado de la raíz con 4 iteraciones partiendo de x₀ = π/4 (0.7854 rad).',
       method: 'newton',
       expression: 'x - 0.8 - 0.2*sin(x)',
@@ -83,12 +81,11 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       tolerance: 1e-4,
       maxIterations: 4,
       expectedRoot: 0.964334,
-      analyticalRoots: 'Raíz única en el dominio real x ≈ 0.964334',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 0.7854: f(0.7854) = -0.1560, f\'(0.7854) = 0.8586',
-        'Cálculo de x₁ = 0.7854 - (-0.1560 / 0.8586) = 0.9671',
-        'Evaluación en x₁: f(0.9671) = 0.0024, f\'(0.9671) = 0.8865',
-        'Convergencia de alta precisión obtenida al cabo de 4 iteraciones.',
+      iterations: [
+        'x_0 = \\frac{\\pi}{4} - \\frac{\\frac{\\pi}{4} - 0.8 - 0.2\\sin\\left(\\frac{\\pi}{4}\\right)}{1 - 0.2\\cos\\left(\\frac{\\pi}{4}\\right)} = 0.7854 - \\frac{-0.1560}{0.8586} = 0.9671',
+        'x_1 = 0.9671 - \\frac{0.9671 - 0.8 - 0.2\\sin(0.9671)}{1 - 0.2\\cos(0.9671)} = 0.9671 - \\frac{0.0025}{0.8865} = 0.9643',
+        'x_2 = 0.9643 - \\frac{0.9643 - 0.8 - 0.2\\sin(0.9643)}{1 - 0.2\\cos(0.9643)} = 0.9643 - \\frac{0.0000}{0.8860} = 0.9643',
+        'x_3 = 0.9643 - \\frac{0.9643 - 0.8 - 0.2\\sin(0.9643)}{1 - 0.2\\cos(0.9643)} = 0.9643',
       ],
     },
 
@@ -106,10 +103,9 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       maxIterations: 25,
       expectedRoot: 0.739085,
       analyticalRoots: 'Número de Dottie (Punto fijo universal del coseno)',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 0.7854: f(0.7854) = 0.07829, f\'(0.7854) = 1.7071',
-        'Iteración 1: x₁ = 0.7854 - (0.07829 / 1.7071) = 0.7395',
-        'Iteración 2: x₂ = 0.7391, logrando un error |x₂ - x₁| < 10⁻³.',
+      iterations: [
+        'x_0 = \\frac{\\pi}{4} - \\frac{\\frac{\\pi}{4} - \\cos\\left(\\frac{\\pi}{4}\\right)}{1 + \\sin\\left(\\frac{\\pi}{4}\\right)} = 0.7854 - \\frac{0.0783}{1.7071} = 0.7395',
+        'x_1 = 0.7395 - \\frac{0.7395 - \\cos(0.7395)}{1 + \\sin(0.7395)} = 0.7395 - \\frac{0.0008}{1.6739} = 0.7391',
       ],
     },
     {
@@ -123,18 +119,17 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       x0: 0.7854,
       tolerance: 1e-3,
       maxIterations: 25,
-      expectedRoot: 0.828833,
-      analyticalRoots: 'Raíz en x ≈ 0.8288',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 0.7854: f(0.7854) = -0.8208, f\'(0.7854) = 2.7792',
-        'Iteración 1: x₁ = 0.7854 - (-0.8208 / 2.7792) = 1.0807',
-        'Iteración 2: x₂ = 0.8525, Iteración 3: x₃ = 0.8289',
-        'Cumple con el criterio de paro de error < 10⁻³.',
+      expectedRoot: 1.0650,
+      analyticalRoots: 'Raíz real en x ≈ 1.0650',
+      iterations: [
+        'x_0 = \\frac{\\pi}{4} - \\frac{e^{\\pi/4} + 2\\left(\\frac{\\pi}{4}\\right) + 2\\cos\\left(\\frac{\\pi}{4}\\right) - 6}{e^{\\pi/4} + 2 - 2\\sin\\left(\\frac{\\pi}{4}\\right)} = 0.7854 - \\frac{-0.8217}{2.7791} = 1.0811',
+        'x_1 = 1.0811 - \\frac{e^{1.0811} + 2(1.0811) + 2\\cos(1.0811) - 6}{e^{1.0811} + 2 - 2\\sin(1.0811)} = 1.0811 - \\frac{0.0508}{3.1829} = 1.0651',
+        'x_2 = 1.0651 - \\frac{e^{1.0651} + 2(1.0651) + 2\\cos(1.0651) - 6}{e^{1.0651} + 2 - 2\\sin(1.0651)} = 1.0651 - \\frac{0.0003}{3.1515} = 1.0650',
       ],
     },
     {
       id: 'ej-8c1',
-      title: 'Problema 8 - Inciso c1: Polinomio Cúbico (x₀ = 1.9)',
+      title: 'Problema 8 - Inciso c1: f(x) = x³ - 2x² - 3x - 10 (x₀ = 1.9)',
       description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x - 10 con error < 10⁻³ usando x₀ = 1.9.',
       method: 'newton',
       expression: 'x**3 - 2*x**2 - 3*x - 10',
@@ -143,17 +138,18 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       x0: 1.9,
       tolerance: 1e-3,
       maxIterations: 25,
-      expectedRoot: 3.425938,
-      analyticalRoots: 'Única raíz real x ≈ 3.4259',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = 1.9: f(1.9) = -16.061, f\'(1.9) = 0.23',
-        'Debido al valor pequeño de f\'(1.9), el primer salto x₁ resulta grande (x₁ = 71.73)',
-        'El método recalibra en las siguientes iteraciones hasta estabilizarse en la raíz x ≈ 3.4259.',
+      expectedRoot: 3.6030,
+      analyticalRoots: 'Única raíz real x ≈ 3.6030',
+      iterations: [
+        'x_0 = 1.9 - \\frac{(1.9)^3 - 2(1.9)^2 - 3(1.9) - 10}{3(1.9)^2 - 4(1.9) - 3} = 1.9 - \\frac{-16.0610}{0.2300} = 71.7304',
+        'x_1 = 71.7304 - \\frac{(71.7304)^3 - 2(71.7304)^2 - 3(71.7304) - 10}{3(71.7304)^2 - 4(71.7304) - 3} = 71.7304 - \\frac{358555.70}{15145.84} = 48.0569',
+        'x_2 = 48.0569 - \\frac{(48.0569)^3 - 2(48.0569)^2 - 3(48.0569) - 10}{3(48.0569)^2 - 4(48.0569) - 3} = 48.0569 - \\frac{106212.64}{6733.17} = 32.2824',
+        'x_3 = 32.2824 - \\frac{(32.2824)^3 - 2(32.2824)^2 - 3(32.2824) - 10}{3(32.2824)^2 - 4(32.2824) - 3} = 32.2824 - \\frac{31451.93}{2994.32} = 21.7785',
       ],
     },
     {
       id: 'ej-8c2',
-      title: 'Problema 8 - Inciso c2: Polinomio Cúbico (x₀ = -3.0)',
+      title: 'Problema 8 - Inciso c2: f(x) = x³ - 2x² - 3x - 10 (x₀ = -3.0)',
       description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x - 10 con error < 10⁻³ usando x₀ = -3.0.',
       method: 'newton',
       expression: 'x**3 - 2*x**2 - 3*x - 10',
@@ -162,12 +158,13 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       x0: -3.0,
       tolerance: 1e-3,
       maxIterations: 25,
-      expectedRoot: 3.425938,
-      analyticalRoots: 'Única raíz real x ≈ 3.4259',
-      stepsSummary: [
-        'Evaluación inicial en x₀ = -3.0: f(-3) = -46.0, f\'(-3) = 36.0',
-        'Iteración 1: x₁ = -3.0 - (-46.0 / 36.0) = -1.7222',
-        'Avanza a través de la zona plana hasta aproximar y converger en la raíz real x ≈ 3.4259.',
+      expectedRoot: 3.6030,
+      analyticalRoots: 'Única raíz real x ≈ 3.6030',
+      iterations: [
+        'x_0 = -3.0 - \\frac{(-3.0)^3 - 2(-3.0)^2 - 3(-3.0) - 10}{3(-3.0)^2 - 4(-3.0) - 3} = -3.0 - \\frac{-46.0000}{36.0000} = -1.7222',
+        'x_1 = -1.7222 - \\frac{(-1.7222)^3 - 2(-1.7222)^2 - 3(-1.7222) - 10}{3(-1.7222)^2 - 4(-1.7222) - 3} = -1.7222 - \\frac{-15.8736}{12.7870} = -0.4808',
+        'x_2 = -0.4808 - \\frac{(-0.4808)^3 - 2(-0.4808)^2 - 3(-0.4808) - 10}{3(-0.4808)^2 - 4(-0.4808) - 3} = -0.4808 - \\frac{-9.1311}{-0.3830} = -24.3197',
+        'x_3 = -24.3197 - \\frac{(-24.3197)^3 - 2(-24.3197)^2 - 3(-24.3197) - 10}{3(-24.3197)^2 - 4(-24.3197) - 3} = -24.3197 - \\frac{-15503.68}{1868.62} = -16.0228',
       ],
     },
 
@@ -184,14 +181,13 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       x0: 1.0,
       tolerance: 1e-4,
       maxIterations: 25,
-      expectedRoot: 2.0722,
-      analyticalRoots: 'Interpretación física: t ≈ 2.07 horas (2 hs 4 min)',
-      stepsSummary: [
-        'Planteo de f(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 = 0',
-        'Derivada C\'(t) = -160e⁻²ᵗ - 10e⁻⁰.⁵ᵗ',
-        'Evaluación inicial en t₀ = 1.0: f(1.0) = 5.9547, f\'(1.0) = -27.7082',
-        'Iteración 1: t₁ = 1.0 - (5.9547 / -27.7082) = 1.2149',
-        'Convergencia obtenida en t ≈ 2.0722 horas.',
+      expectedRoot: 2.3291,
+      analyticalRoots: 'Interpretación física: t ≈ 2.33 horas (2 horas y 20 minutos)',
+      iterations: [
+        't_0 = 1.0 - \\frac{80e^{-2(1.0)} + 20e^{-0.5(1.0)} - 7}{-160e^{-2(1.0)} - 10e^{-0.5(1.0)}} = 1.0 - \\frac{15.9574}{-27.7190} = 1.5757',
+        't_1 = 1.5757 - \\frac{80e^{-2(1.5757)} + 20e^{-0.5(1.5757)} - 7}{-160e^{-2(1.5757)} - 10e^{-0.5(1.5757)}} = 1.5757 - \\frac{5.5200}{-11.3952} = 2.0601',
+        't_2 = 2.0601 - \\frac{80e^{-2(2.0601)} + 20e^{-0.5(2.0601)} - 7}{-160e^{-2(2.0601)} - 10e^{-0.5(2.0601)}} = 2.0601 - \\frac{1.4391}{-6.1685} = 2.2934',
+        't_3 = 2.2934 - \\frac{80e^{-2(2.2934)} + 20e^{-0.5(2.2934)} - 7}{-160e^{-2(2.2934)} - 10e^{-0.5(2.2934)}} = 2.2934 - \\frac{0.1685}{-4.8065} = 2.3285',
       ],
       isEngineeringStar: true,
     },
@@ -202,12 +198,13 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       {/* Top Banner de Acción */}
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 print:hidden">
         <div className="space-y-1">
-          <h2 className="text-2xl font-black text-slate-900">Ejercicios Resueltos - TP Nº 2 (Cátedra Amiconi)</h2>
+          <h2 className="text-2xl font-black text-slate-900">Ejercicios Resueltos - TP Nº 2</h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Resolución oficial completa de los Problemas 7, 8 y 9 del Trabajo Práctico.
+            Resolución de los Problemas 7, 8 y 9 del Trabajo Práctico.
           </p>
         </div>
         <button
+          type="button"
           onClick={() => handlePrint()}
           className="flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
         >
@@ -243,6 +240,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
               </div>
 
               <button
+                type="button"
                 onClick={() =>
                   onLoadExercise({
                     method: ex.method,
@@ -266,25 +264,13 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
               <FormulaDisplay label="f'(x)" formula={ex.latexFPrime} />
             </div>
 
-            <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-xs sm:text-sm space-y-3 print:bg-white">
-              <span className="font-black text-slate-900 uppercase tracking-wider block text-xs">
-                Desarrollo Paso a Paso:
-              </span>
-              <ul className="space-y-1.5 text-slate-700 font-mono text-xs">
-                {ex.stepsSummary.map((step, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <ArrowRight size={14} className="text-slate-900 shrink-0 mt-0.5" />
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-slate-700">
-                <span className="font-sans font-medium text-xs">{ex.analyticalRoots}</span>
-                <span className="font-sans font-bold text-slate-900 flex items-center gap-1.5">
-                  <CheckCircle2 size={16} /> Raíz Calculada: <InlineMath math={`r \\approx ${ex.expectedRoot}`} />
-                </span>
-              </div>
-            </div>
+            {/* DESARROLLO PASO A PASO DESPLEGABLE */}
+            <ExerciseStepAccordion
+              iterations={ex.iterations}
+              analyticalRoots={ex.analyticalRoots}
+              expectedRoot={ex.expectedRoot}
+              isOpenDefault={true}
+            />
           </div>
         ))}
       </div>
