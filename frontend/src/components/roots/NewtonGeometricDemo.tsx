@@ -123,6 +123,17 @@ export const NewtonGeometricDemo: React.FC = () => {
   const nextXn = !isDerivativeZero ? currentXn - fxn / dfxn : null;
   const absError = nextXn !== null ? Math.abs(nextXn - currentXn) : null;
 
+  // LaTeX string for the active tangent line
+  const tangentFormulaLatex = useMemo(() => {
+    const fStr = fxn.toFixed(3);
+    if (isDerivativeZero) {
+      return `L_{${iteration}}(x) = ${fStr} \\quad \\text{(derivada nula)}`;
+    }
+    const dfStr = dfxn >= 0 ? `+ ${dfxn.toFixed(3)}` : `- ${Math.abs(dfxn).toFixed(3)}`;
+    const xnStr = currentXn >= 0 ? `- ${currentXn.toFixed(3)}` : `+ ${Math.abs(currentXn).toFixed(3)}`;
+    return `L_{${iteration}}(x) = ${fStr} ${dfStr} \\cdot (x ${xnStr})`;
+  }, [iteration, fxn, dfxn, currentXn, isDerivativeZero]);
+
   // Handle next iteration button (preserves previous iteration for color comparison)
   const handleNextIteration = () => {
     if (nextXn !== null && Number.isFinite(nextXn)) {
@@ -224,8 +235,8 @@ export const NewtonGeometricDemo: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
+            <span className="text-[11px] font-black uppercase tracking-widest text-slate-700 bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-full">
               Simulador Gráfico Interactivo
             </span>
           </div>
@@ -233,7 +244,7 @@ export const NewtonGeometricDemo: React.FC = () => {
             Deducción Geométrica: Rectas Tangentes & Comparativa
           </h3>
           <p className="text-xs text-slate-500">
-            Compara la recta tangente actual (roja) con la anterior (azul) y avanza paso a paso.
+            Visualiza la recta tangente actual (azul) junto al trazado previo (gris punteado) para analizar la convergencia paso a paso.
           </p>
         </div>
 
@@ -246,7 +257,7 @@ export const NewtonGeometricDemo: React.FC = () => {
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 selectedFuncId === fn.id
                   ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/80'
               }`}
             >
               {fn.name}
@@ -256,36 +267,44 @@ export const NewtonGeometricDemo: React.FC = () => {
       </div>
 
       {/* Math Banner & Formula */}
-      <div className="bg-slate-900 text-white rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md">
-        <div className="space-y-1">
+      <div className="bg-slate-900 text-white rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md border border-slate-800">
+        <div className="space-y-2 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-300">
-              Tangente Activa L_{iteration}(x)
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+              Tangente Activa <InlineMath math={`L_{${iteration}}(x)`} className="text-blue-400 font-bold" />
             </span>
           </div>
-          <div className="font-mono text-sm sm:text-base font-bold text-amber-300">
-            L_{iteration}(x) = {fxn.toFixed(3)} + ({dfxn.toFixed(3)}) · (x - {currentXn.toFixed(3)})
+          <div className="overflow-x-auto py-1 text-white">
+            <InlineMath math={tangentFormulaLatex} className="text-base sm:text-lg font-medium text-white" />
           </div>
           {prevTangent && (
-            <div className="text-xs font-mono text-blue-300 flex items-center gap-1.5 pt-0.5">
-              <span className="w-2 h-2 rounded-full bg-blue-400" />
-              <span>
-                Iteración anterior L_{prevTangent.iteration}(x) en x = {prevTangent.xn.toFixed(3)} (Corte fue {prevTangent.nextXn.toFixed(3)})
-              </span>
+            <div className="text-xs text-slate-400 flex flex-wrap items-center gap-1.5 pt-0.5">
+              <span className="w-2 h-2 rounded-full bg-slate-500 shrink-0" />
+              <span className="text-slate-400">Paso anterior:</span>
+              <InlineMath math={`L_{${prevTangent.iteration}}(x)`} className="text-slate-300 font-medium" />
+              <span className="text-slate-500">en</span>
+              <InlineMath math={`x_{${prevTangent.iteration}} = ${prevTangent.xn.toFixed(3)}`} className="text-slate-300" />
+              <span className="text-slate-600">•</span>
+              <span className="text-slate-400">corte eje x:</span>
+              <InlineMath math={`x_{${prevTangent.iteration + 1}} = ${prevTangent.nextXn.toFixed(3)}`} className="text-blue-300 font-semibold" />
             </div>
           )}
         </div>
 
         <div className="flex items-center gap-2.5 shrink-0">
-          <div className="bg-slate-800 px-3.5 py-2 rounded-xl border border-slate-700 text-center">
+          <div className="bg-slate-800/90 px-3.5 py-2 rounded-xl border border-slate-700/80 text-center shadow-xs">
             <span className="text-[9px] uppercase font-bold text-slate-400 block">Iteración</span>
-            <span className="font-mono text-sm sm:text-base font-black text-white">n = {iteration}</span>
+            <span className="text-sm sm:text-base font-black text-white">
+              <InlineMath math={`n = ${iteration}`} className="text-white font-bold" />
+            </span>
           </div>
 
-          <div className="bg-slate-800 px-3.5 py-2 rounded-xl border border-slate-700 text-center">
-            <span className="text-[9px] uppercase font-bold text-slate-400 block">Próximo xₙ₊₁</span>
-            <span className="font-mono text-sm sm:text-base font-black text-emerald-400">
+          <div className="bg-slate-800/90 px-3.5 py-2 rounded-xl border border-slate-700/80 text-center shadow-xs">
+            <span className="text-[9px] uppercase font-bold text-slate-400 block">
+              Próximo <InlineMath math="x_{n+1}" className="text-slate-400" />
+            </span>
+            <span className="font-mono text-sm sm:text-base font-black text-blue-400">
               {nextXn !== null ? nextXn.toFixed(4) : 'Indet.'}
             </span>
           </div>
@@ -337,29 +356,29 @@ export const NewtonGeometricDemo: React.FC = () => {
               isAnimationActive={false}
             />
 
-            {/* Previous Tangent Line (Blue dashed) */}
+            {/* Previous Tangent Line (Muted slate dashed) */}
             {prevTangent && (
               <Line
                 type="linear"
                 dataKey="prevTangent"
                 name={`Tangente Anterior L_${prevTangent.iteration}(x)`}
-                stroke="#3B82F6"
-                strokeWidth={2.2}
+                stroke="#94A3B8"
+                strokeWidth={2}
                 dot={false}
                 strokeDasharray="4 4"
                 isAnimationActive={false}
               />
             )}
 
-            {/* Current Tangent line (Red vibrant) */}
+            {/* Current Tangent line (Vibrant Cobalt Blue) */}
             <Line
               type="linear"
               dataKey="currentTangent"
               name={`Tangente Actual L_${iteration}(x)`}
-              stroke="#EF4444"
-              strokeWidth={2.5}
+              stroke="#2563EB"
+              strokeWidth={2.6}
               dot={false}
-              strokeDasharray="3 2"
+              strokeDasharray="4 2"
               isAnimationActive={false}
             />
           </LineChart>
@@ -370,16 +389,20 @@ export const NewtonGeometricDemo: React.FC = () => {
       <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-bold text-slate-700 pt-2 border-t border-slate-100">
         <div className="flex items-center gap-2">
           <span className="w-3.5 h-1 bg-slate-900 rounded-full" />
-          <span>Curva f(x)</span>
+          <span>Curva <InlineMath math="f(x)" /></span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-3.5 h-1 bg-rose-500 rounded-full border-b border-dashed" />
-          <span>Tangente Actual Lₙ(x) (Rojo)</span>
+          <span className="w-3.5 h-1 bg-blue-600 rounded-full border-b border-dashed" />
+          <span className="flex items-center gap-1">
+            Tangente Actual <InlineMath math={`L_{${iteration}}(x)`} className="text-blue-600 font-bold" /> (Azul)
+          </span>
         </div>
         {prevTangent && (
           <div className="flex items-center gap-2">
-            <span className="w-3.5 h-1 bg-blue-500 rounded-full border-b border-dashed" />
-            <span>Tangente Anterior Lₙ₋₁(x) (Azul)</span>
+            <span className="w-3.5 h-1 bg-slate-400 rounded-full border-b border-dashed" />
+            <span className="flex items-center gap-1">
+              Tangente Anterior <InlineMath math={`L_{${prevTangent.iteration}}(x)`} className="text-slate-500 font-bold" /> (Gris histórico)
+            </span>
           </div>
         )}
       </div>
@@ -389,9 +412,9 @@ export const NewtonGeometricDemo: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Sliders size={18} className="text-slate-700" />
-            <label className="text-xs font-black uppercase tracking-wider text-slate-800">
-              Punto por donde pasa <InlineMath math="x_n" />:{' '}
-              <span className="text-sm font-mono text-indigo-600 font-bold ml-1">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1">
+              Punto por donde pasa <InlineMath math="x_n" />:
+              <span className="text-sm font-mono text-slate-900 font-bold ml-1 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shadow-xs">
                 {currentXn.toFixed(3)}
               </span>
             </label>
@@ -404,13 +427,15 @@ export const NewtonGeometricDemo: React.FC = () => {
               className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
               title="Avanzar a x_{n+1}"
             >
-              <span>Próxima Iteración (xₙ₊₁)</span>
+              <span>Próxima Iteración (</span>
+              <InlineMath math={`x_{${iteration + 1}}`} className="text-white font-bold" />
+              <span>)</span>
               <ArrowRight size={15} />
             </button>
 
             <button
               onClick={handleReset}
-              className="p-2.5 bg-white hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 text-xs font-bold transition-colors cursor-pointer"
+              className="p-2.5 bg-white hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 text-xs font-bold transition-colors cursor-pointer shadow-xs"
               title="Reiniciar punto inicial"
             >
               <RotateCcw size={16} />
@@ -442,51 +467,59 @@ export const NewtonGeometricDemo: React.FC = () => {
 
       {/* Real-time Math Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-        <div className="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Punto actual xₙ</span>
+        <div className="bg-white border border-slate-200 p-3.5 rounded-2xl shadow-xs">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+            Punto <InlineMath math={`x_{${iteration}}`} />
+          </span>
           <span className="text-sm font-black font-mono text-slate-900">{currentXn.toFixed(4)}</span>
         </div>
 
-        <div className="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Altura f(xₙ)</span>
+        <div className="bg-white border border-slate-200 p-3.5 rounded-2xl shadow-xs">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+            Altura <InlineMath math={`f(x_{${iteration}})`} />
+          </span>
           <span className="text-sm font-black font-mono text-slate-900">{fxn.toFixed(4)}</span>
         </div>
 
-        <div className="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Pendiente f'(xₙ)</span>
+        <div className="bg-white border border-slate-200 p-3.5 rounded-2xl shadow-xs">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+            Pendiente <InlineMath math={`f'(x_{${iteration}})`} />
+          </span>
           <span className="text-sm font-black font-mono text-slate-900">
             {isDerivativeZero ? '0 (Falla)' : dfxn.toFixed(4)}
           </span>
         </div>
 
-        <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-2xl">
-          <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">Corte xₙ₊₁</span>
-          <span className="text-sm font-black font-mono text-emerald-800">
+        <div className="bg-blue-50/70 border border-blue-200/80 p-3.5 rounded-2xl shadow-xs">
+          <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider block mb-1">
+            Corte <InlineMath math={`x_{${iteration + 1}}`} className="text-blue-700 font-bold" />
+          </span>
+          <span className="text-sm font-black font-mono text-blue-900">
             {nextXn !== null ? nextXn.toFixed(4) : 'Indeterminado'}
           </span>
         </div>
       </div>
 
       {/* Step Explanation Banner */}
-      <div className="bg-slate-100/80 border border-slate-200 rounded-2xl p-4 text-xs text-slate-700 flex items-start gap-3">
-        <HelpCircle size={18} className="text-slate-900 shrink-0 mt-0.5" />
-        <div className="space-y-1 leading-relaxed">
-          <strong className="text-slate-900 font-bold">
+      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 text-xs text-slate-700 flex items-start gap-3">
+        <HelpCircle size={18} className="text-slate-800 shrink-0 mt-0.5" />
+        <div className="space-y-1.5 leading-relaxed">
+          <strong className="text-slate-900 font-bold block">
             Procedimiento en la Iteración {iteration}:
           </strong>
           <p>
-            1. <strong>Tangente Actual (Roja):</strong> Evaluamos <InlineMath math={`f(x_${iteration}) = ${fxn.toFixed(3)}`} /> y trazamos <InlineMath math={`L_${iteration}(x)`} /> con pendiente <InlineMath math={`f'(x_${iteration}) = ${dfxn.toFixed(3)}`} />.
+            1. <strong>Tangente Actual (Azul):</strong> Evaluamos <InlineMath math={`f(x_${iteration}) = ${fxn.toFixed(3)}`} /> y trazamos la recta <InlineMath math={`L_${iteration}(x)`} /> con pendiente <InlineMath math={`f'(x_${iteration}) = ${dfxn.toFixed(3)}`} />.
           </p>
           <p>
-            2. <strong>Corte en eje horizontal:</strong> La tangente roja corta al eje <InlineMath math="y=0" /> en <InlineMath math={`x_${iteration + 1} = ${nextXn !== null ? nextXn.toFixed(4) : '...'}`} />.
+            2. <strong>Corte en eje horizontal:</strong> La tangente azul corta al eje <InlineMath math="y=0" /> en <InlineMath math={`x_${iteration + 1} = ${nextXn !== null ? nextXn.toFixed(4) : '...'}`} />.
           </p>
           {prevTangent && (
-            <p className="text-blue-700 font-medium">
-              3. <strong>Comparación visual:</strong> Observa la tangente anterior (línea azul) en <InlineMath math={`x_${prevTangent.iteration} = ${prevTangent.xn.toFixed(3)}`} /> respecto a la nueva tangente roja. ¡Cada iteración aproxima más la recta tangente al comportamiento de la raíz!
+            <p className="text-slate-600">
+              3. <strong>Comparación visual:</strong> Observa el trazado previo (línea gris punteada) en <InlineMath math={`x_${prevTangent.iteration} = ${prevTangent.xn.toFixed(3)}`} /> respecto a la nueva tangente azul. ¡Cada paso acerca más la aproximación a la raíz real!
             </p>
           )}
           {absError !== null && (
-            <p className="text-slate-900 font-bold pt-1">
+            <p className="text-slate-900 font-bold pt-1 border-t border-slate-200/60">
               Diferencia de paso: <InlineMath math={`|x_${iteration + 1} - x_${iteration}| = ${absError.toFixed(5)}`} />
             </p>
           )}

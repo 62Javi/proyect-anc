@@ -111,14 +111,14 @@ export const analyzeAudio = async (file: File): Promise<AudioAnalysisResponse> =
 
 export interface NewtonRequest {
   expression: string;
-  x0: number;
+  x0: number | string;
   tolerance: number;
   max_iterations: number;
 }
 
 export interface FixedPointRequest {
   g_expression: string;
-  x0: number;
+  x0: number | string;
   tolerance: number;
   max_iterations: number;
 }

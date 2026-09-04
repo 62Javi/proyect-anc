@@ -17,10 +17,11 @@ export const InlineMath: React.FC<InlineMathProps> = ({ math, className = '', bl
       let formatted = math
         .replace(/\*\*/g, '^')
         .replace(/\*/g, ' \\cdot ')
-        .replace(/exp\(([^)]+)\)/g, 'e^{$1}')
-        .replace(/sin\(([^)]+)\)/g, '\\sin($1)')
-        .replace(/cos\(([^)]+)\)/g, '\\cos($1)')
-        .replace(/sqrt\(([^)]+)\)/g, '\\sqrt{$1}');
+        .replace(/(?<!\\)exp\(([^)]+)\)/g, (_m, p1) => `e^{${p1}}`)
+        .replace(/(?<!\\)sin\(([^)]+)\)/g, (_m, p1) => `\\sin(${p1})`)
+        .replace(/(?<!\\)cos\(([^)]+)\)/g, (_m, p1) => `\\cos(${p1})`)
+        .replace(/(?<!\\)tan\(([^)]+)\)/g, (_m, p1) => `\\tan(${p1})`)
+        .replace(/(?<!\\)sqrt\(([^)]+)\)/g, (_m, p1) => `\\sqrt{${p1}}`);
 
       try {
         katex.render(formatted, spanRef.current, {

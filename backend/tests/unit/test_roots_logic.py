@@ -65,3 +65,20 @@ def test_fixed_point_cos(calculator):
     assert res.converged is True
     assert res.root is not None
     assert math.isclose(res.root, 0.739085, abs_tol=1e-3)
+
+
+def test_symbolic_seeds(calculator):
+    # Newton with symbolic pi/4
+    req_newton = NewtonRequest(expression="x - cos(x)", x0="pi/4", tolerance=1e-4, max_iterations=20)
+    res_newton = calculator.calculate_newton(req_newton)
+    assert res_newton.converged is True
+    assert res_newton.root is not None
+    assert math.isclose(res_newton.root, 0.739085, abs_tol=1e-3)
+
+    # Fixed point with symbolic pi/4
+    req_fp = FixedPointRequest(g_expression="cos(x)", x0="pi/4", tolerance=1e-4, max_iterations=30)
+    res_fp = calculator.calculate_fixed_point(req_fp)
+    assert res_fp.converged is True
+    assert res_fp.root is not None
+    assert math.isclose(res_fp.root, 0.739085, abs_tol=1e-3)
+

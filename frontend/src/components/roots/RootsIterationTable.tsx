@@ -1,5 +1,6 @@
 import React from 'react';
 import type { NewtonStep, FixedPointStep } from '../../services/api';
+import InlineMath from '../InlineMath';
 
 interface RootsIterationTableProps {
   type: 'newton' | 'fixed-point';
@@ -7,6 +8,32 @@ interface RootsIterationTableProps {
   fixedPointSteps?: FixedPointStep[];
   activeStep?: number;
   onSelectStep?: (step: number) => void;
+}
+
+function renderErrorAbs(val: number): React.ReactNode {
+  if (Math.abs(val) < 1e-15 || Object.is(val, 0) || Object.is(val, -0)) return '0';
+  if (val >= 1e-4) return val.toFixed(6);
+  const [mantissa, exponent] = val.toExponential(4).split('e');
+  const expNum = parseInt(exponent, 10);
+  const cleanMantissa = parseFloat(mantissa).toString();
+  return <InlineMath math={`${cleanMantissa} \\times 10^{${expNum}}`} />;
+}
+
+function renderRelError(val: number | null | undefined): React.ReactNode {
+  if (val === null || val === undefined) return '-';
+  if (Math.abs(val) < 1e-15 || Object.is(val, 0) || Object.is(val, -0)) return '0%';
+  if (val < 1e-4) {
+    const [mantissa, exponent] = val.toExponential(4).split('e');
+    const expNum = parseInt(exponent, 10);
+    const cleanMantissa = parseFloat(mantissa).toString();
+    return (
+      <span className="inline-flex items-center gap-0.5">
+        <InlineMath math={`${cleanMantissa} \\times 10^{${expNum}}`} />
+        <span>%</span>
+      </span>
+    );
+  }
+  return (val * 100).toFixed(4) + '%';
 }
 
 export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
@@ -81,16 +108,10 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                         {step.xn_plus_1.toFixed(6)}
                       </td>
                       <td className="py-2.5 px-4 text-amber-700 font-medium">
-                        {step.error_abs < 1e-4
-                          ? step.error_abs.toExponential(4)
-                          : step.error_abs.toFixed(6)}
+                        {renderErrorAbs(step.error_abs)}
                       </td>
                       <td className="py-2.5 px-4 text-slate-500">
-                        {step.error_rel !== null && step.error_rel !== undefined
-                          ? step.error_rel < 1e-4
-                            ? step.error_rel.toExponential(4)
-                            : (step.error_rel * 100).toFixed(4) + '%'
-                          : '-'}
+                        {renderRelError(step.error_rel)}
                       </td>
                     </tr>
                   );
@@ -116,16 +137,10 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
                         {step.xn_plus_1.toFixed(6)}
                       </td>
                       <td className="py-2.5 px-4 text-amber-700 font-medium">
-                        {step.error_abs < 1e-4
-                          ? step.error_abs.toExponential(4)
-                          : step.error_abs.toFixed(6)}
+                        {renderErrorAbs(step.error_abs)}
                       </td>
                       <td className="py-2.5 px-4 text-slate-500">
-                        {step.error_rel !== null && step.error_rel !== undefined
-                          ? step.error_rel < 1e-4
-                            ? step.error_rel.toExponential(4)
-                            : (step.error_rel * 100).toFixed(4) + '%'
-                          : '-'}
+                        {renderRelError(step.error_rel)}
                       </td>
                     </tr>
                   );

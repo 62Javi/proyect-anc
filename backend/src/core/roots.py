@@ -1,6 +1,6 @@
 import math
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 import sympy as sp
@@ -29,6 +29,30 @@ class RootFindingCalculator:
         self.transformations = standard_transformations + (
             implicit_multiplication_application,
         )
+
+    def _parse_scalar(self, val: Union[float, int, str]) -> float:
+        if isinstance(val, (int, float)):
+            return float(val)
+        try:
+            return float(val)
+        except (ValueError, TypeError):
+            pass
+        parsed = self._parse_expression(str(val))
+        try:
+            return float(parsed.evalf())
+        except Exception:
+            raise InvalidExpressionError(f"Valor inicial x0 inválido: {val}")
+
+    @staticmethod
+    def _format_tolerance_str(tol: float) -> str:
+        if tol > 0:
+            exp = math.log10(tol)
+            if abs(exp - round(exp)) < 1e-5:
+                return f"10^{{{int(round(exp))}}}"
+        if tol >= 1e-4:
+            return f"{tol:g}"
+        mantissa, exp_val = f"{tol:.1e}".split("e")
+        return f"{float(mantissa):g} \\times 10^{{{int(exp_val)}}}"
 
     def _parse_expression(self, expr_str: str) -> sp.Expr:
         try:
@@ -104,7 +128,7 @@ class RootFindingCalculator:
         steps: List[NewtonStep] = []
         tangents: List[Dict[str, Any]] = []
 
-        xn = float(request.x0)
+        xn = self._parse_scalar(request.x0)
         converged = False
         status = "running"
         message = ""
@@ -176,7 +200,7 @@ class RootFindingCalculator:
             if error_abs < request.tolerance or abs(fxn) < request.tolerance:
                 converged = True
                 status = "converged"
-                message = f"Convergencia alcanzada en {i} iteraciones con tolerancia {request.tolerance:.1e}."
+                message = f"Convergencia alcanzada en {i} iteraciones con un error menor a la tolerancia ($< {self._format_tolerance_str(request.tolerance)}$)."
                 xn = xn_plus_1
                 break
 
@@ -196,7 +220,7 @@ class RootFindingCalculator:
             status = "max_iterations_reached"
             message = (
                 f"Se alcanzó el número máximo de iteraciones ({request.max_iterations}) "
-                f"sin alcanzar la tolerancia {request.tolerance:.1e}."
+                f"sin lograr un error menor a la tolerancia ($< {self._format_tolerance_str(request.tolerance)}$)."
             )
 
         final_root = xn if converged else None
@@ -251,10 +275,10 @@ class RootFindingCalculator:
         g_prime_lambdified = sp.lambdify(self.x, g_prime_expr, modules=["numpy", "math"])
 
         steps: List[FixedPointStep] = []
-        cobweb_x: List[float] = [float(request.x0)]
+        xn = self._parse_scalar(request.x0)
+        cobweb_x: List[float] = [xn]
         cobweb_y: List[float] = [0.0]
 
-        xn = float(request.x0)
         converged = False
         status = "running"
         message = ""
@@ -300,7 +324,7 @@ class RootFindingCalculator:
             if error_abs < request.tolerance:
                 converged = True
                 status = "converged"
-                message = f"Convergencia alcanzada en {i} iteraciones con tolerancia {request.tolerance:.1e}."
+                message = f"Convergencia alcanzada en {i} iteraciones con un error menor a la tolerancia ($< {self._format_tolerance_str(request.tolerance)}$)."
                 xn = xn_plus_1
                 break
 
@@ -310,7 +334,7 @@ class RootFindingCalculator:
             status = "max_iterations_reached"
             message = (
                 f"Se alcanzó el número máximo de iteraciones ({request.max_iterations}) "
-                f"sin alcanzar la tolerancia {request.tolerance:.1e}."
+                f"sin lograr un error menor a la tolerancia ($< {self._format_tolerance_str(request.tolerance)}$)."
             )
 
         final_root = xn if converged else None

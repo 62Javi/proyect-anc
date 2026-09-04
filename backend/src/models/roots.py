@@ -1,17 +1,17 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field
 
 
 class NewtonRequest(BaseModel):
     expression: str = Field(..., description="Mathematical function f(x) = 0", example="x**2 - 4*x - 45")
-    x0: float = Field(..., description="Initial starting value x0", example=0.5)
+    x0: Union[float, str] = Field(..., description="Initial starting value x0 (numeric or symbolic, e.g. 'pi/4')", example=0.5)
     tolerance: float = Field(1e-4, description="Stopping error tolerance |x_{n+1} - x_n| < tol", example=1e-3)
     max_iterations: int = Field(50, description="Maximum number of iterations", example=20)
 
 
 class FixedPointRequest(BaseModel):
     g_expression: str = Field(..., description="Iteration function g(x) such that x = g(x)", example="0.8 + 0.2*sin(x)")
-    x0: float = Field(..., description="Initial starting value x0", example=0.7854)
+    x0: Union[float, str] = Field(..., description="Initial starting value x0 (numeric or symbolic, e.g. 'pi/4')", example=0.7854)
     tolerance: float = Field(1e-4, description="Stopping error tolerance |x_{n+1} - x_n| < tol", example=1e-3)
     max_iterations: int = Field(50, description="Maximum number of iterations", example=20)
 

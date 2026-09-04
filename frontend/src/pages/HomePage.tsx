@@ -25,7 +25,7 @@ export default function HomePage() {
       icon: <Activity size={24} />,
       path: '/fourier',
       ready: true,
-      tag: 'Matemática Superior'
+      tag: 'Análisis Numérico'
     },
     {
       title: 'Análisis de Armónicos',
