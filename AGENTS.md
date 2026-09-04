@@ -20,15 +20,18 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 - **Support**: If a user lacks Docker, prioritize guiding them through Docker Desktop (Windows) or Docker Engine (Linux) installation instead of manual setup.
 
 ## Deployment Context & Port Configuration (CRITICAL)
-- **Host**: Raspberry Pi (`192.168.1.100`)
-- **Raspberry Pi Ports**: 
+- **Primary Host (Home/Local)**: Raspberry Pi (`192.168.1.100`)
   - **Backend**: `8003` (Internal `8000`)
   - **Frontend**: `8083` (Internal `80`)
+  - **Cloudflare Tunnel**: `anc.sixtor.com` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
+  - **Image Strategy**: Built locally on Pi due to network/arch specificities.
+- **Failover Host (100% Free Cloud High-Availability)**:
+  - **Frontend**: Cloudflare Pages (`anc2.sixtor.com` / `proyect-anc.pages.dev`).
+  - **Backend**: Render Free Web Service (`https://proyect-anc.onrender.com`).
+  - **Proxy Worker**: `frontend/public/_worker.js` automatically forwards `/api/*` to Render with zero CORS issues.
 - **Local Development**: 
   - Developers may change external ports in `docker-compose.yml` (e.g., `8000:8000`) for local testing if needed.
   - **MANDATORY**: All changes must be reverted to `8003/8083` before pushing or deploying to the Raspberry Pi to maintain Cloudflare Tunnel compatibility.
-- **Cloudflare Tunnel**: `anc.sixtor.com` -> `http://127.0.0.1:8083` (frontend) and `/api/*` -> `http://127.0.0.1:8003`.
-- **Image Strategy**: Built locally on Pi due to network/arch specificities.
 
 ## Project Structure
 ```text
