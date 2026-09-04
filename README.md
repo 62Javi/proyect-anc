@@ -9,9 +9,9 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-Plataforma web modular para calculo simbolico, experimentacion numerica y visualizacion interactiva de metodos matematicos aplicados.
+Plataforma web para calculo simbolico, experimentacion numerica y visualizacion interactiva de metodos matematicos aplicados.
 
-[Demo en Vivo](https://anc.sixtor.com) | [Inicio Rapido](#inicio-rapido-docker-first) | [Modulos Activos](#modulos-activos) | [Arquitectura](#arquitectura-modular-y-futuros-modulos) | [Integrantes](#integrantes)
+[Demo en Vivo](https://anc.sixtor.com) | [Inicio Rapido](#inicio-rapido-docker-first) | [Modulos](#modulos-de-la-plataforma) | [Tecnologias](#tecnologias-y-herramientas) | [Integrantes](#integrantes)
 
 </div>
 
@@ -19,27 +19,27 @@ Plataforma web modular para calculo simbolico, experimentacion numerica y visual
 
 ## Descripcion General
 
-Proyecto ANC es una plataforma web interactiva y modular desarrollada como soporte academico para la catedra de Analisis Numerico de la Universidad Tecnologica Nacional, Facultad Regional La Plata (UTN FRLP).
+Proyecto ANC es una plataforma web interactiva desarrollada como soporte academico para la catedra de Analisis Numerico de la Universidad Tecnologica Nacional, Facultad Regional La Plata (UTN FRLP).
 
-El sistema implementa una arquitectura desacoplada basada en servicios, combinando un motor matematico de calculo simbolico y numerico en backend con una interfaz interactiva Mobile-First en frontend. Su diseno modular permite la integracion progresiva de nuevos algoritmos y metodos de resolucion numerica.
+El sistema implementa una arquitectura desacoplada basada en servicios, combinando un motor matematico de calculo simbolico y numerico en backend con una interfaz interactiva Mobile-First en frontend.
 
 ---
 
-## Modulos Activos
+## Modulos de la Plataforma
 
 ```
                         +------------------------------+
                         |         PROYECTO ANC         |
-                        |    (Plataforma Modular)      |
+                        |      (Analisis Numerico)     |
                         +--------------+---------------+
            +---------------------------+---------------------------+
            |                           |                           |
            v                           v                           v
 +---------------------+     +---------------------+     +---------------------+
 |  Series de Fourier  |     |Analisis de Armonicos|     |  Calculo de Raices  |
-|  - Simbolico SymPy  |     |  - FFT en Tiempo    |     |  - Newton-Raphson   |
-|  - Fenomeno Gibbs   |     |    Real (Micro/WAV) │     |  - Punto Fijo g(x)  |
-|  - Simetria y Trozos|     |  - Espectrograma    |     |  - Duelo y Cobweb   |
+|  - Simbolico SymPy  |     |  - Transformada FFT |     |  - Newton-Raphson   |
+|  - Fenomeno Gibbs   |     |    (Microfono / WAV)│     |  - Punto Fijo g(x)  |
+|  - Simetria y Trozos|     |  - Espectrograma    |     |  - Graficos y Pasos |
 +---------------------+     +---------------------+     +---------------------+
 ```
 
@@ -57,37 +57,11 @@ El sistema implementa una arquitectura desacoplada basada en servicios, combinan
 
 ### 3. Calculo de Raices de Ecuaciones No Lineales (`/roots`)
 * Metodos Implementados: Metodos iterativos de Newton-Raphson y Punto Fijo ($x_{n+1} = g(x_n)$).
-* Comparativa en Vivo: Analisis simultaneo de convergencia, numero de iteraciones y evolucion del error relativo.
-* Visualizacion Grafica:
-  * Diagrama de Tangentes: Trazado geometrico de rectas tangentes iteracion a iteracion.
-  * Diagrama de Telarana (Cobweb Plot): Dinamica de atraccion hacia la recta identidad $y = x$.
+* Comparacion de Metodos: Analisis simultaneo de convergencia, numero de iteraciones y evolucion del error relativo entre ambos metodos.
+* Visualizacion Grafica Interactiva:
+  * Metodo de Newton: Trazado geometrico interactivo de rectas tangentes iteracion a iteracion.
+  * Metodo de Punto Fijo: Representacion grafica de iteraciones sucesivas mediante la funcion generadora $y = g(x)$ y la recta identidad $y = x$.
 * Resolucion Detallada: Desglose paso a paso con sustitucion de formulas en LaTeX y exportacion de reportes en PDF.
-
----
-
-## Arquitectura Modular y Futuros Modulos
-
-La plataforma esta estructurada bajo un patron extensible que permite incorporar nuevas familias de metodos numericos sin alterar los modulos ya desplegados:
-
-```
-                            +----------------------------------------+
-                            |       Ecosistema de Calculo ANC        |
-                            +--------------------+-------------------+
-                 +-------------------------------+-------------------------------+
-                 |                               |                               |
-                 v                               v                               v
-+---------------------------------+ +-------------------------+ +---------------------------------+
-| Sistemas de Ecuaciones Lineales | | Autovalores y Vectores  | | Integracion e Interpolacion     |
-| - Gauss, Gauss-Jordan, LU       | | - Metodo de Potencias   | | - Lagrange, Newton-Gregory      |
-| - Jacobi, Gauss-Seidel, SOR     | | - Radio Espectral       | | - Trapecios, Simpson, EDOs      |
-+---------------------------------+ +-------------------------+ +---------------------------------+
-```
-
-### Lineas de Expansion
-* Sistemas de Ecuaciones Lineales: Resolucion directa (Gauss, Factorizacion LU) e iterativa (Jacobi, Gauss-Seidel, Relajacion).
-* Autovalores y Autovectores: Calculo de valores propios dominantes y transformaciones matriciales.
-* Interpolacion y Ajuste de Curvas: Polinomios de interpolacion y trazadores spline.
-* Diferenciacion e Integracion Numerica: Metodos cuadraticos de Newton-Cotes y esquemas Runge-Kutta para ecuaciones diferenciales ordinarias.
 
 ---
 
