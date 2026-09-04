@@ -3,7 +3,8 @@ import FormulaDisplay from '../../components/FormulaDisplay';
 import { Play, Award, Printer } from 'lucide-react';
 import { useAppPrint } from '../../hooks/useAppPrint';
 import type { SolverConfig, RootMethod } from '../../types/roots';
-import ExerciseStepAccordion from '../../components/roots/ExerciseStepAccordion';
+import InlineMath from '../../components/InlineMath';
+import ExerciseStepAccordion, { type StepIteration } from '../../components/roots/ExerciseStepAccordion';
 
 export interface ExerciseItem {
   id: string;
@@ -17,9 +18,9 @@ export interface ExerciseItem {
   tolerance: number;
   maxIterations: number;
   expectedRoot: number;
-  analyticalRoots?: string;
-  iterations: string[];
+  iterations: StepIteration[];
   isEngineeringStar?: boolean;
+  preliminarySteps?: React.ReactNode;
 }
 
 interface ExercisesSectionProps {
@@ -92,7 +93,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     // --- PROBLEMA 8 ---
     {
       id: 'ej-8a',
-      title: 'Problema 8 - Inciso a: x - cos(x) = 0',
+      title: 'Problema 8 - Inciso a: f(x) = x - cos(x) (x₀ = π/4)',
       description: 'Estimar mediante Newton con error < 10⁻³ partiendo de x₀ = π/4 (0.7854 rad).',
       method: 'newton',
       expression: 'x - cos(x)',
@@ -102,15 +103,20 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       tolerance: 1e-3,
       maxIterations: 25,
       expectedRoot: 0.739085,
-      analyticalRoots: 'Número de Dottie (Punto fijo universal del coseno)',
       iterations: [
-        'x_0 = \\frac{\\pi}{4} - \\frac{\\frac{\\pi}{4} - \\cos\\left(\\frac{\\pi}{4}\\right)}{1 + \\sin\\left(\\frac{\\pi}{4}\\right)} = 0.7854 - \\frac{0.0783}{1.7071} = 0.7395',
-        'x_1 = 0.7395 - \\frac{0.7395 - \\cos(0.7395)}{1 + \\sin(0.7395)} = 0.7395 - \\frac{0.0008}{1.6739} = 0.7391',
+        {
+          formula: 'x_0 = \\frac{\\pi}{4} - \\frac{\\frac{\\pi}{4} - \\cos\\left(\\frac{\\pi}{4}\\right)}{1 + \\sin\\left(\\frac{\\pi}{4}\\right)} = 0.7854 - \\frac{0.0783}{1.7071} = 0.739536',
+          error: '\\text{Error: } |x_1 - x_0| = |0.739536 - 0.785398| = 0.045862 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_1 = 0.739536 - \\frac{0.739536 - \\cos(0.739536)}{1 + \\sin(0.739536)} = 0.739536 - \\frac{0.000755}{1.673945} = 0.739085',
+          error: '\\text{Error: } |x_2 - x_1| = |0.739085 - 0.739536| = 0.000451 < 0.001 \\text{ (cumple condición de parada)}',
+        },
       ],
     },
     {
       id: 'ej-8b',
-      title: 'Problema 8 - Inciso b: eˣ + 2x + 2·cos(x) - 6 = 0',
+      title: 'Problema 8 - Inciso b: f(x) = eˣ + 2x + 2·cos(x) - 6 (x₀ = π/4)',
       description: 'Resolver mediante Newton con un error < 10⁻³ partiendo de x₀ = π/4 (0.7854 rad).',
       method: 'newton',
       expression: 'exp(x) + 2*x + 2*cos(x) - 6',
@@ -120,74 +126,188 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       tolerance: 1e-3,
       maxIterations: 25,
       expectedRoot: 1.0650,
-      analyticalRoots: 'Raíz real en x ≈ 1.0650',
       iterations: [
-        'x_0 = \\frac{\\pi}{4} - \\frac{e^{\\pi/4} + 2\\left(\\frac{\\pi}{4}\\right) + 2\\cos\\left(\\frac{\\pi}{4}\\right) - 6}{e^{\\pi/4} + 2 - 2\\sin\\left(\\frac{\\pi}{4}\\right)} = 0.7854 - \\frac{-0.8217}{2.7791} = 1.0811',
-        'x_1 = 1.0811 - \\frac{e^{1.0811} + 2(1.0811) + 2\\cos(1.0811) - 6}{e^{1.0811} + 2 - 2\\sin(1.0811)} = 1.0811 - \\frac{0.0508}{3.1829} = 1.0651',
-        'x_2 = 1.0651 - \\frac{e^{1.0651} + 2(1.0651) + 2\\cos(1.0651) - 6}{e^{1.0651} + 2 - 2\\sin(1.0651)} = 1.0651 - \\frac{0.0003}{3.1515} = 1.0650',
+        {
+          formula: 'x_0 = \\frac{\\pi}{4} - \\frac{e^{\\pi/4} + 2\\left(\\frac{\\pi}{4}\\right) + 2\\cos\\left(\\frac{\\pi}{4}\\right) - 6}{e^{\\pi/4} + 2 - 2\\sin\\left(\\frac{\\pi}{4}\\right)} = 0.7854 - \\frac{-0.8217}{2.7791} = 1.081077',
+          error: '\\text{Error: } |x_1 - x_0| = |1.081077 - 0.785398| = 0.295679 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_1 = 1.0811 - \\frac{e^{1.0811} + 2(1.0811) + 2\\cos(1.0811) - 6}{e^{1.0811} + 2 - 2\\sin(1.0811)} = 1.081077 - \\frac{0.050762}{3.182922} = 1.065128',
+          error: '\\text{Error: } |x_2 - x_1| = |1.065128 - 1.081077| = 0.015949 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_2 = 1.0651 - \\frac{e^{1.0651} + 2(1.0651) + 2\\cos(1.0651) - 6}{e^{1.0651} + 2 - 2\\sin(1.0651)} = 1.065128 - \\frac{0.000252}{3.151509} = 1.065048',
+          error: '\\text{Error: } |x_3 - x_2| = |1.065048 - 1.065128| = 0.000080 < 0.001 \\text{ (cumple condición de parada)}',
+        },
       ],
     },
     {
       id: 'ej-8c1',
-      title: 'Problema 8 - Inciso c1: f(x) = x³ - 2x² - 3x - 10 (x₀ = 1.9)',
-      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x - 10 con error < 10⁻³ usando x₀ = 1.9.',
+      title: 'Problema 8 - Inciso c1: f(x) = x³ - 2x² - 3x + 10 (x₀ = 1.9)',
+      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x + 10 con error < 10⁻³ usando x₀ = 1.9.',
       method: 'newton',
-      expression: 'x**3 - 2*x**2 - 3*x - 10',
-      latexExpr: 'f(x) = x^3 - 2x^2 - 3x - 10',
+      expression: 'x**3 - 2*x**2 - 3*x + 10',
+      latexExpr: 'f(x) = x^3 - 2x^2 - 3x + 10',
       latexFPrime: "f'(x) = 3x^2 - 4x - 3",
       x0: 1.9,
       tolerance: 1e-3,
       maxIterations: 25,
-      expectedRoot: 3.6030,
-      analyticalRoots: 'Única raíz real x ≈ 3.6030',
+      expectedRoot: -2.0,
       iterations: [
-        'x_0 = 1.9 - \\frac{(1.9)^3 - 2(1.9)^2 - 3(1.9) - 10}{3(1.9)^2 - 4(1.9) - 3} = 1.9 - \\frac{-16.0610}{0.2300} = 71.7304',
-        'x_1 = 71.7304 - \\frac{(71.7304)^3 - 2(71.7304)^2 - 3(71.7304) - 10}{3(71.7304)^2 - 4(71.7304) - 3} = 71.7304 - \\frac{358555.70}{15145.84} = 48.0569',
-        'x_2 = 48.0569 - \\frac{(48.0569)^3 - 2(48.0569)^2 - 3(48.0569) - 10}{3(48.0569)^2 - 4(48.0569) - 3} = 48.0569 - \\frac{106212.64}{6733.17} = 32.2824',
-        'x_3 = 32.2824 - \\frac{(32.2824)^3 - 2(32.2824)^2 - 3(32.2824) - 10}{3(32.2824)^2 - 4(32.2824) - 3} = 32.2824 - \\frac{31451.93}{2994.32} = 21.7785',
+        {
+          formula: 'x_0 = 1.9 - \\frac{(1.9)^3 - 2(1.9)^2 - 3(1.9) + 10}{3(1.9)^2 - 4(1.9) - 3} = 1.9 - \\frac{3.9390}{0.2300} = -15.2261',
+          error: '\\text{Error: } |x_1 - x_0| = |-15.2261 - 1.9000| = 17.1261 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_1 = -15.2261 - \\frac{(-15.2261)^3 - 2(-15.2261)^2 - 3(-15.2261) + 10}{3(-15.2261)^2 - 4(-15.2261) - 3} = -15.2261 - \\frac{-3937.9096}{753.4055} = -9.9993',
+          error: '\\text{Error: } |x_2 - x_1| = |-9.9993 - (-15.2261)| = 5.2268 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_2 = -9.9993 - \\frac{(-9.9993)^3 - 2(-9.9993)^2 - 3(-9.9993) + 10}{3(-9.9993)^2 - 4(-9.9993) - 3} = -9.9993 - \\frac{-1159.7554}{336.9535} = -6.5574',
+          error: '\\text{Error: } |x_3 - x_2| = |-6.5574 - (-9.9993)| = 3.4419 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_3 = -6.5574 - \\frac{(-6.5574)^3 - 2(-6.5574)^2 - 3(-6.5574) + 10}{3(-6.5574)^2 - 4(-6.5574) - 3} = -6.5574 - \\frac{-338.2900}{152.2276} = -4.3351',
+          error: '\\text{Error: } |x_4 - x_3| = |-4.3351 - (-6.5574)| = 2.2223 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_4 = -4.3351 - \\frac{(-4.3351)^3 - 2(-4.3351)^2 - 3(-4.3351) + 10}{3(-4.3351)^2 - 4(-4.3351) - 3} = -4.3351 - \\frac{-96.0526}{70.7204} = -2.9769',
+          error: '\\text{Error: } |x_5 - x_4| = |-2.9769 - (-4.3351)| = 1.3582 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_5 = -2.9769 - \\frac{(-2.9769)^3 - 2(-2.9769)^2 - 3(-2.9769) + 10}{3(-2.9769)^2 - 4(-2.9769) - 3} = -2.9769 - \\frac{-25.1751}{35.4939} = -2.2676',
+          error: '\\text{Error: } |x_6 - x_5| = |-2.2676 - (-2.9769)| = 0.7093 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_6 = -2.2676 - \\frac{(-2.2676)^3 - 2(-2.2676)^2 - 3(-2.2676) + 10}{3(-2.2676)^2 - 4(-2.2676) - 3} = -2.2676 - \\frac{-5.1422}{21.4972} = -2.0284',
+          error: '\\text{Error: } |x_7 - x_6| = |-2.0284 - (-2.2676)| = 0.2392 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_7 = -2.0284 - \\frac{(-2.0284)^3 - 2(-2.0284)^2 - 3(-2.0284) + 10}{3(-2.0284)^2 - 4(-2.0284) - 3} = -2.0284 - \\frac{-0.4900}{17.4575} = -2.0004',
+          error: '\\text{Error: } |x_8 - x_7| = |-2.0004 - (-2.0284)| = 0.0281 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_8 = -2.0004 - \\frac{(-2.0004)^3 - 2(-2.0004)^2 - 3(-2.0004) + 10}{3(-2.0004)^2 - 4(-2.0004) - 3} = -2.0004 - \\frac{-0.0063}{17.0060} = -2.0000',
+          error: '\\text{Error: } |x_9 - x_8| = |-2.0000 - (-2.0004)| = 0.0004 < 0.001 \\text{ (cumple condición de parada)}',
+        },
       ],
     },
     {
       id: 'ej-8c2',
-      title: 'Problema 8 - Inciso c2: f(x) = x³ - 2x² - 3x - 10 (x₀ = -3.0)',
-      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x - 10 con error < 10⁻³ usando x₀ = -3.0.',
+      title: 'Problema 8 - Inciso c2: f(x) = x³ - 2x² - 3x + 10 (x₀ = -3.0)',
+      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x + 10 con error < 10⁻³ usando x₀ = -3.0.',
       method: 'newton',
-      expression: 'x**3 - 2*x**2 - 3*x - 10',
-      latexExpr: 'f(x) = x^3 - 2x^2 - 3x - 10',
+      expression: 'x**3 - 2*x**2 - 3*x + 10',
+      latexExpr: 'f(x) = x^3 - 2x^2 - 3x + 10',
       latexFPrime: "f'(x) = 3x^2 - 4x - 3",
       x0: -3.0,
       tolerance: 1e-3,
       maxIterations: 25,
-      expectedRoot: 3.6030,
-      analyticalRoots: 'Única raíz real x ≈ 3.6030',
+      expectedRoot: -2.0,
       iterations: [
-        'x_0 = -3.0 - \\frac{(-3.0)^3 - 2(-3.0)^2 - 3(-3.0) - 10}{3(-3.0)^2 - 4(-3.0) - 3} = -3.0 - \\frac{-46.0000}{36.0000} = -1.7222',
-        'x_1 = -1.7222 - \\frac{(-1.7222)^3 - 2(-1.7222)^2 - 3(-1.7222) - 10}{3(-1.7222)^2 - 4(-1.7222) - 3} = -1.7222 - \\frac{-15.8736}{12.7870} = -0.4808',
-        'x_2 = -0.4808 - \\frac{(-0.4808)^3 - 2(-0.4808)^2 - 3(-0.4808) - 10}{3(-0.4808)^2 - 4(-0.4808) - 3} = -0.4808 - \\frac{-9.1311}{-0.3830} = -24.3197',
-        'x_3 = -24.3197 - \\frac{(-24.3197)^3 - 2(-24.3197)^2 - 3(-24.3197) - 10}{3(-24.3197)^2 - 4(-24.3197) - 3} = -24.3197 - \\frac{-15503.68}{1868.62} = -16.0228',
+        {
+          formula: 'x_0 = -3.0 - \\frac{(-3.0)^3 - 2(-3.0)^2 - 3(-3.0) + 10}{3(-3.0)^2 - 4(-3.0) - 3} = -3.0 - \\frac{-26.0000}{36.0000} = -2.2778',
+          error: '\\text{Error: } |x_1 - x_0| = |-2.2778 - (-3.0000)| = 0.7222 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_1 = -2.2778 - \\frac{(-2.2778)^3 - 2(-2.2778)^2 - 3(-2.2778) + 10}{3(-2.2778)^2 - 4(-2.2778) - 3} = -2.2778 - \\frac{-5.3609}{21.6759} = -2.0305',
+          error: '\\text{Error: } |x_2 - x_1| = |-2.0305 - (-2.2778)| = 0.2473 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_2 = -2.0305 - \\frac{(-2.0305)^3 - 2(-2.0305)^2 - 3(-2.0305) + 10}{3(-2.0305)^2 - 4(-2.0305) - 3} = -2.0305 - \\frac{-0.5252}{17.4901} = -2.0004',
+          error: '\\text{Error: } |x_3 - x_2| = |-2.0004 - (-2.0305)| = 0.0300 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 'x_3 = -2.0004 - \\frac{(-2.0004)^3 - 2(-2.0004)^2 - 3(-2.0004) + 10}{3(-2.0004)^2 - 4(-2.0004) - 3} = -2.0004 - \\frac{-0.0073}{17.0068} = -2.0000',
+          error: '\\text{Error: } |x_4 - x_3| = |-2.0000 - (-2.0004)| = 0.0004 < 0.001 \\text{ (cumple condición de parada)}',
+        },
       ],
     },
 
     // --- PROBLEMA 9 ---
     {
       id: 'ej-9',
-      title: 'Problema 9: Concentración de Bacterias en Lago',
+      title: 'Problema 9: Concentración de Bacterias - c(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 (t₀ = 2.0)',
       description:
-        'Determinar el tiempo t (en horas) necesario para que la concentración de bacterias se reduzca a c(t) = 7. Expresión: 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ = 7.',
+        'Determinar el tiempo t (en horas) para que la concentración de bacterias se reduzca a c(t) = 7 (es decir, resolver f(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 = 0).',
       method: 'newton',
       expression: '80*exp(-2*x) + 20*exp(-0.5*x) - 7',
       latexExpr: 'c(t) = 80e^{-2t} + 20e^{-0.5t} - 7',
       latexFPrime: "c'(t) = -160e^{-2t} - 10e^{-0.5t}",
-      x0: 1.0,
-      tolerance: 1e-4,
+      x0: 2.0,
+      tolerance: 1e-3,
       maxIterations: 25,
       expectedRoot: 2.3291,
-      analyticalRoots: 'Interpretación física: t ≈ 2.33 horas (2 horas y 20 minutos)',
+      preliminarySteps: (
+        <div className="space-y-3">
+          {/* Paso previo 1: Teorema de Bolzano */}
+          <div className="p-3.5 sm:p-4 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-2.5 print:border-slate-200/60 print:shadow-none">
+            <span className="text-xs font-bold text-slate-800 block">
+              Paso 1: Análisis previo de localización (Teorema de Bolzano)
+            </span>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Antes de empezar a iterar a ciegas, es de excelente práctica matemática delimitar en qué intervalo se encuentra nuestra raíz. Evaluamos <InlineMath math="f(t)" /> en algunos puntos enteros para buscar un cambio de signo:
+            </p>
+            <div className="space-y-1.5 p-2.5 bg-slate-50 rounded-lg border border-slate-100 print:bg-white print:border-none print:p-0">
+              <div className="text-xs text-slate-800">
+                • <InlineMath math="f(0) = 80e^0 + 20e^0 - 7 = 80 + 20 - 7 = 93 > 0" />
+              </div>
+              <div className="text-xs text-slate-800">
+                • <InlineMath math="f(1) = 80e^{-2} + 20e^{-0.5} - 7 \approx 15.96 > 0" />
+              </div>
+              <div className="text-xs text-slate-800">
+                • <InlineMath math="f(2) = 80e^{-4} + 20e^{-1} - 7 \approx 1.8228 > 0" />
+              </div>
+              <div className="text-xs text-slate-800">
+                • <InlineMath math="f(3) = 80e^{-6} + 20e^{-1.5} - 7 \approx -2.3391 < 0" />
+              </div>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Como <InlineMath math="f(t)" /> es una función continua, y vemos que cambia de signo entre <InlineMath math="t = 2.0" /> (<InlineMath math="f(2.0) > 0" />) y <InlineMath math="t = 3.0" /> (<InlineMath math="f(3.0) < 0" />), por el <strong>Teorema de Bolzano</strong> aseguramos que existe al menos una raíz en el intervalo <InlineMath math="[2.0, 3.0]" />.
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              De hecho, si evaluamos en <InlineMath math="t = 2.5" />, obtenemos <InlineMath math="f(2.5) \approx -0.7309 < 0" />, lo que acota nuestra raíz al intervalo más estrecho <InlineMath math="[2.0, 2.5]" />.
+            </p>
+          </div>
+
+          {/* Paso previo 2: Elección de t0 y criterio de parada */}
+          <div className="p-3.5 sm:p-4 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-2.5 print:border-slate-200/60 print:shadow-none">
+            <span className="text-xs font-bold text-slate-800 block">
+              Paso 2: Definir el Punto Inicial <InlineMath math="t_0" /> y el Criterio de Parada
+            </span>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Como el enunciado original no fija un valor inicial ni una tolerancia de corte, establecemos nosotros las condiciones de trabajo fundamentadas en el paso anterior:
+            </p>
+            <ul className="space-y-1.5 text-xs text-slate-700">
+              <li className="flex items-start gap-1.5">
+                <span className="font-bold">• Punto Inicial (<InlineMath math="t_0" />):</span>
+                <span>Elegimos <InlineMath math="t_0 = 2.0" /> por encontrarse inmediatamente antes del cambio de signo en el intervalo acotado <InlineMath math="[2.0, 2.5]" />.</span>
+              </li>
+              <li className="flex items-start gap-1.5">
+                <span className="font-bold">• Criterio de Parada:</span>
+                <span>Decidimos fijar una cota de error absoluto <InlineMath math="E = |t_{n+1} - t_n| < 10^{-3} = 0.001" />.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      ),
       iterations: [
-        't_0 = 1.0 - \\frac{80e^{-2(1.0)} + 20e^{-0.5(1.0)} - 7}{-160e^{-2(1.0)} - 10e^{-0.5(1.0)}} = 1.0 - \\frac{15.9574}{-27.7190} = 1.5757',
-        't_1 = 1.5757 - \\frac{80e^{-2(1.5757)} + 20e^{-0.5(1.5757)} - 7}{-160e^{-2(1.5757)} - 10e^{-0.5(1.5757)}} = 1.5757 - \\frac{5.5200}{-11.3952} = 2.0601',
-        't_2 = 2.0601 - \\frac{80e^{-2(2.0601)} + 20e^{-0.5(2.0601)} - 7}{-160e^{-2(2.0601)} - 10e^{-0.5(2.0601)}} = 2.0601 - \\frac{1.4391}{-6.1685} = 2.2934',
-        't_3 = 2.2934 - \\frac{80e^{-2(2.2934)} + 20e^{-0.5(2.2934)} - 7}{-160e^{-2(2.2934)} - 10e^{-0.5(2.2934)}} = 2.2934 - \\frac{0.1685}{-4.8065} = 2.3285',
+        {
+          formula: 't_0 = 2.0000 - \\frac{80e^{-2(2.0000)} + 20e^{-0.5(2.0000)} - 7}{-160e^{-2(2.0000)} - 10e^{-0.5(2.0000)}} = 2.0000 - \\frac{1.8228}{-6.6093} = 2.2758',
+          error: '\\text{Error: } |t_1 - t_0| = |2.2758 - 2.0000| = 0.2758 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 't_1 = 2.2758 - \\frac{80e^{-2(2.2758)} + 20e^{-0.5(2.2758)} - 7}{-160e^{-2(2.2758)} - 10e^{-0.5(2.2758)}} = 2.2758 - \\frac{0.2539}{-4.8930} = 2.3277',
+          error: '\\text{Error: } |t_2 - t_1| = |2.3277 - 2.2758| = 0.0519 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 't_2 = 2.3277 - \\frac{80e^{-2(2.3277)} + 20e^{-0.5(2.3277)} - 7}{-160e^{-2(2.3277)} - 10e^{-0.5(2.3277)}} = 2.3277 - \\frac{0.0065}{-4.6445} = 2.3291',
+          error: '\\text{Error: } |t_3 - t_2| = |2.3291 - 2.3277| = 0.0014 \\nless 0.001 \\text{ (continúa)}',
+        },
+        {
+          formula: 't_3 = 2.3291 - \\frac{80e^{-2(2.3291)} + 20e^{-0.5(2.3291)} - 7}{-160e^{-2(2.3291)} - 10e^{-0.5(2.3291)}} = 2.3291 - \\frac{0.0000}{-4.6381} = 2.3291',
+          error: '\\text{Error: } |t_4 - t_3| = |2.3291 - 2.3291| = 0.0000 < 0.001 \\text{ (cumple condición de parada)}',
+        },
       ],
       isEngineeringStar: true,
     },
@@ -267,9 +387,9 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
             {/* DESARROLLO PASO A PASO DESPLEGABLE */}
             <ExerciseStepAccordion
               iterations={ex.iterations}
-              analyticalRoots={ex.analyticalRoots}
               expectedRoot={ex.expectedRoot}
-              isOpenDefault={true}
+              isOpenDefault={false}
+              preliminarySteps={ex.preliminarySteps}
             />
           </div>
         ))}

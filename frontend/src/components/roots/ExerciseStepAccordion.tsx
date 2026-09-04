@@ -33,18 +33,20 @@ export const MathBlock: React.FC<MathBlockProps> = ({ math, className = '' }) =>
   );
 };
 
+export type StepIteration = string | { formula: string; error?: string };
+
 interface ExerciseStepAccordionProps {
-  iterations: string[];
-  analyticalRoots?: string;
+  iterations: StepIteration[];
   expectedRoot: number;
   isOpenDefault?: boolean;
+  preliminarySteps?: React.ReactNode;
 }
 
 export const ExerciseStepAccordion: React.FC<ExerciseStepAccordionProps> = ({
   iterations,
-  analyticalRoots,
   expectedRoot,
-  isOpenDefault = true,
+  isOpenDefault = false,
+  preliminarySteps,
 }) => {
   const [isOpen, setIsOpen] = useState(isOpenDefault);
 
@@ -77,21 +79,36 @@ export const ExerciseStepAccordion: React.FC<ExerciseStepAccordionProps> = ({
 
       {/* Contenido desplegable con las iteraciones en LaTeX */}
       <div className={`${isOpen ? 'block' : 'hidden'} print:!block space-y-3 pt-2 border-t border-slate-200 print:border-none print:pt-0`}>
-        {iterations.map((formula, idx) => (
-          <div key={idx} className="space-y-1">
-            <span className="text-xs font-bold text-slate-800 block">
-              Iteración {idx + 1}:
-            </span>
-            <div className="p-2.5 sm:p-3 bg-white rounded-xl border border-slate-200 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shadow-2xs print:overflow-visible print:shadow-none print:border-slate-200/60 print:p-2">
-              <MathBlock math={formula} className="text-xs sm:text-sm print:text-xs print:overflow-visible" />
-            </div>
+        {preliminarySteps && (
+          <div className="space-y-3 pb-1">
+            {preliminarySteps}
           </div>
-        ))}
+        )}
+
+        {iterations.map((item, idx) => {
+          const formula = typeof item === 'string' ? item : item.formula;
+          const error = typeof item === 'object' ? item.error : undefined;
+
+          return (
+            <div key={idx} className="space-y-1">
+              <span className="text-xs font-bold text-slate-800 block">
+                Iteración {idx + 1}:
+              </span>
+              <div className="p-2.5 sm:p-3 bg-white rounded-xl border border-slate-200 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shadow-2xs print:overflow-visible print:shadow-none print:border-slate-200/60 print:p-2 space-y-2">
+                <MathBlock math={formula} className="text-xs sm:text-sm print:text-xs print:overflow-visible" />
+                {error && (
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-center print:pt-1">
+                    <MathBlock math={error} className="text-xs sm:text-sm text-slate-700 print:text-xs print:overflow-visible" />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Pie del recuadro */}
-      <div className={`pt-3 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center ${analyticalRoots ? 'justify-between' : 'justify-end'} gap-2 text-slate-700`}>
-        {analyticalRoots && <span className="font-sans font-medium text-xs">{analyticalRoots}</span>}
+      <div className="pt-3 border-t border-slate-200 flex items-center justify-end text-slate-700">
         <span className="font-sans font-bold text-slate-900 flex items-center gap-1.5">
           <CheckCircle2 size={16} /> Raíz Calculada: <InlineMath math={`r \\approx ${expectedRoot}`} />
         </span>
