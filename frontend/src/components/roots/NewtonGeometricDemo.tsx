@@ -12,8 +12,9 @@ import {
 import {
   RotateCcw,
   ArrowRight,
+  ArrowLeft,
   HelpCircle,
-  Sliders,
+  Target,
 } from 'lucide-react';
 import InlineMath from '../InlineMath';
 import usePlotInteractivity from './usePlotInteractivity';
@@ -100,6 +101,42 @@ interface TangentSnapshot {
   iteration: number;
 }
 
+const parseSeedValue = (str: string): number | null => {
+  if (!str || !str.trim()) return null;
+  const trimmed = str.trim().toLowerCase();
+  if (trimmed === 'pi' || trimmed === 'π') return Math.PI;
+  if (trimmed === 'pi/2' || trimmed === 'π/2') return Math.PI / 2;
+  if (trimmed === 'pi/4' || trimmed === 'π/4') return Math.PI / 4;
+  if (trimmed === 'pi/3' || trimmed === 'π/3') return Math.PI / 3;
+  if (trimmed === 'pi/6' || trimmed === 'π/6') return Math.PI / 6;
+  if (trimmed.includes('pi') || trimmed.includes('π')) {
+    const expr = trimmed.replace(/π/g, 'pi').replace(/pi/g, String(Math.PI));
+    try {
+      const fn = new Function(`return (${expr})`);
+      const val = Number(fn());
+      return Number.isFinite(val) ? val : null;
+    } catch {
+      return null;
+    }
+  }
+  if (/^[-+]?[0-9]*\.?[0-9]+(\/[-+]?[0-9]*\.?[0-9]+)?$/.test(trimmed)) {
+    try {
+      const parts = trimmed.split('/');
+      if (parts.length === 2) {
+        const num = parseFloat(parts[0]);
+        const den = parseFloat(parts[1]);
+        if (den !== 0) return num / den;
+      }
+      const num = parseFloat(trimmed);
+      return Number.isFinite(num) ? num : null;
+    } catch {
+      return null;
+    }
+  }
+  const val = parseFloat(trimmed);
+  return Number.isFinite(val) ? val : null;
+};
+
 export const NewtonGeometricDemo: React.FC = () => {
   const [selectedFuncId, setSelectedFuncId] = useState<string>('f_poly');
   const activeFunc = useMemo(
@@ -107,9 +144,12 @@ export const NewtonGeometricDemo: React.FC = () => {
     [selectedFuncId]
   );
 
-  const [currentXn, setCurrentXn] = useState<number>(activeFunc.defaultX0);
-  const [iteration, setIteration] = useState<number>(0);
-  const [prevTangent, setPrevTangent] = useState<TangentSnapshot | null>(null);
+  const [seedInput, setSeedInput] = useState<string>(String(activeFunc.defaultX0));
+  const [history, setHistory] = useState<number[]>([activeFunc.defaultX0]);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+
+  const currentXn = history[historyIndex] ?? activeFunc.defaultX0;
+  const iteration = historyIndex;
 
   const baseMinX = activeFunc.minX;
   const baseMaxX = activeFunc.maxX;
@@ -126,6 +166,7 @@ export const NewtonGeometricDemo: React.FC = () => {
     currentMinX,
     currentMaxX,
     dragProps,
+    handleCenterOn,
   } = usePlotInteractivity({
     baseSpan,
     baseCenter,
@@ -137,12 +178,24 @@ export const NewtonGeometricDemo: React.FC = () => {
   const handleSelectFunction = (funcId: string) => {
     const fn = PRESET_FUNCTIONS.find((p) => p.id === funcId) || PRESET_FUNCTIONS[0];
     setSelectedFuncId(funcId);
-    setCurrentXn(fn.defaultX0);
-    setIteration(0);
-    setPrevTangent(null);
+    setSeedInput(String(fn.defaultX0));
+    setHistory([fn.defaultX0]);
+    setHistoryIndex(0);
     setZoom(1);
     setPanOffset(0);
     setPanOffsetY(0);
+  };
+
+  const handleSeedChange = (valStr: string) => {
+    setSeedInput(valStr);
+    const parsed = parseSeedValue(valStr);
+    if (parsed !== null && Number.isFinite(parsed)) {
+      setHistory([parsed]);
+      setHistoryIndex(0);
+      if (parsed < currentMinX || parsed > currentMaxX) {
+        handleCenterOn(parsed);
+      }
+    }
   };
 
   // Mathematical evaluation at currentXn
@@ -153,6 +206,21 @@ export const NewtonGeometricDemo: React.FC = () => {
   // Next step x_{n+1} = x_n - f(x_n)/f'(x_n)
   const nextXn = !isDerivativeZero ? currentXn - fxn / dfxn : null;
   const absError = nextXn !== null ? Math.abs(nextXn - currentXn) : null;
+
+  // Previous tangent line dynamically derived from history
+  const prevTangent: TangentSnapshot | null = useMemo(() => {
+    if (historyIndex <= 0) return null;
+    const prevXn = history[historyIndex - 1];
+    const prevFxn = activeFunc.f(prevXn);
+    const prevDfxn = activeFunc.df(prevXn);
+    return {
+      xn: prevXn,
+      fxn: prevFxn,
+      dfxn: prevDfxn,
+      nextXn: currentXn,
+      iteration: historyIndex - 1,
+    };
+  }, [history, historyIndex, activeFunc, currentXn]);
 
   // LaTeX string for the active tangent line
   const tangentFormulaLatex = useMemo(() => {
@@ -165,29 +233,49 @@ export const NewtonGeometricDemo: React.FC = () => {
     return `L_{${iteration}}(x) = ${fStr} ${dfStr} \\cdot (x ${xnStr})`;
   }, [iteration, fxn, dfxn, currentXn, isDerivativeZero]);
 
-  // Handle next iteration button (preserves previous iteration for color comparison)
+  // Avanzar una iteración adelante
   const handleNextIteration = () => {
-    if (nextXn !== null && Number.isFinite(nextXn)) {
-      setPrevTangent({
-        xn: currentXn,
-        fxn,
-        dfxn,
-        nextXn,
-        iteration,
-      });
+    if (historyIndex < history.length - 1) {
+      const nextIdx = historyIndex + 1;
+      setHistoryIndex(nextIdx);
+      const nextVal = history[nextIdx];
+      if (nextVal < currentMinX || nextVal > currentMaxX) {
+        handleCenterOn(nextVal);
+      }
+      return;
+    }
 
-      const clampedNext = Math.max(activeFunc.minX - 0.5, Math.min(activeFunc.maxX + 0.5, nextXn));
-      setCurrentXn(Number(clampedNext.toFixed(4)));
-      setIteration((prev) => prev + 1);
+    if (nextXn !== null && Number.isFinite(nextXn)) {
+      const nextVal = Number(nextXn.toFixed(4));
+      setHistory((prev) => [...prev, nextVal]);
+      setHistoryIndex((prev) => prev + 1);
+
+      if (nextVal < currentMinX || nextVal > currentMaxX) {
+        handleCenterOn(nextVal);
+      }
+    }
+  };
+
+  // Volver una iteración atrás
+  const handlePrevIteration = () => {
+    if (historyIndex > 0) {
+      const prevIdx = historyIndex - 1;
+      setHistoryIndex(prevIdx);
+      const prevVal = history[prevIdx];
+      if (prevVal < currentMinX || prevVal > currentMaxX) {
+        handleCenterOn(prevVal);
+      }
     }
   };
 
   const handleReset = () => {
-    setCurrentXn(activeFunc.defaultX0);
-    setIteration(0);
-    setPrevTangent(null);
+    const parsed = parseSeedValue(seedInput);
+    const initial = parsed !== null && Number.isFinite(parsed) ? parsed : activeFunc.defaultX0;
+    setHistory([initial]);
+    setHistoryIndex(0);
     setZoom(1);
     setPanOffset(0);
+    setPanOffsetY(0);
   };
 
   // Generate chart points dynamically
@@ -492,60 +580,76 @@ export const NewtonGeometricDemo: React.FC = () => {
         )}
       </div>
 
-      {/* Interactive Controls (Slider + Next Step Button) */}
-      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <Sliders size={18} className="text-slate-700" />
-            <label className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1">
-              Punto por donde pasa <InlineMath math="x_n" />:
-              <span className="text-sm font-mono text-slate-900 font-bold ml-1 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shadow-xs">
-                {currentXn.toFixed(3)}
-              </span>
-            </label>
+      {/* Interactive Controls (Semilla Inicial + Iteration Controls) */}
+      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Target size={18} className="text-slate-700 shrink-0" />
+              <label htmlFor="seed-x0-input" className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1">
+                Semilla Inicial (<InlineMath math="x_0" />):
+              </label>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                id="seed-x0-input"
+                type="text"
+                value={seedInput}
+                onChange={(e) => handleSeedChange(e.target.value)}
+                placeholder="Ej: 4.5, pi/4"
+                className="w-28 sm:w-36 px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent shadow-xs transition-all"
+              />
+              {iteration > 0 && (
+                <div className="flex items-center gap-1 text-xs font-bold text-slate-600 bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
+                  <span>Punto <InlineMath math={`x_{${iteration}}`} />:</span>
+                  <span className="font-mono text-slate-900 font-black">{currentXn.toFixed(3)}</span>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end flex-wrap sm:flex-nowrap">
+            <button
+              onClick={handlePrevIteration}
+              disabled={iteration === 0}
+              className="flex items-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-slate-100 disabled:opacity-40 text-slate-700 disabled:hover:bg-white rounded-xl text-xs font-black uppercase tracking-wider border border-slate-200 transition-all cursor-pointer shadow-xs disabled:cursor-not-allowed shrink-0 whitespace-nowrap"
+              title="Volver a la iteración anterior"
+            >
+              <ArrowLeft size={15} className="shrink-0" />
+              <span className="flex items-center gap-1 whitespace-nowrap">
+                <span>Anterior</span>
+                {iteration > 0 && (
+                  <span className="text-slate-500 font-semibold inline-flex items-center">
+                    (<InlineMath math={`x_{${iteration - 1}}`} />)
+                  </span>
+                )}
+              </span>
+            </button>
+
             <button
               onClick={handleNextIteration}
-              disabled={nextXn === null || isDerivativeZero}
-              className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
-              title="Avanzar a x_{n+1}"
+              disabled={historyIndex >= history.length - 1 && (nextXn === null || isDerivativeZero)}
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer disabled:cursor-not-allowed shrink-0 whitespace-nowrap"
+              title="Avanzar a la próxima iteración"
             >
-              <span>Próxima Iteración (</span>
-              <InlineMath math={`x_{${iteration + 1}}`} className="text-white font-bold" />
-              <span>)</span>
-              <ArrowRight size={15} />
+              <span className="flex items-center gap-1 whitespace-nowrap">
+                <span>Próxima</span>
+                <span className="text-slate-300 font-semibold inline-flex items-center">
+                  (<InlineMath math={`x_{${iteration + 1}}`} />)
+                </span>
+              </span>
+              <ArrowRight size={15} className="shrink-0" />
             </button>
 
             <button
               onClick={handleReset}
-              className="p-2.5 bg-white hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 text-xs font-bold transition-colors cursor-pointer shadow-xs"
-              title="Reiniciar punto inicial"
+              disabled={iteration === 0}
+              className="p-2.5 bg-white hover:bg-slate-200 disabled:opacity-40 text-slate-700 rounded-xl border border-slate-200 text-xs font-bold transition-colors cursor-pointer shadow-xs disabled:cursor-not-allowed shrink-0"
+              title="Reiniciar a la semilla inicial x_0"
             >
               <RotateCcw size={16} />
             </button>
-          </div>
-        </div>
-
-        {/* Range Slider for xn */}
-        <div className="space-y-1">
-          <input
-            type="range"
-            min={activeFunc.minX}
-            max={activeFunc.maxX}
-            step={activeFunc.step}
-            value={currentXn}
-            onChange={(e) => {
-              const val = parseFloat(e.target.value);
-              setCurrentXn(val);
-            }}
-            className="w-full accent-slate-900 h-2 bg-slate-200 rounded-lg cursor-pointer"
-          />
-          <div className="flex justify-between text-[10px] font-bold text-slate-400 font-mono">
-            <span>{activeFunc.minX}</span>
-            <span>Arrastra el slider para mover el punto de tangencia</span>
-            <span>{activeFunc.maxX}</span>
           </div>
         </div>
       </div>

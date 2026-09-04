@@ -9,12 +9,20 @@ interface UnifiedMathInputProps {
   hideMenu?: boolean;
 }
 
+const formatForMathField = (str: string) =>
+  (str || '')
+    .replace(/\*\*/g, '^')
+    .replace(/(\d+)\s*[*·]\s*([a-zA-Z(])/g, '$1$2')
+    .replace(/([a-zA-Z])\s*[*·]\s*([a-zA-Z(])/g, '$1$2');
+
 const normalizeMath = (str: string) =>
   (str || '')
     .replace(/\*\*/g, '^')
     .replace(/·/g, '*')
     .replace(/÷/g, '/')
     .replace(/π/g, 'pi')
+    .replace(/(\d+)\s*\*\s*([a-zA-Z(])/g, '$1$2')
+    .replace(/([a-zA-Z])\s*\*\s*([a-zA-Z(])/g, '$1$2')
     .replace(/\s+/g, '')
     .trim();
 
@@ -42,7 +50,7 @@ export default function UnifiedMathInput({ value, onChange, className = "", hide
 
       // Initial programmatic value sync on mount
       if (value) {
-        const formattedValue = value.replace(/\*\*/g, '^');
+        const formattedValue = formatForMathField(value);
         mfRef.current.setValue(formattedValue, { format: 'ascii-math' });
         setCurrentLatex(mfRef.current.value || formattedValue);
         lastEmittedValue.current = value;
@@ -62,7 +70,7 @@ export default function UnifiedMathInput({ value, onChange, className = "", hide
         return;
       }
 
-      const formattedValue = value.replace(/\*\*/g, '^');
+      const formattedValue = formatForMathField(value);
       mfRef.current.setValue(formattedValue, { format: 'ascii-math' });
       setCurrentLatex(mfRef.current.value || formattedValue);
       lastEmittedValue.current = value;
