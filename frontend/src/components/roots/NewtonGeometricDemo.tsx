@@ -16,10 +16,12 @@ import {
   Sliders,
 } from 'lucide-react';
 import InlineMath from '../InlineMath';
+import usePlotInteractivity from './usePlotInteractivity';
 
 interface PresetFunction {
   id: string;
   name: string;
+  shortLatex: string;
   latex: string;
   derivativeLatex: string;
   f: (x: number) => number;
@@ -35,6 +37,7 @@ const PRESET_FUNCTIONS: PresetFunction[] = [
   {
     id: 'f_poly',
     name: 'x² - 4x - 45',
+    shortLatex: 'x^2 - 4x - 45',
     latex: 'f(x) = x^2 - 4x - 45',
     derivativeLatex: "f'(x) = 2x - 4",
     f: (x) => x * x - 4 * x - 45,
@@ -48,6 +51,7 @@ const PRESET_FUNCTIONS: PresetFunction[] = [
   {
     id: 'f_sin',
     name: 'x - 0.8 - 0.2·sen(x)',
+    shortLatex: 'x - 0.8 - 0.2\\sin(x)',
     latex: 'f(x) = x - 0.8 - 0.2\\sin(x)',
     derivativeLatex: "f'(x) = 1 - 0.2\\cos(x)",
     f: (x) => x - 0.8 - 0.2 * Math.sin(x),
@@ -61,6 +65,7 @@ const PRESET_FUNCTIONS: PresetFunction[] = [
   {
     id: 'f_cos',
     name: 'x - cos(x)',
+    shortLatex: 'x - \\cos(x)',
     latex: 'f(x) = x - \\cos(x)',
     derivativeLatex: "f'(x) = 1 + \\sin(x)",
     f: (x) => x - Math.cos(x),
@@ -73,7 +78,8 @@ const PRESET_FUNCTIONS: PresetFunction[] = [
   },
   {
     id: 'f_exp',
-    name: '70e⁻¹·⁵ˣ + 25e⁻⁰·⁰⁷⁵ˣ - 9',
+    name: '70e^{-1.5x} + 25e^{-0.075x} - 9',
+    shortLatex: '70e^{-1.5x} + 25e^{-0.075x} - 9',
     latex: 'f(x) = 70 e^{-1.5x} + 25 e^{-0.075x} - 9',
     derivativeLatex: "f'(x) = -105 e^{-1.5x} - 1.875 e^{-0.075x}",
     f: (x) => 70 * Math.exp(-1.5 * x) + 25 * Math.exp(-0.075 * x) - 9,
@@ -105,6 +111,28 @@ export const NewtonGeometricDemo: React.FC = () => {
   const [iteration, setIteration] = useState<number>(0);
   const [prevTangent, setPrevTangent] = useState<TangentSnapshot | null>(null);
 
+  const baseMinX = activeFunc.minX;
+  const baseMaxX = activeFunc.maxX;
+  const baseSpan = baseMaxX - baseMinX;
+  const baseCenter = (baseMinX + baseMaxX) / 2;
+
+  const {
+    setZoom,
+    setPanOffset,
+    setPanOffsetY,
+    panOffsetY,
+    isDragging,
+    containerRef,
+    currentMinX,
+    currentMaxX,
+    dragProps,
+  } = usePlotInteractivity({
+    baseSpan,
+    baseCenter,
+    minZoom: 0.05,
+    maxZoom: 40,
+  });
+
   // Reset when function changes
   const handleSelectFunction = (funcId: string) => {
     const fn = PRESET_FUNCTIONS.find((p) => p.id === funcId) || PRESET_FUNCTIONS[0];
@@ -112,6 +140,9 @@ export const NewtonGeometricDemo: React.FC = () => {
     setCurrentXn(fn.defaultX0);
     setIteration(0);
     setPrevTangent(null);
+    setZoom(1);
+    setPanOffset(0);
+    setPanOffsetY(0);
   };
 
   // Mathematical evaluation at currentXn
@@ -155,10 +186,12 @@ export const NewtonGeometricDemo: React.FC = () => {
     setCurrentXn(activeFunc.defaultX0);
     setIteration(0);
     setPrevTangent(null);
+    setZoom(1);
+    setPanOffset(0);
   };
 
   // Generate chart points dynamically
-  const { chartData, yMin, yMax } = useMemo(() => {
+  const { chartData, yMin, yMax, minX, maxX } = useMemo(() => {
     const points: Array<{
       x: number;
       f_x: number;
@@ -166,10 +199,10 @@ export const NewtonGeometricDemo: React.FC = () => {
       prevTangent?: number;
     }> = [];
 
-    const minX = activeFunc.minX;
-    const maxX = activeFunc.maxX;
+    const minX = currentMinX;
+    const maxX = currentMaxX;
     const span = maxX - minX;
-    const numPoints = 140;
+    const numPoints = 150;
     const dx = span / (numPoints - 1);
 
     let rawMinY = Infinity;
@@ -201,7 +234,7 @@ export const NewtonGeometricDemo: React.FC = () => {
       let curTan: number | undefined = undefined;
       if (!isDerivativeZero) {
         const tVal = fxn + dfxn * (x - currentXn);
-        if (tVal >= computedYMin * 1.6 && tVal <= computedYMax * 1.6) {
+        if (Number.isFinite(tVal)) {
           curTan = Number(tVal.toFixed(4));
         }
       }
@@ -209,7 +242,7 @@ export const NewtonGeometricDemo: React.FC = () => {
       let prevTan: number | undefined = undefined;
       if (prevTangent && Math.abs(prevTangent.dfxn) > 1e-9) {
         const ptVal = prevTangent.fxn + prevTangent.dfxn * (x - prevTangent.xn);
-        if (ptVal >= computedYMin * 1.6 && ptVal <= computedYMax * 1.6) {
+        if (Number.isFinite(ptVal)) {
           prevTan = Number(ptVal.toFixed(4));
         }
       }
@@ -224,19 +257,20 @@ export const NewtonGeometricDemo: React.FC = () => {
 
     return {
       chartData: points,
-      yMin: computedYMin,
-      yMax: computedYMax,
+      yMin: computedYMin + panOffsetY,
+      yMax: computedYMax + panOffsetY,
+      minX,
+      maxX,
     };
-  }, [activeFunc, currentXn, fxn, dfxn, isDerivativeZero, prevTangent]);
+  }, [activeFunc, currentXn, fxn, dfxn, isDerivativeZero, prevTangent, currentMinX, currentMaxX]);
 
   return (
     <div className="bg-white rounded-3xl border border-slate-200 p-4 sm:p-7 shadow-sm space-y-6">
       {/* Header and Function Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-slate-700 bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-full">
+          <div>
+            <span className="inline-flex items-center text-[11px] font-black uppercase tracking-widest text-slate-700 bg-slate-100 border border-slate-200/80 px-3 py-1 rounded-full">
               Simulador Gráfico Interactivo
             </span>
           </div>
@@ -244,25 +278,32 @@ export const NewtonGeometricDemo: React.FC = () => {
             Deducción Geométrica: Rectas Tangentes & Comparativa
           </h3>
           <p className="text-xs text-slate-500">
-            Visualiza la recta tangente actual (azul) junto al trazado previo (gris punteado) para analizar la convergencia paso a paso.
+            Visualiza la recta tangente actual (amarilla) junto al trazado previo (gris punteado) para analizar la convergencia paso a paso.
           </p>
         </div>
 
         {/* Function selection tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shrink-0">
-          {PRESET_FUNCTIONS.map((fn) => (
-            <button
-              key={fn.id}
-              onClick={() => handleSelectFunction(fn.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                selectedFuncId === fn.id
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/80'
-              }`}
-            >
-              {fn.name}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+          {PRESET_FUNCTIONS.map((fn) => {
+            const isSelected = selectedFuncId === fn.id;
+            return (
+              <button
+                key={fn.id}
+                onClick={() => handleSelectFunction(fn.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  isSelected
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/80'
+                }`}
+                title={`Seleccionar función ${fn.name}`}
+              >
+                <InlineMath
+                  math={fn.shortLatex}
+                  className={isSelected ? 'text-white' : 'text-slate-700'}
+                />
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -270,9 +311,9 @@ export const NewtonGeometricDemo: React.FC = () => {
       <div className="bg-slate-900 text-white rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md border border-slate-800">
         <div className="space-y-2 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-              Tangente Activa <InlineMath math={`L_{${iteration}}(x)`} className="text-blue-400 font-bold" />
+              Tangente Activa <InlineMath math={`L_{${iteration}}(x)`} className="text-amber-400 font-bold" />
             </span>
           </div>
           <div className="overflow-x-auto py-1 text-white">
@@ -287,7 +328,7 @@ export const NewtonGeometricDemo: React.FC = () => {
               <InlineMath math={`x_{${prevTangent.iteration}} = ${prevTangent.xn.toFixed(3)}`} className="text-slate-300" />
               <span className="text-slate-600">•</span>
               <span className="text-slate-400">corte eje x:</span>
-              <InlineMath math={`x_{${prevTangent.iteration + 1}} = ${prevTangent.nextXn.toFixed(3)}`} className="text-blue-300 font-semibold" />
+              <InlineMath math={`x_{${prevTangent.iteration + 1}} = ${prevTangent.nextXn.toFixed(3)}`} className="text-amber-300 font-semibold" />
             </div>
           )}
         </div>
@@ -304,46 +345,90 @@ export const NewtonGeometricDemo: React.FC = () => {
             <span className="text-[9px] uppercase font-bold text-slate-400 block">
               Próximo <InlineMath math="x_{n+1}" className="text-slate-400" />
             </span>
-            <span className="font-mono text-sm sm:text-base font-black text-blue-400">
+            <span className="font-mono text-sm sm:text-base font-black text-amber-400">
               {nextXn !== null ? nextXn.toFixed(4) : 'Indet.'}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Chart container */}
-      <div className="w-full h-[330px] sm:h-[410px]">
+      {/* Chart container with drag-to-pan and mouse-wheel zoom */}
+      <div
+        ref={containerRef}
+        {...dragProps}
+        className={`relative w-full h-[330px] sm:h-[410px] select-none ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
+      >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+          <LineChart data={chartData} margin={{ top: 20, right: 25, left: -10, bottom: 10 }}>
+            <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={true} stroke="#E2E8F0" />
             <XAxis
+              type="number"
               dataKey="x"
-              domain={[activeFunc.minX, activeFunc.maxX]}
+              domain={[Number(minX.toFixed(3)), Number(maxX.toFixed(3))]}
               allowDataOverflow={true}
               tick={{ fill: '#64748B', fontSize: 11 }}
-              axisLine={{ stroke: '#CBD5E1' }}
-              tickLine={false}
+              axisLine={{ stroke: '#94A3B8' }}
+              tickLine={true}
               minTickGap={40}
+              tickFormatter={(val) => Number(val).toFixed(1)}
             />
             <YAxis
               domain={[yMin, yMax]}
               allowDataOverflow={true}
               tick={{ fill: '#64748B', fontSize: 11 }}
-              axisLine={{ stroke: '#CBD5E1' }}
-              tickLine={false}
+              axisLine={{ stroke: '#94A3B8' }}
+              tickLine={true}
             />
             <Tooltip
               contentStyle={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                 borderRadius: '12px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid #CBD5E1',
                 fontSize: '11px',
                 boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
               }}
             />
 
-            {/* Axis Y = 0 */}
-            <ReferenceLine y={0} stroke="#94A3B8" strokeWidth={1.5} />
+            {/* Principal Cartesian Axes (GeoGebra Style X and Y intersecting at origin) */}
+            <ReferenceLine
+              y={0}
+              stroke="#475569"
+              strokeWidth={2}
+              label={{ value: 'X', position: 'right', fill: '#475569', fontSize: 12, fontWeight: 'bold' }}
+            />
+            <ReferenceLine
+              x={0}
+              stroke="#475569"
+              strokeWidth={2}
+              label={{ value: 'Y', position: 'top', fill: '#475569', fontSize: 12, fontWeight: 'bold' }}
+            />
+
+            {/* Step Projections */}
+            <ReferenceLine
+              x={currentXn}
+              stroke="#D97706"
+              strokeDasharray="3 3"
+              strokeWidth={1.5}
+              label={{ value: `x${iteration}`, position: 'bottom', fill: '#D97706', fontSize: 11, fontWeight: 'bold' }}
+            />
+            {nextXn !== null && Number.isFinite(nextXn) && (
+              <ReferenceLine
+                x={nextXn}
+                stroke="#2563EB"
+                strokeDasharray="3 3"
+                strokeWidth={1.5}
+                label={{ value: `x${iteration + 1}`, position: 'bottom', fill: '#2563EB', fontSize: 11, fontWeight: 'bold' }}
+              />
+            )}
+            <ReferenceLine
+              x={activeFunc.root}
+              stroke="#10B981"
+              strokeDasharray="4 2"
+              strokeWidth={1.6}
+              label={{ value: 'Raíz', position: 'insideTopLeft', fill: '#059669', fontSize: 11, fontWeight: 'bold' }}
+            />
 
             {/* Curve f(x) */}
             <Line
@@ -370,12 +455,12 @@ export const NewtonGeometricDemo: React.FC = () => {
               />
             )}
 
-            {/* Current Tangent line (Vibrant Cobalt Blue) */}
+            {/* Current Tangent line (Warm Amber) */}
             <Line
               type="linear"
               dataKey="currentTangent"
               name={`Tangente Actual L_${iteration}(x)`}
-              stroke="#2563EB"
+              stroke="#D97706"
               strokeWidth={2.6}
               dot={false}
               strokeDasharray="4 2"
@@ -392,9 +477,9 @@ export const NewtonGeometricDemo: React.FC = () => {
           <span>Curva <InlineMath math="f(x)" /></span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-3.5 h-1 bg-blue-600 rounded-full border-b border-dashed" />
+          <span className="w-3.5 h-1 bg-amber-500 rounded-full border-b border-dashed" />
           <span className="flex items-center gap-1">
-            Tangente Actual <InlineMath math={`L_{${iteration}}(x)`} className="text-blue-600 font-bold" /> (Azul)
+            Tangente Actual <InlineMath math={`L_{${iteration}}(x)`} className="text-amber-700 font-bold" /> (Amarillo)
           </span>
         </div>
         {prevTangent && (
@@ -490,11 +575,11 @@ export const NewtonGeometricDemo: React.FC = () => {
           </span>
         </div>
 
-        <div className="bg-blue-50/70 border border-blue-200/80 p-3.5 rounded-2xl shadow-xs">
-          <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider block mb-1">
-            Corte <InlineMath math={`x_{${iteration + 1}}`} className="text-blue-700 font-bold" />
+        <div className="bg-amber-50/80 border border-amber-200/90 p-3.5 rounded-2xl shadow-xs">
+          <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider block mb-1">
+            Corte <InlineMath math={`x_{${iteration + 1}}`} className="text-amber-800 font-bold" />
           </span>
-          <span className="text-sm font-black font-mono text-blue-900">
+          <span className="text-sm font-black font-mono text-amber-950">
             {nextXn !== null ? nextXn.toFixed(4) : 'Indeterminado'}
           </span>
         </div>
@@ -508,14 +593,14 @@ export const NewtonGeometricDemo: React.FC = () => {
             Procedimiento en la Iteración {iteration}:
           </strong>
           <p>
-            1. <strong>Tangente Actual (Azul):</strong> Evaluamos <InlineMath math={`f(x_${iteration}) = ${fxn.toFixed(3)}`} /> y trazamos la recta <InlineMath math={`L_${iteration}(x)`} /> con pendiente <InlineMath math={`f'(x_${iteration}) = ${dfxn.toFixed(3)}`} />.
+            1. <strong>Tangente Actual (Amarilla):</strong> Evaluamos <InlineMath math={`f(x_${iteration}) = ${fxn.toFixed(3)}`} /> y trazamos la recta <InlineMath math={`L_${iteration}(x)`} /> con pendiente <InlineMath math={`f'(x_${iteration}) = ${dfxn.toFixed(3)}`} />.
           </p>
           <p>
-            2. <strong>Corte en eje horizontal:</strong> La tangente azul corta al eje <InlineMath math="y=0" /> en <InlineMath math={`x_${iteration + 1} = ${nextXn !== null ? nextXn.toFixed(4) : '...'}`} />.
+            2. <strong>Corte en eje horizontal:</strong> La tangente amarilla corta al eje <InlineMath math="y=0" /> en <InlineMath math={`x_${iteration + 1} = ${nextXn !== null ? nextXn.toFixed(4) : '...'}`} />.
           </p>
           {prevTangent && (
             <p className="text-slate-600">
-              3. <strong>Comparación visual:</strong> Observa el trazado previo (línea gris punteada) en <InlineMath math={`x_${prevTangent.iteration} = ${prevTangent.xn.toFixed(3)}`} /> respecto a la nueva tangente azul. ¡Cada paso acerca más la aproximación a la raíz real!
+              3. <strong>Comparación visual:</strong> Observa el trazado previo (línea gris punteada) en <InlineMath math={`x_${prevTangent.iteration} = ${prevTangent.xn.toFixed(3)}`} /> respecto a la nueva tangente amarilla. ¡Cada paso acerca más la aproximación a la raíz real!
             </p>
           )}
           {absError !== null && (

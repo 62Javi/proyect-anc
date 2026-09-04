@@ -16,7 +16,18 @@ import {
 
 const renderMessageWithLatex = (msg?: string) => {
   if (!msg) return null;
-  const parts = msg.split(/(\$[^$]+\$)/g);
+
+  // Transform raw scientific notation into clean LaTeX \times 10^{...}
+  const formattedMsg = msg.replace(
+    /(-?\d+(?:\.\d+)?)[eE]([+-]?\d+)/g,
+    (_, mantissa, exp) => {
+      const m = parseFloat(mantissa);
+      const e = parseInt(exp, 10);
+      return `$${m} \\times 10^{${e}}$`;
+    }
+  );
+
+  const parts = formattedMsg.split(/(\$[^$]+\$)/g);
   return (
     <>
       {parts.map((part, idx) => {
@@ -45,7 +56,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
   );
   const [x0, setX0] = useState<number | string>(initialConfig?.x0 ?? '4');
   const [tolerance, setTolerance] = useState<number>(
-    initialConfig?.tolerance ?? 0.1 // Mayor tasa de error por defecto (10⁻¹)
+    initialConfig?.tolerance ?? 0.001 // Por defecto 10⁻³
   );
   const [maxIterations, setMaxIterations] = useState<number>(
     initialConfig?.maxIterations ?? 25
@@ -149,7 +160,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       method: 'newton',
       expr: 'x^2 - 4x - 45',
       x0: '4',
-      tol: 0.1,
+      tol: 0.001,
     },
     {
       name: 'x - cos(x)',
@@ -157,7 +168,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
       method: 'newton',
       expr: 'x - cos(x)',
       x0: 'pi/4',
-      tol: 0.1,
+      tol: 0.001,
     },
   ];
 
@@ -175,16 +186,11 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start sm:self-auto print:hidden">
+          {/* Selector de Método */}
+          <div className="flex items-center gap-2 print:hidden">
+            <div className="bg-slate-100 p-1.5 rounded-2xl flex items-center gap-1 border border-slate-200">
               <button
-                onClick={() => {
-                  setMethod('newton');
-                  if (expression === 'cos(x)' || expression === '0.8 + 0.2*sin(x)') {
-                    setExpression('x^2 - 4x - 45');
-                    setX0('4');
-                  }
-                }}
+                onClick={() => setMethod('newton')}
                 className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   method === 'newton'
                     ? 'bg-white text-slate-900 shadow-sm'
@@ -194,13 +200,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
                 Método de Newton
               </button>
               <button
-                onClick={() => {
-                  setMethod('fixed-point');
-                  if (expression.includes('x^2') || expression.includes('x**2') || expression.includes('exp(-1.5')) {
-                    setExpression('cos(x)');
-                    setX0('pi/4');
-                  }
-                }}
+                onClick={() => setMethod('fixed-point')}
                 className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   method === 'fixed-point'
                     ? 'bg-white text-slate-900 shadow-sm'
@@ -303,10 +303,8 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
               <button
                 key={idx}
                 onClick={() => {
-                  setMethod(p.method);
                   setExpression(p.expr);
                   setX0(p.x0);
-                  setTolerance(p.tol);
                   setNewtonResult(null);
                   setFixedPointResult(null);
                   setError(null);
@@ -409,6 +407,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
           <NewtonInteractivePlot
             plotData={newtonResult.plot_data}
             root={newtonResult.root}
+            expression={expression}
           />
         )}
 
@@ -418,6 +417,7 @@ export const InteractiveSolver: React.FC<InteractiveSolverProps> = ({
             steps={fixedPointResult.steps}
             root={fixedPointResult.root}
             kConstantEst={fixedPointResult.k_constant_est}
+            expression={expression}
           />
         )}
 

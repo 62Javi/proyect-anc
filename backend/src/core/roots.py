@@ -54,6 +54,23 @@ class RootFindingCalculator:
         mantissa, exp_val = f"{tol:.1e}".split("e")
         return f"{float(mantissa):g} \\times 10^{{{int(exp_val)}}}"
 
+    @staticmethod
+    def _format_number_latex(val: float, sig_figs: int = 4) -> str:
+        if math.isnan(val):
+            return "\\text{indefinido}"
+        if math.isinf(val):
+            return "\\infty" if val > 0 else "-\\infty"
+        if val == 0:
+            return "0"
+        abs_val = abs(val)
+        if 1e-3 <= abs_val < 1e5:
+            return f"{val:.5g}"
+        s = f"{val:.{sig_figs}e}"
+        mantissa, exp_val = s.split("e")
+        mantissa_float = float(mantissa)
+        exp_int = int(exp_val)
+        return f"{mantissa_float:g} \\times 10^{{{exp_int}}}"
+
     def _parse_expression(self, expr_str: str) -> sp.Expr:
         try:
             clean_expr = (
@@ -141,18 +158,18 @@ class RootFindingCalculator:
                 f_prime_xn = float(f_prime_lambdified(xn))
             except Exception as e:
                 status = "error"
-                message = f"Error al evaluar la función o su derivada en x = {xn:.6g}: {str(e)}"
+                message = f"Error al evaluar la función o su derivada en $x = {self._format_number_latex(xn)}$: {str(e)}"
                 break
 
             if math.isnan(fxn) or math.isinf(fxn):
                 status = "diverged"
-                message = f"La función diverge o produce un valor indefinido en x = {xn:.6g}."
+                message = f"La función diverge o produce un valor indefinido en $x = {self._format_number_latex(xn)}$."
                 break
 
             if abs(f_prime_xn) < 1e-14:
                 status = "derivative_zero"
                 message = (
-                    f"Derivada casi nula f'({xn:.6g}) ≈ 0 en la iteración {i}. "
+                    f"Derivada casi nula $f'({self._format_number_latex(xn)}) \\approx 0$ en la iteración {i}. "
                     "El método de Newton falla por división entre cero (recta tangente horizontal)."
                 )
                 steps.append(
@@ -208,8 +225,8 @@ class RootFindingCalculator:
             if len(visited_x) >= 4 and abs(visited_x[-1] - visited_x[-3]) < 1e-7 and abs(visited_x[-2] - visited_x[-4]) < 1e-7:
                 status = "oscillation"
                 message = (
-                    f"Se detectó un ciclo oscilatorio infinito entre x ≈ {visited_x[-1]:.6g} "
-                    f"y x ≈ {visited_x[-2]:.6g}. El método no converge hacia una raíz."
+                    f"Se detectó un ciclo oscilatorio infinito entre $x \\approx {self._format_number_latex(visited_x[-1])}$ "
+                    f"y $x \\approx {self._format_number_latex(visited_x[-2])}$. El método no converge hacia una raíz."
                 )
                 xn = xn_plus_1
                 break
@@ -225,14 +242,15 @@ class RootFindingCalculator:
 
         final_root = xn if converged else None
 
-        # Build plot data
+        # Build plot data with generous bounds for zoom-out and drag-to-pan
         min_x = min(visited_x)
         max_x = max(visited_x)
-        margin = max(abs(max_x - min_x) * 0.4, 2.0)
+        span = max(abs(max_x - min_x), 3.0)
+        margin = max(span * 3.0, 15.0)
         x_start = min_x - margin
         x_end = max_x + margin
 
-        x_grid = np.linspace(x_start, x_end, 300)
+        x_grid = np.linspace(x_start, x_end, 600)
         y_grid = []
         valid_x = []
         for val in x_grid:
@@ -292,12 +310,12 @@ class RootFindingCalculator:
                 max_abs_g_prime = max(max_abs_g_prime, abs(g_prime_val))
             except Exception as e:
                 status = "error"
-                message = f"Error al evaluar g(x) en x = {xn:.6g}: {str(e)}"
+                message = f"Error al evaluar $g(x)$ en $x = {self._format_number_latex(xn)}$: {str(e)}"
                 break
 
             if math.isnan(gxn) or math.isinf(gxn) or abs(gxn) > 1e12:
                 status = "diverged"
-                message = f"La iteración de punto fijo diverge en x = {xn:.6g}."
+                message = f"La iteración de punto fijo diverge en $x \\approx {self._format_number_latex(xn)}$."
                 break
 
             # Cobweb trajectory: (xn, xn_previous_or_0) -> (xn, gxn) -> (gxn, gxn)
@@ -339,14 +357,15 @@ class RootFindingCalculator:
 
         final_root = xn if converged else None
 
-        # Build plot data for y = g(x) and y = x
+        # Build plot data for y = g(x) and y = x with generous bounds for zoom-out and drag-to-pan
         min_x = min(visited_x)
         max_x = max(visited_x)
-        margin = max(abs(max_x - min_x) * 0.4, 2.0)
+        span = max(abs(max_x - min_x), 3.0)
+        margin = max(span * 3.0, 15.0)
         x_start = min_x - margin
         x_end = max_x + margin
 
-        x_grid = np.linspace(x_start, x_end, 300)
+        x_grid = np.linspace(x_start, x_end, 600)
         y_grid = []
         valid_x = []
         for val in x_grid:
