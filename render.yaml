@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: proyect-anc-backend
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: https://anc2.sixtor.com,https://anc.sixtor.com
