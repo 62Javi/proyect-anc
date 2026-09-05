@@ -1,100 +1,133 @@
-# Plataforma de Análisis Numérico - UTN FRLP
+# Proyecto ANC — Plataforma de Analisis Numerico y Metodos de Calculo
 
-Esta plataforma interactiva ha sido desarrollada como una herramienta de apoyo para la cátedra de Análisis Numérico de la Universidad Tecnológica Nacional, Facultad Regional La Plata (UTN FRLP). Proporciona una interfaz moderna para el cálculo y la visualización de métodos numéricos aplicados, comenzando con el análisis de Series de Fourier.
+<div align="center">
+
+[![UTN FRLP](https://img.shields.io/badge/UTN%20FRLP-Analisis%20Numerico-00529B?style=for-the-badge&logo=googlescholar&logoColor=white)](https://www.frlp.utn.edu.ar/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React%2018-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+
+Plataforma web para calculo simbolico, experimentacion numerica y visualizacion interactiva de metodos matematicos aplicados.
+
+[Demo en Vivo](https://anc.sixtor.com) | [Inicio Rapido](#inicio-rapido-docker-first) | [Modulos](#modulos-de-la-plataforma) | [Tecnologias](#tecnologias-y-herramientas) | [Integrantes](#integrantes)
+
+</div>
 
 ---
 
-## 🚀 Quick Start: Docker-First (Recommended)
+## Descripcion General
 
-Este proyecto está diseñado para ejecutarse **exclusivamente con Docker**. Se desaconseja la instalación manual de dependencias (Python, Node, Uvicorn, etc.) para evitar conflictos de versiones y asegurar que el entorno coincida con el de producción.
+Proyecto ANC es una plataforma web interactiva desarrollada como soporte academico para la catedra de Analisis Numerico de la Universidad Tecnologica Nacional, Facultad Regional La Plata (UTN FRLP).
 
-### 1. Requisito Principal: Instalar Docker
-*   **En Windows (Recomendado)**: Instala [Docker Desktop](https://www.docker.com/products/docker-desktop/). Asegúrate de que esté corriendo antes de ejecutar los comandos.
-*   **En Linux**: Instala `docker` y `docker-compose-plugin` usando tu gestor de paquetes.
+El sistema implementa una arquitectura desacoplada basada en servicios, combinando un motor matematico de calculo simbolico y numerico en backend con una interfaz interactiva Mobile-First en frontend.
 
-### 2. Ejecutar el Proyecto
-Desde la raíz del proyecto, abre una terminal y ejecuta:
+---
 
-```powershell
-# Inicia todo el sistema (Frontend + Backend)
+## Modulos de la Plataforma
+
+```
+                        +------------------------------+
+                        |         PROYECTO ANC         |
+                        |      (Analisis Numerico)     |
+                        +--------------+---------------+
+           +---------------------------+---------------------------+
+           |                           |                           |
+           v                           v                           v
++---------------------+     +---------------------+     +---------------------+
+|  Series de Fourier  |     |Analisis de Armonicos|     |  Calculo de Raices  |
+|  - Simbolico SymPy  |     |  - Transformada FFT |     |  - Newton-Raphson   |
+|  - Fenomeno Gibbs   |     |    (Microfono / WAV)│     |  - Punto Fijo g(x)  |
+|  - Simetria y Trozos|     |  - Espectrograma    |     |  - Graficos y Pasos |
++---------------------+     +---------------------+     +---------------------+
+```
+
+### 1. Analizador de Series de Fourier (`/fourier`)
+* Calculo Simbolico Exacto: Integracion analitica de coeficientes de Euler-Fourier ($a_0, a_n, b_n$) mediante SymPy.
+* Funciones a Trozos (Piecewise): Definicion de funciones periodicas continuas y discontinuas por tramos.
+* Fenomeno de Gibbs: Visualizacion dinamica del comportamiento oscilatorio y sobrepicos en discontinuidades de salto al truncar la serie.
+* Optimizacion por Simetria: Identificacion automatica de paridad (funciones pares e impares) para simplificacion de integrales.
+* Renderizado Matematico: Expresiones algebraicas formateadas con KaTeX.
+
+### 2. Analisis de Armonicos y FFT (`/harmonics`)
+* Transformada Rapida de Fourier (FFT): Descomposicion espectral de senales de audio en tiempo real.
+* Fuente de Senal Dual: Ingesta de audio directamente desde microfono o carga de archivos locales `.wav`.
+* Deteccion Espectral: Identificacion de la frecuencia fundamental ($f_0$) y visualizacion interactiva de armonicos mediante Plotly.js.
+
+### 3. Calculo de Raices de Ecuaciones No Lineales (`/roots`)
+* Metodos Implementados: Metodos iterativos de Newton-Raphson y Punto Fijo ($x_{n+1} = g(x_n)$).
+* Comparacion de Metodos: Analisis simultaneo de convergencia, numero de iteraciones y evolucion del error relativo entre ambos metodos.
+* Visualizacion Grafica Interactiva:
+  * Metodo de Newton: Trazado geometrico interactivo de rectas tangentes iteracion a iteracion.
+  * Metodo de Punto Fijo: Representacion grafica de iteraciones sucesivas mediante la funcion generadora $y = g(x)$ y la recta identidad $y = x$.
+* Resolucion Detallada: Desglose paso a paso con sustitucion de formulas en LaTeX y exportacion de reportes en PDF.
+
+---
+
+## Inicio Rapido: Docker-First
+
+El proyecto esta configurado para ejecutarse mediante Docker, garantizando paridad entre los entornos de desarrollo y produccion.
+
+### Requisitos
+* Docker Engine 24+ o Docker Desktop.
+* Docker Compose v2+.
+
+### Ejecucion
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/62Javi/proyect-anc.git
+cd proyect-anc
+
+# Iniciar los servicios (Frontend + Backend)
 docker compose up --build
 ```
 
-Una vez que termine, accede a:
-*   **Frontend**: [http://localhost:8083](http://localhost:8083)
-*   **Backend API**: [http://localhost:8003](http://localhost:8003)
-
----
-
-## Módulo de Series de Fourier
-
-El sistema cuenta actualmente con un motor de análisis robusto para funciones periódicas y definidas a trozos (piecewise functions).
-
-### Capacidades Técnicas
-*   **Cálculo Simbólico Exacto**: Obtención de los coeficientes $a_0, a_n, b_n$ mediante la integración analítica con la librería SymPy.
-*   **Visualización Dinámica**: Generación de gráficos interactivos con Plotly.js que permiten analizar la convergencia de la serie en tiempo real.
-*   **Análisis del Fenómeno de Gibbs**: Posibilidad de ajustar el número de armónicos para observar el comportamiento de la serie cerca de discontinuidades.
-*   **Optimización por Simetría**: Identificación automática de paridad (funciones pares o impares) para simplificar el proceso de cálculo.
-*   **Presentación Matemática**: Integración con KaTeX para mostrar las fórmulas resultantes con calidad de publicación.
-
----
-
-## Guía de Uso del Módulo
-
-Para realizar un análisis, el usuario debe proporcionar la definición de la función y su intervalo.
-
-### Ejemplo de Definición de Función
-El motor acepta expresiones matemáticas estándar. Para funciones definidas a trozos, se utiliza la siguiente estructura lógica:
-*   **Función**: `x**2` en el intervalo `[-pi, pi]`
-*   **Función a trozos**: `1` si `x > 0`, `-1` si `x < 0`
-
-### Parámetros de Configuración
-1.  **Intervalo (L)**: Definición del período de la función.
-2.  **Número de Armónicos**: Cantidad de términos de la serie a sumar para la aproximación.
-3.  **Tipo de Serie**: Opción de calcular la serie trigonométrica estándar o simplificada por simetría.
-
----
-
-## Tecnologías y Arquitectura
-
-El proyecto implementa una arquitectura de servicios desacoplados para asegurar la eficiencia en el procesamiento matemático y la fluidez de la interfaz.
-
-### Backend (Procesamiento)
-*   **FastAPI**: Framework de alto rendimiento para la gestión de peticiones.
-*   **SymPy**: Biblioteca de computación simbólica para el cálculo exacto de integrales.
-*   **NumPy**: Biblioteca para el manejo de arreglos numéricos y generación de puntos de muestreo.
-
-### Frontend (Interfaz de Usuario)
-*   **React y TypeScript**: Desarrollo de componentes reactivos con tipado estático.
-*   **Tailwind CSS**: Sistema de diseño basado en utilidades para una interfaz limpia y responsiva.
-*   **Plotly.js**: Motor de visualización de datos científicos.
-*   **KaTeX**: Renderizado de expresiones matemáticas en el navegador.
-
----
-
-## Instrucciones de Instalación y Despliegue
-
-### Requisitos del Sistema
-*   Docker y Docker Compose.
-*   Hardware compatible (Optimizado para ARM64/Raspberry Pi).
-
-### Despliegue con Docker
-Para iniciar la plataforma completa en segundo plano:
-```bash
-docker-compose up -d --build
-```
-
-### Configuración de Puertos
-| Servicio | Puerto Host | Puerto Interno |
+### Puntos de Acceso Local
+| Servicio | Direccion | Descripcion |
 | :--- | :--- | :--- |
-| Frontend | 8083 | 80 |
-| Backend | 8003 | 8000 |
-
-### Gestión de Red y Dominio
-El proyecto está configurado para operar mediante un túnel de Cloudflare en la dirección **anc.sixtor.com**. El tráfico se redirige según la ruta:
-*   Ruta raíz (`/`): Acceso al cliente de React.
-*   Prefijo API (`/api/`): Acceso a los servicios del backend.
+| Frontend Web | http://localhost:8083 | Interfaz de usuario interactiva (React + Vite) |
+| Backend API | http://localhost:8003 | Documentacion Swagger interactiva en `/docs` |
 
 ---
-**Universidad Tecnológica Nacional**
-*Facultad Regional La Plata - Cátedra de Análisis Numérico*
+
+## Tecnologias y Herramientas
+
+| Componente | Stack Tecnologico |
+| :--- | :--- |
+| Backend | Python 3.11+, FastAPI, SymPy, NumPy, Uvicorn |
+| Frontend | React 18, TypeScript 5+, Vite, Tailwind CSS, Plotly.js, KaTeX, Lucide |
+| Pruebas y Calidad | Pytest, Vitest, Ruff |
+| Despliegue e Infraestructura | Docker Compose, Nginx Alpine, Cloudflare Tunnel, ARM64 |
+
+---
+
+## Despliegue en Produccion
+
+La aplicacion se encuentra operativa en servidor dedicado:
+
+* Hardware: Raspberry Pi 4 Model B (ARM64)
+* Mapeo de Puertos:
+  * Puerto 8083: Servicio web Frontend (Nginx)
+  * Puerto 8003: Servicio REST Backend (FastAPI)
+* Enrutamiento y SSL: Cloudflare Tunnel conectado al dominio [anc.sixtor.com](https://anc.sixtor.com).
+
+---
+
+## Integrantes
+
+| Integrante | Legajo |
+| :--- | :--- |
+| Castro Cope Sixto Javier | 32797 |
+| Figueroa Rodrigo Ivan | 31839 |
+| Orellana Maximiliano Octavio | 32803 |
+| Portillo Franco Javier | 31089 |
+
+---
+
+## Informacion Academica
+
+* Institucion: Universidad Tecnologica Nacional, Facultad Regional La Plata (UTN FRLP)
+* Catedra: Analisis Numerico
+* Ciclo Lectivo: 2026

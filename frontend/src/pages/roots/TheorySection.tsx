@@ -1,9 +1,48 @@
 import React from 'react';
 import FormulaDisplay from '../../components/FormulaDisplay';
 import InlineMath from '../../components/InlineMath';
-import { BookOpen, CheckCircle, AlertTriangle, Sparkles, FileText, Printer } from 'lucide-react';
+import { BookOpen, CheckCircle, AlertTriangle, TrendingUp, FileText, Printer, BookMarked, Download, ExternalLink } from 'lucide-react';
 import NewtonGeometricDemo from '../../components/roots/NewtonGeometricDemo';
 import { useAppPrint } from '../../hooks/useAppPrint';
+
+interface BibliographyDoc {
+  id: string;
+  title: string;
+  originalName: string;
+  author: string;
+  category: string;
+  description: string;
+  fileSize: string;
+  url: string;
+  downloadFilename: string;
+}
+
+const BIBLIOGRAPHY_DOCS: BibliographyDoc[] = [
+  {
+    id: 'tp2-amiconi',
+    title: 'Trabajo Práctico Nº 2: Raíces',
+    originalName: '02 - TRABAJO PRACTICO Nº 2 (Raices) - Amiconi.pdf',
+    author: 'Cátedra ANC • Prof. Amiconi',
+    category: 'Trabajo Práctico',
+    description:
+      'Guía oficial con enunciados prácticos, ejercicios de aplicación de métodos iterativos, estimación analítica de cotas de error y problemas de examen.',
+    fileSize: '750 KB',
+    url: '/docs/02-tp2-raices-amiconi.pdf',
+    downloadFilename: '02 - TRABAJO PRACTICO Nº 2 (Raices) - Amiconi.pdf',
+  },
+  {
+    id: 'teoria-raices',
+    title: 'Teoría de Raíces',
+    originalName: '02- Teoría de Raíces.pdf',
+    author: 'Cátedra ANC • UTN FRBA',
+    category: 'Apunte Teórico',
+    description:
+      'Apunte conceptual oficial de la cátedra con deducción analítica y geométrica de Newton, análisis de orden de convergencia, Punto Fijo y teoremas fundamentales.',
+    fileSize: '943 KB',
+    url: '/docs/02-teoria-de-raices.pdf',
+    downloadFilename: '02- Teoría de Raíces.pdf',
+  },
+];
 
 export const TheorySection: React.FC = () => {
   // Usamos el custom hook pasando el nombre por defecto para el PDF
@@ -59,7 +98,7 @@ export const TheorySection: React.FC = () => {
         <section className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6 print:border-none print:shadow-none print:p-0">
           <div className="flex items-center gap-3 text-slate-900 border-b border-slate-100 pb-4">
             <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center print:hidden">
-              <Sparkles size={20} />
+              <TrendingUp size={20} />
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900">1. Método de Newton</h2>
@@ -130,9 +169,12 @@ export const TheorySection: React.FC = () => {
           </div>
 
           {/* Demostración de Newton como Punto Fijo */}
-          <div className="p-6 bg-slate-900 text-white rounded-2xl space-y-3 print:bg-slate-100 print:text-slate-900">
-            <div className="flex items-center gap-2 text-amber-400 print:text-slate-900 font-bold text-xs uppercase tracking-wider">
-              <Sparkles size={16} /> Demostración Fundamental
+          <div className="p-6 bg-slate-900 text-white rounded-2xl space-y-3 print:bg-slate-100 print:text-slate-900 border border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0 print:hidden" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-amber-400 print:text-slate-900">
+                Demostración Fundamental
+              </span>
             </div>
             <h4 className="text-base sm:text-lg font-black">¿Por qué Newton es el Punto Fijo Óptimo?</h4>
             <p className="text-xs sm:text-sm text-slate-300 print:text-slate-800 leading-relaxed">
@@ -252,21 +294,84 @@ export const TheorySection: React.FC = () => {
             </div>
           </div>
         </section>
-      </div>
 
-      {/* Footer de impresión */}
-      <div className="p-6 bg-slate-100 rounded-3xl text-center space-y-3 border border-slate-200 print:hidden">
-        <h4 className="font-black text-slate-900 text-sm uppercase tracking-wider">¿Deseás llevarte esta teoría en PDF?</h4>
-        <p className="text-xs text-slate-600 max-w-md mx-auto">
-          Pulsá el botón para generar el archivo imprimible con todos los teoremas y esquemas listos.
-        </p>
-        <button
-          onClick={() => handlePrint()}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
-        >
-          <Printer size={15} />
-          <span>Generar PDF Imprimible</span>
-        </button>
+        {/* Bibliografía y Material de la Cátedra */}
+        <section className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6 print:border-none print:shadow-none print:p-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 print:hidden">
+                <BookMarked size={20} />
+              </div>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900">4. Bibliografía y Material de Cátedra</h2>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Documentos Oficiales en PDF</p>
+              </div>
+            </div>
+            <span className="self-start sm:self-auto text-[11px] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full print:hidden">
+              2 documentos oficiales
+            </span>
+          </div>
+
+          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+            Podés consultar los apuntes teóricos y las guías de trabajos prácticos provistos por la cátedra para la unidad de <strong>Raíces de Ecuaciones</strong>. Hacé clic para visualizarlos directamente en el navegador o descargarlos en tu dispositivo.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+            {BIBLIOGRAPHY_DOCS.map((doc) => (
+              <div
+                key={doc.id}
+                className="bg-slate-50/80 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-2xl p-5 flex flex-col justify-between space-y-4 transition-all duration-200 group shadow-xs hover:shadow-sm"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200/70 rounded-lg">
+                      <FileText size={12} />
+                      <span>PDF • {doc.category}</span>
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200 print:hidden">
+                      {doc.fileSize}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                      {doc.title}
+                    </h4>
+                    <p className="text-xs font-bold text-slate-500 mt-0.5">{doc.author}</p>
+                  </div>
+
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {doc.description}
+                  </p>
+                </div>
+
+                {/* Acciones de visualización y descarga */}
+                <div className="pt-3 border-t border-slate-200 flex items-center gap-2 print:hidden">
+                  <a
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xs cursor-pointer"
+                    title={`Abrir ${doc.title} en una pestaña nueva`}
+                  >
+                    <ExternalLink size={14} />
+                    <span>Ver PDF</span>
+                  </a>
+
+                  <a
+                    href={doc.url}
+                    download={doc.downloadFilename}
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xs cursor-pointer"
+                    title={`Descargar ${doc.downloadFilename}`}
+                  >
+                    <Download size={14} />
+                    <span>Descargar</span>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

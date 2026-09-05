@@ -51,31 +51,37 @@ export const RootsPage: React.FC = () => {
           )}
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center gap-1.5 overflow-x-auto p-1.5 bg-slate-200/70 rounded-2xl border border-slate-200 no-scrollbar">
+        {/* Tab Navigation (Equitativa 3 columnas 33.3%) */}
+        <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-slate-200/70 rounded-2xl border border-slate-200">
           <button
             onClick={() => setActiveTab('solver')}
-            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center ${
               activeTab === 'solver' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Calculator size={18} /> Simulador Interactivo
+            <Calculator size={18} className="shrink-0" />
+            <span className="hidden sm:inline">Simulador Interactivo</span>
+            <span className="sm:hidden">Simulador</span>
           </button>
           <button
             onClick={() => setActiveTab('theory')}
-            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center ${
               activeTab === 'theory' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <BookOpen size={18} /> Teoría & Teoremas
+            <BookOpen size={18} className="shrink-0" />
+            <span className="hidden sm:inline">Teoría & Teoremas</span>
+            <span className="sm:hidden">Teoría</span>
           </button>
           <button
             onClick={() => setActiveTab('exercises')}
-            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center ${
               activeTab === 'exercises' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <FileCheck2 size={18} /> Ejercicios Resueltos (TP2)
+            <FileCheck2 size={18} className="shrink-0" />
+            <span className="hidden sm:inline">Ejercicios Resueltos</span>
+            <span className="sm:hidden">Ejercicios</span>
           </button>
         </div>
       </div>

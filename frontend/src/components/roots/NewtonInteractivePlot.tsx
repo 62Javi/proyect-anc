@@ -19,14 +19,19 @@ import {
 } from 'lucide-react';
 import type { NewtonPlotData } from '../../services/api';
 import InlineMath from '../InlineMath';
+import usePlotInteractivity from './usePlotInteractivity';
+import { compileMathExpression, sampleContinuousDomain } from '../../utils/mathEvaluator';
 
 interface NewtonInteractivePlotProps {
   plotData: NewtonPlotData;
   root: number | null;
+  expression?: string;
 }
 
 export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
   plotData,
+  root,
+  expression,
 }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -50,73 +55,74 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
     };
   }, [isPlaying, totalTangents]);
 
+  // Focus initial view nicely around the iterations
+  const { baseCenter, baseSpan } = useMemo(() => {
+    if (!plotData || !plotData.tangents || plotData.tangents.length === 0) {
+      const xs = plotData?.curve_x || [-5, 5];
+      const min = xs[0] ?? -5;
+      const max = xs[xs.length - 1] ?? 5;
+      return { baseCenter: (min + max) / 2, baseSpan: Math.max(2, max - min) };
+    }
+    const xPoints = plotData.tangents.flatMap((t) => [
+      t.x_point,
+      ...(t.x_intercept !== null && Number.isFinite(t.x_intercept) ? [t.x_intercept] : []),
+    ]);
+    if (plotData.roots_x) xPoints.push(...plotData.roots_x);
+    const minX = Math.min(...xPoints);
+    const maxX = Math.max(...xPoints);
+    const center = (minX + maxX) / 2;
+    const span = Math.max(4, (maxX - minX) * 1.6);
+    return { baseCenter: center, baseSpan: span };
+  }, [plotData]);
+
+  const {
+    setZoom,
+    setPanOffset,
+    setPanOffsetY,
+    panOffsetY,
+    isDragging,
+    containerRef,
+    currentMinX,
+    currentMaxX,
+    dragProps,
+  } = usePlotInteractivity({
+    baseSpan,
+    baseCenter,
+    minZoom: 0.05,
+    maxZoom: 40,
+  });
+
   React.useEffect(() => {
     setCurrentStepIndex(0);
-  }, [plotData]);
+    setZoom(1);
+    setPanOffset(0);
+    setPanOffsetY(0);
+  }, [plotData, setZoom, setPanOffset, setPanOffsetY]);
 
   const activeTangent = plotData?.tangents?.[currentStepIndex];
   const prevTangent = currentStepIndex > 0 ? plotData?.tangents?.[currentStepIndex - 1] : null;
 
-  // Compute stable Y-domain
-  const { yMin, yMax } = useMemo(() => {
-    if (!plotData || !plotData.curve_y || plotData.curve_y.length === 0) {
-      return { yMin: -10, yMax: 10 };
-    }
+  // Compile mathematical expression for infinite continuous rendering
+  const evaluator = useMemo(() => {
+    return expression ? compileMathExpression(expression) : null;
+  }, [expression]);
 
-    let min = Math.min(...plotData.curve_y);
-    let max = Math.max(...plotData.curve_y);
+  // Generate continuous chart dataset across [currentMinX, currentMaxX] like GeoGebra
+  const { points: chartData, yMin: rawYMin, yMax: rawYMax } = useMemo(() => {
+    return sampleContinuousDomain({
+      minX: currentMinX,
+      maxX: currentMaxX,
+      pointsCount: 200,
+      evaluator,
+      fallbackX: plotData?.curve_x,
+      fallbackY: plotData?.curve_y,
+      activeTangent,
+      prevTangent,
+    });
+  }, [currentMinX, currentMaxX, evaluator, plotData, activeTangent, prevTangent]);
 
-    if (min > 0) min = 0;
-    if (max < 0) max = 0;
-
-    const span = max - min || 2;
-    const padding = span * 0.15;
-
-    return {
-      yMin: Math.floor(min - padding),
-      yMax: Math.ceil(max + padding),
-    };
-  }, [plotData]);
-
-  if (!plotData || plotData.curve_x.length === 0) {
-    return (
-      <div className="h-[320px] flex items-center justify-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-400 text-xs font-semibold uppercase tracking-wider">
-        No hay datos de gráfica disponibles
-      </div>
-    );
-  }
-
-  // Build chart dataset with f(x), active tangent line, and previous tangent line
-  const chartData = plotData.curve_x.map((xVal, idx) => {
-    const yCurve = plotData.curve_y[idx];
-    let yTangent: number | null = null;
-    let yPrevTangent: number | null = null;
-
-    if (activeTangent) {
-      const tVal =
-        activeTangent.y_point +
-        activeTangent.slope * (xVal - activeTangent.x_point);
-      if (tVal >= yMin * 2 && tVal <= yMax * 2) {
-        yTangent = tVal;
-      }
-    }
-
-    if (prevTangent) {
-      const ptVal =
-        prevTangent.y_point +
-        prevTangent.slope * (xVal - prevTangent.x_point);
-      if (ptVal >= yMin * 2 && ptVal <= yMax * 2) {
-        yPrevTangent = ptVal;
-      }
-    }
-
-    return {
-      x: Number(xVal.toFixed(4)),
-      f_x: Number(yCurve.toFixed(4)),
-      tangente: yTangent !== null ? Number(yTangent.toFixed(4)) : undefined,
-      prevTangente: yPrevTangent !== null ? Number(yPrevTangent.toFixed(4)) : undefined,
-    };
-  });
+  const yMin = rawYMin + panOffsetY;
+  const yMax = rawYMax + panOffsetY;
 
   return (
     <div className="w-full bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm space-y-4">
@@ -218,40 +224,94 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
         </div>
       )}
 
-      {/* Plot container */}
-      <div className="w-full h-[340px] sm:h-[420px]">
+      {/* Plot container with drag-to-pan and mouse-wheel zoom */}
+      <div
+        ref={containerRef}
+        {...dragProps}
+        className={`relative w-full h-[340px] sm:h-[420px] select-none ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
+      >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 15, right: 15, left: -10, bottom: 5 }}
+            margin={{ top: 15, right: 25, left: -10, bottom: 10 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+            <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={true} stroke="#E2E8F0" />
             <XAxis
+              type="number"
               dataKey="x"
+              domain={[Number(currentMinX.toFixed(2)), Number(currentMaxX.toFixed(2))]}
+              allowDataOverflow={true}
               tick={{ fill: '#64748B', fontSize: 11 }}
-              axisLine={{ stroke: '#CBD5E1' }}
-              tickLine={false}
+              axisLine={{ stroke: '#94A3B8' }}
+              tickLine={true}
               minTickGap={45}
+              tickFormatter={(val) => Number(val).toFixed(1)}
             />
             <YAxis
               domain={[yMin, yMax]}
               allowDataOverflow={true}
               tick={{ fill: '#64748B', fontSize: 11 }}
-              axisLine={{ stroke: '#CBD5E1' }}
-              tickLine={false}
+              axisLine={{ stroke: '#94A3B8' }}
+              tickLine={true}
             />
             <Tooltip
               contentStyle={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                 borderRadius: '12px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid #CBD5E1',
                 fontSize: '11px',
                 boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
               }}
             />
 
-            {/* Axis Y = 0 */}
-            <ReferenceLine y={0} stroke="#94A3B8" strokeWidth={1.5} />
+            {/* Principal Cartesian Axes (GeoGebra Style X and Y intersecting at origin) */}
+            <ReferenceLine
+              y={0}
+              stroke="#475569"
+              strokeWidth={2}
+              label={{ value: 'X', position: 'right', fill: '#475569', fontSize: 12, fontWeight: 'bold' }}
+            />
+            <ReferenceLine
+              x={0}
+              stroke="#475569"
+              strokeWidth={2}
+              label={{ value: 'Y', position: 'top', fill: '#475569', fontSize: 12, fontWeight: 'bold' }}
+            />
+
+            {/* Step Projections */}
+            {activeTangent && (
+              <>
+                <ReferenceLine
+                  x={activeTangent.x_point}
+                  stroke="#EF4444"
+                  strokeDasharray="3 3"
+                  strokeWidth={1.5}
+                  label={{ value: `x${currentStepIndex}`, position: 'bottom', fill: '#EF4444', fontSize: 11, fontWeight: 'bold' }}
+                />
+                {activeTangent.x_intercept !== null && Number.isFinite(activeTangent.x_intercept) && (
+                  <ReferenceLine
+                    x={activeTangent.x_intercept}
+                    stroke="#3B82F6"
+                    strokeDasharray="3 3"
+                    strokeWidth={1.5}
+                    label={{ value: `x${currentStepIndex + 1}`, position: 'bottom', fill: '#3B82F6', fontSize: 11, fontWeight: 'bold' }}
+                  />
+                )}
+              </>
+            )}
+
+            {/* Root Reference if known */}
+            {root !== null && Number.isFinite(root) && (
+              <ReferenceLine
+                x={root}
+                stroke="#10B981"
+                strokeDasharray="4 2"
+                strokeWidth={1.6}
+                label={{ value: 'Raíz', position: 'insideTopLeft', fill: '#059669', fontSize: 11, fontWeight: 'bold' }}
+              />
+            )}
 
             {/* Curve f(x) */}
             <Line

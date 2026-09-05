@@ -8,8 +8,8 @@ import ExerciseStepAccordion, { type StepIteration } from '../../components/root
 
 export interface ExerciseItem {
   id: string;
-  title: string;
-  description: string;
+  title: React.ReactNode;
+  description: React.ReactNode;
   method: RootMethod;
   expression: string;
   latexExpr: string;
@@ -37,7 +37,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       title: 'Problema 7 - Inciso a1: f(x) = x² - 4x - 45 (x₀ = 0.5)',
       description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de x₀ = 0.5.',
       method: 'newton',
-      expression: 'x**2 - 4*x - 45',
+      expression: 'x^2 - 4x - 45',
       latexExpr: 'f(x) = x^2 - 4x - 45',
       latexFPrime: "f'(x) = 2x - 4",
       x0: 0.5,
@@ -56,7 +56,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       title: 'Problema 7 - Inciso a2: f(x) = x² - 4x - 45 (x₀ = 4)',
       description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de x₀ = 4.',
       method: 'newton',
-      expression: 'x**2 - 4*x - 45',
+      expression: 'x^2 - 4x - 45',
       latexExpr: 'f(x) = x^2 - 4x - 45',
       latexFPrime: "f'(x) = 2x - 4",
       x0: 4.0,
@@ -75,7 +75,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       title: 'Problema 7 - Inciso b: f(x) = x - 0.8 - 0.2·sen(x) (x₀ = π/4)',
       description: 'Estimar el valor aproximado de la raíz con 4 iteraciones partiendo de x₀ = π/4 (0.7854 rad).',
       method: 'newton',
-      expression: 'x - 0.8 - 0.2*sin(x)',
+      expression: 'x - 0.8 - 0.2sin(x)',
       latexExpr: 'f(x) = x - 0.8 - 0.2\\sin(x)',
       latexFPrime: "f'(x) = 1 - 0.2\\cos(x)",
       x0: 0.7854,
@@ -119,7 +119,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       title: 'Problema 8 - Inciso b: f(x) = eˣ + 2x + 2·cos(x) - 6 (x₀ = π/4)',
       description: 'Resolver mediante Newton con un error < 10⁻³ partiendo de x₀ = π/4 (0.7854 rad).',
       method: 'newton',
-      expression: 'exp(x) + 2*x + 2*cos(x) - 6',
+      expression: 'exp(x) + 2x + 2cos(x) - 6',
       latexExpr: 'f(x) = e^x + 2x + 2\\cos(x) - 6',
       latexFPrime: "f'(x) = e^x + 2 - 2\\sin(x)",
       x0: 0.7854,
@@ -146,7 +146,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       title: 'Problema 8 - Inciso c1: f(x) = x³ - 2x² - 3x + 10 (x₀ = 1.9)',
       description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x + 10 con error < 10⁻³ usando x₀ = 1.9.',
       method: 'newton',
-      expression: 'x**3 - 2*x**2 - 3*x + 10',
+      expression: 'x^3 - 2x^2 - 3x + 10',
       latexExpr: 'f(x) = x^3 - 2x^2 - 3x + 10',
       latexFPrime: "f'(x) = 3x^2 - 4x - 3",
       x0: 1.9,
@@ -197,7 +197,7 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
       title: 'Problema 8 - Inciso c2: f(x) = x³ - 2x² - 3x + 10 (x₀ = -3.0)',
       description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x + 10 con error < 10⁻³ usando x₀ = -3.0.',
       method: 'newton',
-      expression: 'x**3 - 2*x**2 - 3*x + 10',
+      expression: 'x^3 - 2x^2 - 3x + 10',
       latexExpr: 'f(x) = x^3 - 2x^2 - 3x + 10',
       latexFPrime: "f'(x) = 3x^2 - 4x - 3",
       x0: -3.0,
@@ -227,11 +227,18 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     // --- PROBLEMA 9 ---
     {
       id: 'ej-9',
-      title: 'Problema 9: Concentración de Bacterias - c(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 (t₀ = 2.0)',
-      description:
-        'Determinar el tiempo t (en horas) para que la concentración de bacterias se reduzca a c(t) = 7 (es decir, resolver f(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 = 0).',
+      title: (
+        <span>
+          Problema 9: Concentración de Bacterias - <InlineMath math="c(t) = 80e^{-2t} + 20e^{-0.5t} - 7" /> (<InlineMath math="t_0 = 2.0" />)
+        </span>
+      ),
+      description: (
+        <span>
+          Determinar el tiempo <InlineMath math="t" /> (en horas) para que la concentración de bacterias se reduzca a <InlineMath math="c(t) = 7" /> (es decir, resolver <InlineMath math="f(t) = 80e^{-2t} + 20e^{-0.5t} - 7 = 0" />).
+        </span>
+      ),
       method: 'newton',
-      expression: '80*exp(-2*x) + 20*exp(-0.5*x) - 7',
+      expression: '80exp(-2x) + 20exp(-0.5x) - 7',
       latexExpr: 'c(t) = 80e^{-2t} + 20e^{-0.5t} - 7',
       latexFPrime: "c'(t) = -160e^{-2t} - 10e^{-0.5t}",
       x0: 2.0,
@@ -364,9 +371,12 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
                 onClick={() =>
                   onLoadExercise({
                     method: ex.method,
-                    expression: ex.expression,
+                    expression: ex.expression
+                      .replace(/\*\*/g, '^')
+                      .replace(/(\d+)\s*[*·]\s*([a-zA-Z(])/g, '$1$2')
+                      .replace(/([a-zA-Z])\s*[*·]\s*([a-zA-Z(])/g, '$1$2'),
                     x0: ex.x0,
-                    tolerance: ex.tolerance,
+                    tolerance: 1e-1,
                     maxIterations: ex.maxIterations,
                   })
                 }
