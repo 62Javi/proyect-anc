@@ -8,8 +8,8 @@ import ExerciseStepAccordion, { type StepIteration } from '../../components/root
 
 export interface ExerciseItem {
   id: string;
-  title: string;
-  description: string;
+  title: React.ReactNode;
+  description: React.ReactNode;
   method: RootMethod;
   expression: string;
   latexExpr: string;
@@ -227,9 +227,16 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     // --- PROBLEMA 9 ---
     {
       id: 'ej-9',
-      title: 'Problema 9: Concentración de Bacterias - c(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 (t₀ = 2.0)',
-      description:
-        'Determinar el tiempo t (en horas) para que la concentración de bacterias se reduzca a c(t) = 7 (es decir, resolver f(t) = 80e⁻²ᵗ + 20e⁻⁰.⁵ᵗ - 7 = 0).',
+      title: (
+        <span>
+          Problema 9: Concentración de Bacterias - <InlineMath math="c(t) = 80e^{-2t} + 20e^{-0.5t} - 7" /> (<InlineMath math="t_0 = 2.0" />)
+        </span>
+      ),
+      description: (
+        <span>
+          Determinar el tiempo <InlineMath math="t" /> (en horas) para que la concentración de bacterias se reduzca a <InlineMath math="c(t) = 7" /> (es decir, resolver <InlineMath math="f(t) = 80e^{-2t} + 20e^{-0.5t} - 7 = 0" />).
+        </span>
+      ),
       method: 'newton',
       expression: '80exp(-2x) + 20exp(-0.5x) - 7',
       latexExpr: 'c(t) = 80e^{-2t} + 20e^{-0.5t} - 7',
