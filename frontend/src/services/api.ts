@@ -215,5 +215,100 @@ export const calculateFixedPointRoot = async (request: FixedPointRequest): Promi
   }
 };
 
+// ==================== REGRESSION / LEAST SQUARES ====================
+
+export interface RegressionDataPoint {
+  x: number;
+  y: number;
+  context?: number;
+}
+
+export interface FitRequest {
+  model_type: string;
+  points: RegressionDataPoint[];
+  degree?: number;
+  t_amb?: number;
+}
+
+export interface NormalEquationStep {
+  matrix_a: number[][];
+  vector_b: number[];
+  variable_names: string[];
+  matrix_latex: string;
+  sums_table: Record<string, number>;
+  solution_latex: string;
+}
+
+export interface ResidualPoint {
+  x: number;
+  y_actual: number;
+  y_pred: number;
+  residual: number;
+}
+
+export interface RegressionMetrics {
+  st: number;
+  sr: number;
+  r2: number;
+  r: number;
+  syx: number;
+}
+
+export interface FitResponse {
+  model_type: string;
+  formula_latex: string;
+  transformed_latex?: string;
+  parameters: Record<string, number>;
+  metrics: RegressionMetrics;
+  normal_equations: NormalEquationStep;
+  residuals: ResidualPoint[];
+  curve_x: number[];
+  curve_y: number[];
+  points_x: number[];
+  points_y: number[];
+  explanation: string;
+}
+
+export interface ClusterSummary {
+  cluster_name: string;
+  code: string;
+  k_cooling_rate: number;
+  t_half: number;
+  temp_final: number;
+  temp_initial: number;
+  best_model: string;
+  r2_best: number;
+}
+
+export interface Case1AnalysisResponse {
+  clusters: Record<string, any>;
+  summaries: ClusterSummary[];
+  general_conclusions: string[];
+}
+
+export const fitRegression = async (request: FitRequest): Promise<FitResponse> => {
+  try {
+    const response = await api.post<FitResponse>('/regression/fit', request);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.detail || 'Error al ajustar los datos');
+    }
+    throw new Error('Error de conexión con el servidor');
+  }
+};
+
+export const getCase1Analysis = async (): Promise<Case1AnalysisResponse> => {
+  try {
+    const response = await api.get<Case1AnalysisResponse>('/regression/case1');
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.detail || 'Error al obtener análisis del Caso 1');
+    }
+    throw new Error('Error de conexión con el servidor');
+  }
+};
+
 export default api;
 

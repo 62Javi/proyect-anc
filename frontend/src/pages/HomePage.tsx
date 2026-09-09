@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Activity, Beaker, Calculator, Music } from 'lucide-react';
+import { Activity, Beaker, Calculator, Music, LineChart } from 'lucide-react';
 
 const GithubIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -20,20 +20,12 @@ const GithubIcon = ({ size = 20 }: { size?: number }) => (
 export default function HomePage() {
   const tools = [
     {
-      title: 'Analizador de Fourier',
-      description: 'Calcula y visualiza series de Fourier para funciones periódicas y a trozos.',
-      icon: <Activity size={24} />,
-      path: '/fourier',
+      title: 'Ajuste por Mínimos Cuadrados',
+      description: 'Estudio térmico del Caso 1 (Enfriamiento de Bebidas), cálculo de residuos, bondad de ajuste r² y simulador interactivo para modelos lineales y no lineales.',
+      icon: <LineChart size={24} />,
+      path: '/regression',
       ready: true,
-      tag: 'Análisis Numérico'
-    },
-    {
-      title: 'Análisis de Armónicos',
-      description: 'Análisis de frecuencia en tiempo real (FFT) mediante grabaciones de audio.',
-      icon: <Music size={24} />,
-      path: '/harmonics',
-      ready: true,
-      tag: 'Procesamiento de Señales'
+      tag: 'Caso Asignado · Exposición',
     },
     {
       title: 'Cálculo de Raíces',
@@ -41,7 +33,23 @@ export default function HomePage() {
       icon: <Beaker size={24} />,
       path: '/roots',
       ready: true,
-      tag: 'Análisis Numérico'
+      tag: 'Análisis Numérico',
+    },
+    {
+      title: 'Analizador de Fourier',
+      description: 'Calcula y visualiza series de Fourier para funciones periódicas y a trozos.',
+      icon: <Activity size={24} />,
+      path: '/fourier',
+      ready: true,
+      tag: 'Análisis Numérico',
+    },
+    {
+      title: 'Análisis de Armónicos',
+      description: 'Análisis de frecuencia en tiempo real (FFT) mediante grabaciones de audio.',
+      icon: <Music size={24} />,
+      path: '/harmonics',
+      ready: true,
+      tag: 'Procesamiento de Señales',
     },
   ];
 

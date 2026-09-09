@@ -1,0 +1,1962 @@
+{
+  "Taza de cerámica": [
+    {
+      "id": 1,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 0.0,
+      "temp_amb": 22.2,
+      "temp_drink": 87.25
+    },
+    {
+      "id": 2,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 2.0,
+      "temp_amb": 22.21,
+      "temp_drink": 84.81
+    },
+    {
+      "id": 3,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 4.0,
+      "temp_amb": 22.22,
+      "temp_drink": 81.33
+    },
+    {
+      "id": 4,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 6.0,
+      "temp_amb": 22.22,
+      "temp_drink": 78.88
+    },
+    {
+      "id": 5,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 8.0,
+      "temp_amb": 22.23,
+      "temp_drink": 76.3
+    },
+    {
+      "id": 6,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 10.0,
+      "temp_amb": 22.24,
+      "temp_drink": 73.9
+    },
+    {
+      "id": 7,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 12.0,
+      "temp_amb": 22.25,
+      "temp_drink": 71.63
+    },
+    {
+      "id": 8,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 14.0,
+      "temp_amb": 22.25,
+      "temp_drink": 69.42
+    },
+    {
+      "id": 9,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 16.0,
+      "temp_amb": 22.26,
+      "temp_drink": 67.22
+    },
+    {
+      "id": 10,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 18.0,
+      "temp_amb": 22.27,
+      "temp_drink": 65.09
+    },
+    {
+      "id": 11,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 20.0,
+      "temp_amb": 22.27,
+      "temp_drink": 63.46
+    },
+    {
+      "id": 12,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 22.0,
+      "temp_amb": 22.28,
+      "temp_drink": 60.98
+    },
+    {
+      "id": 13,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 24.0,
+      "temp_amb": 22.28,
+      "temp_drink": 59.33
+    },
+    {
+      "id": 14,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 26.0,
+      "temp_amb": 22.29,
+      "temp_drink": 57.71
+    },
+    {
+      "id": 15,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 28.0,
+      "temp_amb": 22.29,
+      "temp_drink": 56.35
+    },
+    {
+      "id": 16,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 30.0,
+      "temp_amb": 22.3,
+      "temp_drink": 54.1
+    },
+    {
+      "id": 17,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 32.0,
+      "temp_amb": 22.3,
+      "temp_drink": 52.71
+    },
+    {
+      "id": 18,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 34.0,
+      "temp_amb": 22.31,
+      "temp_drink": 51.66
+    },
+    {
+      "id": 19,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 36.0,
+      "temp_amb": 22.31,
+      "temp_drink": 50.06
+    },
+    {
+      "id": 20,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 38.0,
+      "temp_amb": 22.31,
+      "temp_drink": 48.82
+    },
+    {
+      "id": 21,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 40.0,
+      "temp_amb": 22.32,
+      "temp_drink": 47.77
+    },
+    {
+      "id": 22,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 42.0,
+      "temp_amb": 22.32,
+      "temp_drink": 46.38
+    },
+    {
+      "id": 23,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 44.0,
+      "temp_amb": 22.32,
+      "temp_drink": 45.41
+    },
+    {
+      "id": 24,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 46.0,
+      "temp_amb": 22.32,
+      "temp_drink": 44.76
+    },
+    {
+      "id": 25,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 48.0,
+      "temp_amb": 22.32,
+      "temp_drink": 43.58
+    },
+    {
+      "id": 26,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 50.0,
+      "temp_amb": 22.32,
+      "temp_drink": 42.73
+    },
+    {
+      "id": 27,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 52.0,
+      "temp_amb": 22.32,
+      "temp_drink": 41.92
+    },
+    {
+      "id": 28,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 54.0,
+      "temp_amb": 22.32,
+      "temp_drink": 40.58
+    },
+    {
+      "id": 29,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 56.0,
+      "temp_amb": 22.32,
+      "temp_drink": 39.78
+    },
+    {
+      "id": 30,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 58.0,
+      "temp_amb": 22.31,
+      "temp_drink": 38.89
+    },
+    {
+      "id": 31,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 60.0,
+      "temp_amb": 22.31,
+      "temp_drink": 38.36
+    },
+    {
+      "id": 32,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 62.0,
+      "temp_amb": 22.31,
+      "temp_drink": 37.72
+    },
+    {
+      "id": 33,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 64.0,
+      "temp_amb": 22.31,
+      "temp_drink": 36.84
+    },
+    {
+      "id": 34,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 66.0,
+      "temp_amb": 22.3,
+      "temp_drink": 36.35
+    },
+    {
+      "id": 35,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 68.0,
+      "temp_amb": 22.3,
+      "temp_drink": 35.59
+    },
+    {
+      "id": 36,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 70.0,
+      "temp_amb": 22.29,
+      "temp_drink": 34.76
+    },
+    {
+      "id": 37,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 72.0,
+      "temp_amb": 22.29,
+      "temp_drink": 34.38
+    },
+    {
+      "id": 38,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 74.0,
+      "temp_amb": 22.28,
+      "temp_drink": 33.82
+    },
+    {
+      "id": 39,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 76.0,
+      "temp_amb": 22.28,
+      "temp_drink": 33.14
+    },
+    {
+      "id": 40,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 78.0,
+      "temp_amb": 22.27,
+      "temp_drink": 32.71
+    },
+    {
+      "id": 41,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 80.0,
+      "temp_amb": 22.26,
+      "temp_drink": 32.48
+    },
+    {
+      "id": 42,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 82.0,
+      "temp_amb": 22.26,
+      "temp_drink": 31.48
+    },
+    {
+      "id": 43,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 84.0,
+      "temp_amb": 22.25,
+      "temp_drink": 31.17
+    },
+    {
+      "id": 44,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 86.0,
+      "temp_amb": 22.24,
+      "temp_drink": 30.6
+    },
+    {
+      "id": 45,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 88.0,
+      "temp_amb": 22.24,
+      "temp_drink": 30.18
+    },
+    {
+      "id": 46,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 90.0,
+      "temp_amb": 22.23,
+      "temp_drink": 30.05
+    },
+    {
+      "id": 47,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 92.0,
+      "temp_amb": 22.22,
+      "temp_drink": 29.57
+    },
+    {
+      "id": 48,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 94.0,
+      "temp_amb": 22.21,
+      "temp_drink": 29.24
+    },
+    {
+      "id": 49,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 96.0,
+      "temp_amb": 22.21,
+      "temp_drink": 28.91
+    },
+    {
+      "id": 50,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 98.0,
+      "temp_amb": 22.2,
+      "temp_drink": 28.32
+    },
+    {
+      "id": 51,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 100.0,
+      "temp_amb": 22.19,
+      "temp_drink": 28.36
+    },
+    {
+      "id": 52,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 102.0,
+      "temp_amb": 22.18,
+      "temp_drink": 28.28
+    },
+    {
+      "id": 53,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 104.0,
+      "temp_amb": 22.17,
+      "temp_drink": 27.77
+    },
+    {
+      "id": 54,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 106.0,
+      "temp_amb": 22.17,
+      "temp_drink": 27.87
+    },
+    {
+      "id": 55,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 108.0,
+      "temp_amb": 22.16,
+      "temp_drink": 27.45
+    },
+    {
+      "id": 56,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 110.0,
+      "temp_amb": 22.15,
+      "temp_drink": 27.1
+    },
+    {
+      "id": 57,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 112.0,
+      "temp_amb": 22.15,
+      "temp_drink": 27.16
+    },
+    {
+      "id": 58,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 114.0,
+      "temp_amb": 22.14,
+      "temp_drink": 26.78
+    },
+    {
+      "id": 59,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 116.0,
+      "temp_amb": 22.13,
+      "temp_drink": 26.53
+    },
+    {
+      "id": 60,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 118.0,
+      "temp_amb": 22.13,
+      "temp_drink": 26.34
+    },
+    {
+      "id": 61,
+      "code": "CER",
+      "cluster": "Taza de cerámica",
+      "time_min": 120.0,
+      "temp_amb": 22.12,
+      "temp_drink": 26.03
+    }
+  ],
+  "Vaso de vidrio": [
+    {
+      "id": 62,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 0.0,
+      "temp_amb": 22.1,
+      "temp_drink": 88.01
+    },
+    {
+      "id": 63,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 2.0,
+      "temp_amb": 22.1,
+      "temp_drink": 83.7
+    },
+    {
+      "id": 64,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 4.0,
+      "temp_amb": 22.11,
+      "temp_drink": 80.32
+    },
+    {
+      "id": 65,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 6.0,
+      "temp_amb": 22.11,
+      "temp_drink": 76.81
+    },
+    {
+      "id": 66,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 8.0,
+      "temp_amb": 22.11,
+      "temp_drink": 74.18
+    },
+    {
+      "id": 67,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 10.0,
+      "temp_amb": 22.12,
+      "temp_drink": 70.85
+    },
+    {
+      "id": 68,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 12.0,
+      "temp_amb": 22.12,
+      "temp_drink": 67.71
+    },
+    {
+      "id": 69,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 14.0,
+      "temp_amb": 22.12,
+      "temp_drink": 65.09
+    },
+    {
+      "id": 70,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 16.0,
+      "temp_amb": 22.12,
+      "temp_drink": 62.62
+    },
+    {
+      "id": 71,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 18.0,
+      "temp_amb": 22.12,
+      "temp_drink": 60.03
+    },
+    {
+      "id": 72,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 20.0,
+      "temp_amb": 22.12,
+      "temp_drink": 57.68
+    },
+    {
+      "id": 73,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 22.0,
+      "temp_amb": 22.12,
+      "temp_drink": 55.14
+    },
+    {
+      "id": 74,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 24.0,
+      "temp_amb": 22.12,
+      "temp_drink": 53.69
+    },
+    {
+      "id": 75,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 26.0,
+      "temp_amb": 22.12,
+      "temp_drink": 51.73
+    },
+    {
+      "id": 76,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 28.0,
+      "temp_amb": 22.11,
+      "temp_drink": 49.93
+    },
+    {
+      "id": 77,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 30.0,
+      "temp_amb": 22.11,
+      "temp_drink": 48.01
+    },
+    {
+      "id": 78,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 32.0,
+      "temp_amb": 22.11,
+      "temp_drink": 46.91
+    },
+    {
+      "id": 79,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 34.0,
+      "temp_amb": 22.1,
+      "temp_drink": 45.12
+    },
+    {
+      "id": 80,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 36.0,
+      "temp_amb": 22.1,
+      "temp_drink": 43.65
+    },
+    {
+      "id": 81,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 38.0,
+      "temp_amb": 22.1,
+      "temp_drink": 42.48
+    },
+    {
+      "id": 82,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 40.0,
+      "temp_amb": 22.09,
+      "temp_drink": 41.69
+    },
+    {
+      "id": 83,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 42.0,
+      "temp_amb": 22.08,
+      "temp_drink": 40.34
+    },
+    {
+      "id": 84,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 44.0,
+      "temp_amb": 22.08,
+      "temp_drink": 39.29
+    },
+    {
+      "id": 85,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 46.0,
+      "temp_amb": 22.07,
+      "temp_drink": 38.18
+    },
+    {
+      "id": 86,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 48.0,
+      "temp_amb": 22.07,
+      "temp_drink": 37.55
+    },
+    {
+      "id": 87,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 50.0,
+      "temp_amb": 22.06,
+      "temp_drink": 36.41
+    },
+    {
+      "id": 88,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 52.0,
+      "temp_amb": 22.05,
+      "temp_drink": 35.58
+    },
+    {
+      "id": 89,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 54.0,
+      "temp_amb": 22.05,
+      "temp_drink": 34.71
+    },
+    {
+      "id": 90,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 56.0,
+      "temp_amb": 22.04,
+      "temp_drink": 34.22
+    },
+    {
+      "id": 91,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 58.0,
+      "temp_amb": 22.03,
+      "temp_drink": 33.09
+    },
+    {
+      "id": 92,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 60.0,
+      "temp_amb": 22.02,
+      "temp_drink": 32.97
+    },
+    {
+      "id": 93,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 62.0,
+      "temp_amb": 22.02,
+      "temp_drink": 31.82
+    },
+    {
+      "id": 94,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 64.0,
+      "temp_amb": 22.01,
+      "temp_drink": 31.14
+    },
+    {
+      "id": 95,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 66.0,
+      "temp_amb": 22.0,
+      "temp_drink": 30.66
+    },
+    {
+      "id": 96,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 68.0,
+      "temp_amb": 21.99,
+      "temp_drink": 30.2
+    },
+    {
+      "id": 97,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 70.0,
+      "temp_amb": 21.99,
+      "temp_drink": 29.95
+    },
+    {
+      "id": 98,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 72.0,
+      "temp_amb": 21.98,
+      "temp_drink": 29.25
+    },
+    {
+      "id": 99,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 74.0,
+      "temp_amb": 21.97,
+      "temp_drink": 28.35
+    },
+    {
+      "id": 100,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 76.0,
+      "temp_amb": 21.96,
+      "temp_drink": 28.37
+    },
+    {
+      "id": 101,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 78.0,
+      "temp_amb": 21.96,
+      "temp_drink": 28.15
+    },
+    {
+      "id": 102,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 80.0,
+      "temp_amb": 21.95,
+      "temp_drink": 27.88
+    },
+    {
+      "id": 103,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 82.0,
+      "temp_amb": 21.94,
+      "temp_drink": 27.17
+    },
+    {
+      "id": 104,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 84.0,
+      "temp_amb": 21.94,
+      "temp_drink": 27.05
+    },
+    {
+      "id": 105,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 86.0,
+      "temp_amb": 21.93,
+      "temp_drink": 26.72
+    },
+    {
+      "id": 106,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 88.0,
+      "temp_amb": 21.92,
+      "temp_drink": 26.02
+    },
+    {
+      "id": 107,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 90.0,
+      "temp_amb": 21.92,
+      "temp_drink": 25.97
+    },
+    {
+      "id": 108,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 92.0,
+      "temp_amb": 21.91,
+      "temp_drink": 25.73
+    },
+    {
+      "id": 109,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 94.0,
+      "temp_amb": 21.91,
+      "temp_drink": 25.46
+    },
+    {
+      "id": 110,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 96.0,
+      "temp_amb": 21.9,
+      "temp_drink": 25.48
+    },
+    {
+      "id": 111,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 98.0,
+      "temp_amb": 21.9,
+      "temp_drink": 25.06
+    },
+    {
+      "id": 112,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 100.0,
+      "temp_amb": 21.89,
+      "temp_drink": 24.6
+    },
+    {
+      "id": 113,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 102.0,
+      "temp_amb": 21.89,
+      "temp_drink": 24.87
+    },
+    {
+      "id": 114,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 104.0,
+      "temp_amb": 21.89,
+      "temp_drink": 24.89
+    },
+    {
+      "id": 115,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 106.0,
+      "temp_amb": 21.89,
+      "temp_drink": 24.49
+    },
+    {
+      "id": 116,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 108.0,
+      "temp_amb": 21.88,
+      "temp_drink": 24.32
+    },
+    {
+      "id": 117,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 110.0,
+      "temp_amb": 21.88,
+      "temp_drink": 24.05
+    },
+    {
+      "id": 118,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 112.0,
+      "temp_amb": 21.88,
+      "temp_drink": 24.13
+    },
+    {
+      "id": 119,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 114.0,
+      "temp_amb": 21.88,
+      "temp_drink": 23.34
+    },
+    {
+      "id": 120,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 116.0,
+      "temp_amb": 21.88,
+      "temp_drink": 23.86
+    },
+    {
+      "id": 121,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 118.0,
+      "temp_amb": 21.88,
+      "temp_drink": 23.41
+    },
+    {
+      "id": 122,
+      "code": "VID",
+      "cluster": "Vaso de vidrio",
+      "time_min": 120.0,
+      "temp_amb": 21.88,
+      "temp_drink": 23.42
+    }
+  ],
+  "Vaso de papel con tapa": [
+    {
+      "id": 123,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 0.0,
+      "temp_amb": 22.51,
+      "temp_drink": 87.2
+    },
+    {
+      "id": 124,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 2.0,
+      "temp_amb": 22.51,
+      "temp_drink": 85.13
+    },
+    {
+      "id": 125,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 4.0,
+      "temp_amb": 22.5,
+      "temp_drink": 83.05
+    },
+    {
+      "id": 126,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 6.0,
+      "temp_amb": 22.5,
+      "temp_drink": 80.6
+    },
+    {
+      "id": 127,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 8.0,
+      "temp_amb": 22.49,
+      "temp_drink": 78.24
+    },
+    {
+      "id": 128,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 10.0,
+      "temp_amb": 22.49,
+      "temp_drink": 76.77
+    },
+    {
+      "id": 129,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 12.0,
+      "temp_amb": 22.48,
+      "temp_drink": 74.68
+    },
+    {
+      "id": 130,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 14.0,
+      "temp_amb": 22.48,
+      "temp_drink": 72.66
+    },
+    {
+      "id": 131,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 16.0,
+      "temp_amb": 22.47,
+      "temp_drink": 70.74
+    },
+    {
+      "id": 132,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 18.0,
+      "temp_amb": 22.46,
+      "temp_drink": 69.16
+    },
+    {
+      "id": 133,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 20.0,
+      "temp_amb": 22.46,
+      "temp_drink": 67.18
+    },
+    {
+      "id": 134,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 22.0,
+      "temp_amb": 22.45,
+      "temp_drink": 65.52
+    },
+    {
+      "id": 135,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 24.0,
+      "temp_amb": 22.44,
+      "temp_drink": 64.14
+    },
+    {
+      "id": 136,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 26.0,
+      "temp_amb": 22.44,
+      "temp_drink": 62.96
+    },
+    {
+      "id": 137,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 28.0,
+      "temp_amb": 22.43,
+      "temp_drink": 61.01
+    },
+    {
+      "id": 138,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 30.0,
+      "temp_amb": 22.42,
+      "temp_drink": 59.87
+    },
+    {
+      "id": 139,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 32.0,
+      "temp_amb": 22.41,
+      "temp_drink": 58.6
+    },
+    {
+      "id": 140,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 34.0,
+      "temp_amb": 22.41,
+      "temp_drink": 57.18
+    },
+    {
+      "id": 141,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 36.0,
+      "temp_amb": 22.4,
+      "temp_drink": 56.42
+    },
+    {
+      "id": 142,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 38.0,
+      "temp_amb": 22.39,
+      "temp_drink": 55.0
+    },
+    {
+      "id": 143,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 40.0,
+      "temp_amb": 22.38,
+      "temp_drink": 53.97
+    },
+    {
+      "id": 144,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 42.0,
+      "temp_amb": 22.37,
+      "temp_drink": 52.75
+    },
+    {
+      "id": 145,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 44.0,
+      "temp_amb": 22.37,
+      "temp_drink": 51.87
+    },
+    {
+      "id": 146,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 46.0,
+      "temp_amb": 22.36,
+      "temp_drink": 50.81
+    },
+    {
+      "id": 147,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 48.0,
+      "temp_amb": 22.35,
+      "temp_drink": 49.65
+    },
+    {
+      "id": 148,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 50.0,
+      "temp_amb": 22.35,
+      "temp_drink": 48.55
+    },
+    {
+      "id": 149,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 52.0,
+      "temp_amb": 22.34,
+      "temp_drink": 47.68
+    },
+    {
+      "id": 150,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 54.0,
+      "temp_amb": 22.33,
+      "temp_drink": 46.85
+    },
+    {
+      "id": 151,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 56.0,
+      "temp_amb": 22.33,
+      "temp_drink": 45.91
+    },
+    {
+      "id": 152,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 58.0,
+      "temp_amb": 22.32,
+      "temp_drink": 45.32
+    },
+    {
+      "id": 153,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 60.0,
+      "temp_amb": 22.31,
+      "temp_drink": 44.17
+    },
+    {
+      "id": 154,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 62.0,
+      "temp_amb": 22.31,
+      "temp_drink": 43.75
+    },
+    {
+      "id": 155,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 64.0,
+      "temp_amb": 22.3,
+      "temp_drink": 42.41
+    },
+    {
+      "id": 156,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 66.0,
+      "temp_amb": 22.3,
+      "temp_drink": 41.97
+    },
+    {
+      "id": 157,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 68.0,
+      "temp_amb": 22.3,
+      "temp_drink": 41.28
+    },
+    {
+      "id": 158,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 70.0,
+      "temp_amb": 22.29,
+      "temp_drink": 40.25
+    },
+    {
+      "id": 159,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 72.0,
+      "temp_amb": 22.29,
+      "temp_drink": 39.64
+    },
+    {
+      "id": 160,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 74.0,
+      "temp_amb": 22.29,
+      "temp_drink": 39.16
+    },
+    {
+      "id": 161,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 76.0,
+      "temp_amb": 22.28,
+      "temp_drink": 38.59
+    },
+    {
+      "id": 162,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 78.0,
+      "temp_amb": 22.28,
+      "temp_drink": 38.26
+    },
+    {
+      "id": 163,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 80.0,
+      "temp_amb": 22.28,
+      "temp_drink": 37.57
+    },
+    {
+      "id": 164,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 82.0,
+      "temp_amb": 22.28,
+      "temp_drink": 37.01
+    },
+    {
+      "id": 165,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 84.0,
+      "temp_amb": 22.28,
+      "temp_drink": 36.61
+    },
+    {
+      "id": 166,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 86.0,
+      "temp_amb": 22.28,
+      "temp_drink": 36.24
+    },
+    {
+      "id": 167,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 88.0,
+      "temp_amb": 22.28,
+      "temp_drink": 35.27
+    },
+    {
+      "id": 168,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 90.0,
+      "temp_amb": 22.28,
+      "temp_drink": 35.09
+    },
+    {
+      "id": 169,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 92.0,
+      "temp_amb": 22.28,
+      "temp_drink": 34.61
+    },
+    {
+      "id": 170,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 94.0,
+      "temp_amb": 22.29,
+      "temp_drink": 34.62
+    },
+    {
+      "id": 171,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 96.0,
+      "temp_amb": 22.29,
+      "temp_drink": 33.78
+    },
+    {
+      "id": 172,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 98.0,
+      "temp_amb": 22.29,
+      "temp_drink": 33.66
+    },
+    {
+      "id": 173,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 100.0,
+      "temp_amb": 22.3,
+      "temp_drink": 32.87
+    },
+    {
+      "id": 174,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 102.0,
+      "temp_amb": 22.3,
+      "temp_drink": 33.06
+    },
+    {
+      "id": 175,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 104.0,
+      "temp_amb": 22.3,
+      "temp_drink": 32.49
+    },
+    {
+      "id": 176,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 106.0,
+      "temp_amb": 22.31,
+      "temp_drink": 32.16
+    },
+    {
+      "id": 177,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 108.0,
+      "temp_amb": 22.31,
+      "temp_drink": 31.54
+    },
+    {
+      "id": 178,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 110.0,
+      "temp_amb": 22.32,
+      "temp_drink": 31.48
+    },
+    {
+      "id": 179,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 112.0,
+      "temp_amb": 22.33,
+      "temp_drink": 30.88
+    },
+    {
+      "id": 180,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 114.0,
+      "temp_amb": 22.33,
+      "temp_drink": 30.61
+    },
+    {
+      "id": 181,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 116.0,
+      "temp_amb": 22.34,
+      "temp_drink": 30.45
+    },
+    {
+      "id": 182,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 118.0,
+      "temp_amb": 22.34,
+      "temp_drink": 29.92
+    },
+    {
+      "id": 183,
+      "code": "PAP",
+      "cluster": "Vaso de papel con tapa",
+      "time_min": 120.0,
+      "temp_amb": 22.35,
+      "temp_drink": 29.74
+    }
+  ],
+  "Recipiente térmico": [
+    {
+      "id": 184,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 0.0,
+      "temp_amb": 22.12,
+      "temp_drink": 88.03
+    },
+    {
+      "id": 185,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 2.0,
+      "temp_amb": 22.11,
+      "temp_drink": 86.85
+    },
+    {
+      "id": 186,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 4.0,
+      "temp_amb": 22.1,
+      "temp_drink": 85.96
+    },
+    {
+      "id": 187,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 6.0,
+      "temp_amb": 22.09,
+      "temp_drink": 85.25
+    },
+    {
+      "id": 188,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 8.0,
+      "temp_amb": 22.09,
+      "temp_drink": 83.97
+    },
+    {
+      "id": 189,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 10.0,
+      "temp_amb": 22.08,
+      "temp_drink": 83.19
+    },
+    {
+      "id": 190,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 12.0,
+      "temp_amb": 22.07,
+      "temp_drink": 82.37
+    },
+    {
+      "id": 191,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 14.0,
+      "temp_amb": 22.06,
+      "temp_drink": 81.57
+    },
+    {
+      "id": 192,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 16.0,
+      "temp_amb": 22.06,
+      "temp_drink": 80.58
+    },
+    {
+      "id": 193,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 18.0,
+      "temp_amb": 22.05,
+      "temp_drink": 79.71
+    },
+    {
+      "id": 194,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 20.0,
+      "temp_amb": 22.04,
+      "temp_drink": 79.12
+    },
+    {
+      "id": 195,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 22.0,
+      "temp_amb": 22.04,
+      "temp_drink": 78.45
+    },
+    {
+      "id": 196,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 24.0,
+      "temp_amb": 22.03,
+      "temp_drink": 77.65
+    },
+    {
+      "id": 197,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 26.0,
+      "temp_amb": 22.02,
+      "temp_drink": 76.78
+    },
+    {
+      "id": 198,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 28.0,
+      "temp_amb": 22.02,
+      "temp_drink": 75.79
+    },
+    {
+      "id": 199,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 30.0,
+      "temp_amb": 22.01,
+      "temp_drink": 75.18
+    },
+    {
+      "id": 200,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 32.0,
+      "temp_amb": 22.01,
+      "temp_drink": 74.7
+    },
+    {
+      "id": 201,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 34.0,
+      "temp_amb": 22.0,
+      "temp_drink": 73.83
+    },
+    {
+      "id": 202,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 36.0,
+      "temp_amb": 22.0,
+      "temp_drink": 73.13
+    },
+    {
+      "id": 203,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 38.0,
+      "temp_amb": 21.99,
+      "temp_drink": 72.65
+    },
+    {
+      "id": 204,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 40.0,
+      "temp_amb": 21.99,
+      "temp_drink": 72.31
+    },
+    {
+      "id": 205,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 42.0,
+      "temp_amb": 21.99,
+      "temp_drink": 71.26
+    },
+    {
+      "id": 206,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 44.0,
+      "temp_amb": 21.99,
+      "temp_drink": 70.56
+    },
+    {
+      "id": 207,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 46.0,
+      "temp_amb": 21.98,
+      "temp_drink": 70.22
+    },
+    {
+      "id": 208,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 48.0,
+      "temp_amb": 21.98,
+      "temp_drink": 69.48
+    },
+    {
+      "id": 209,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 50.0,
+      "temp_amb": 21.98,
+      "temp_drink": 68.63
+    },
+    {
+      "id": 210,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 52.0,
+      "temp_amb": 21.98,
+      "temp_drink": 68.29
+    },
+    {
+      "id": 211,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 54.0,
+      "temp_amb": 21.98,
+      "temp_drink": 67.4
+    },
+    {
+      "id": 212,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 56.0,
+      "temp_amb": 21.98,
+      "temp_drink": 66.62
+    },
+    {
+      "id": 213,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 58.0,
+      "temp_amb": 21.98,
+      "temp_drink": 66.17
+    },
+    {
+      "id": 214,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 60.0,
+      "temp_amb": 21.98,
+      "temp_drink": 65.52
+    },
+    {
+      "id": 215,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 62.0,
+      "temp_amb": 21.98,
+      "temp_drink": 64.89
+    },
+    {
+      "id": 216,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 64.0,
+      "temp_amb": 21.99,
+      "temp_drink": 64.32
+    },
+    {
+      "id": 217,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 66.0,
+      "temp_amb": 21.99,
+      "temp_drink": 63.74
+    },
+    {
+      "id": 218,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 68.0,
+      "temp_amb": 21.99,
+      "temp_drink": 63.01
+    },
+    {
+      "id": 219,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 70.0,
+      "temp_amb": 22.0,
+      "temp_drink": 62.33
+    },
+    {
+      "id": 220,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 72.0,
+      "temp_amb": 22.0,
+      "temp_drink": 61.87
+    },
+    {
+      "id": 221,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 74.0,
+      "temp_amb": 22.01,
+      "temp_drink": 61.5
+    },
+    {
+      "id": 222,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 76.0,
+      "temp_amb": 22.01,
+      "temp_drink": 60.98
+    },
+    {
+      "id": 223,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 78.0,
+      "temp_amb": 22.02,
+      "temp_drink": 60.33
+    },
+    {
+      "id": 224,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 80.0,
+      "temp_amb": 22.02,
+      "temp_drink": 60.01
+    },
+    {
+      "id": 225,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 82.0,
+      "temp_amb": 22.03,
+      "temp_drink": 59.33
+    },
+    {
+      "id": 226,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 84.0,
+      "temp_amb": 22.03,
+      "temp_drink": 58.89
+    },
+    {
+      "id": 227,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 86.0,
+      "temp_amb": 22.04,
+      "temp_drink": 58.34
+    },
+    {
+      "id": 228,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 88.0,
+      "temp_amb": 22.05,
+      "temp_drink": 58.12
+    },
+    {
+      "id": 229,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 90.0,
+      "temp_amb": 22.06,
+      "temp_drink": 57.63
+    },
+    {
+      "id": 230,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 92.0,
+      "temp_amb": 22.06,
+      "temp_drink": 57.15
+    },
+    {
+      "id": 231,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 94.0,
+      "temp_amb": 22.07,
+      "temp_drink": 56.77
+    },
+    {
+      "id": 232,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 96.0,
+      "temp_amb": 22.08,
+      "temp_drink": 56.33
+    },
+    {
+      "id": 233,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 98.0,
+      "temp_amb": 22.09,
+      "temp_drink": 55.73
+    },
+    {
+      "id": 234,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 100.0,
+      "temp_amb": 22.09,
+      "temp_drink": 55.38
+    },
+    {
+      "id": 235,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 102.0,
+      "temp_amb": 22.1,
+      "temp_drink": 54.94
+    },
+    {
+      "id": 236,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 104.0,
+      "temp_amb": 22.11,
+      "temp_drink": 54.54
+    },
+    {
+      "id": 237,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 106.0,
+      "temp_amb": 22.12,
+      "temp_drink": 54.13
+    },
+    {
+      "id": 238,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 108.0,
+      "temp_amb": 22.12,
+      "temp_drink": 53.71
+    },
+    {
+      "id": 239,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 110.0,
+      "temp_amb": 22.13,
+      "temp_drink": 53.07
+    },
+    {
+      "id": 240,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 112.0,
+      "temp_amb": 22.14,
+      "temp_drink": 52.58
+    },
+    {
+      "id": 241,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 114.0,
+      "temp_amb": 22.15,
+      "temp_drink": 52.39
+    },
+    {
+      "id": 242,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 116.0,
+      "temp_amb": 22.15,
+      "temp_drink": 51.86
+    },
+    {
+      "id": 243,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 118.0,
+      "temp_amb": 22.16,
+      "temp_drink": 51.43
+    },
+    {
+      "id": 244,
+      "code": "TER",
+      "cluster": "Recipiente térmico",
+      "time_min": 120.0,
+      "temp_amb": 22.17,
+      "temp_drink": 50.89
+    }
+  ]
+}

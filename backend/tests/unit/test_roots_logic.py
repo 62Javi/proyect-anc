@@ -1,7 +1,9 @@
-import pytest
 import math
+
+import pytest
+
 from src.core.roots import RootFindingCalculator
-from src.models.roots import NewtonRequest, FixedPointRequest
+from src.models.roots import FixedPointRequest, NewtonRequest
 
 
 @pytest.fixture

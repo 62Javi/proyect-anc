@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from src.core.fourier import FourierSeriesCalculator
 from src.core.harmonics import HarmonicAnalyzer
+from src.core.regression import LeastSquaresCalculator
 from src.core.roots import RootFindingCalculator
 from src.models.fourier import FourierRequest, FourierResponse
 from src.models.harmonics import AudioAnalysisResponse
+from src.models.regression import Case1AnalysisResponse, FitRequest, FitResponse
 from src.models.roots import (
     FixedPointRequest,
     FixedPointResponse,
@@ -15,12 +17,16 @@ from src.models.roots import (
 router = APIRouter()
 harmonics_analyzer = HarmonicAnalyzer()
 root_calculator = RootFindingCalculator()
+regression_calculator = LeastSquaresCalculator()
 
 def get_calculator():
     return FourierSeriesCalculator()
 
 def get_root_calculator():
     return root_calculator
+
+def get_regression_calculator():
+    return regression_calculator
 
 @router.post("/calculate", response_model=FourierResponse)
 def calculate(
@@ -84,4 +90,24 @@ def calculate_fixed_point_root(
         return calc.calculate_fixed_point(request)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/regression/fit", response_model=FitResponse)
+def fit_regression(
+    request: FitRequest, calc: LeastSquaresCalculator = Depends(get_regression_calculator)
+):
+    try:
+        return calc.fit(request)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/regression/case1", response_model=Case1AnalysisResponse)
+def get_case1_analysis(
+    calc: LeastSquaresCalculator = Depends(get_regression_calculator)
+):
+    try:
+        return calc.analyze_case1()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
