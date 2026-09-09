@@ -391,12 +391,14 @@ class LeastSquaresCalculator:
 
         ln_a = (vector_b[0] * matrix_a[1][1] - vector_b[1] * matrix_a[0][1]) / det
         b = (matrix_a[0][0] * vector_b[1] - matrix_a[1][0] * vector_b[0]) / det
-        
-        # Proteger ante desbordamiento de e^(ln_a)
+
+        # Recuperar parámetro 'a' con protección de desbordamiento (OverflowError)
         try:
             a = math.exp(ln_a)
         except OverflowError:
-            raise ValueError("Desbordamiento numérico: los valores de 'x' son demasiado grandes para un ajuste potencial sin normalizar. Use un cambio de variable como t = año - 1879.")
+            raise ValueError(
+                "Desbordamiento numérico: los valores de 'x' son demasiado grandes para un ajuste potencial sin normalizar. Aplique un cambio de variable."
+            )
 
         mean_lny = float(np.mean(ln_y))
         pred_lny = ln_a + b * ln_x
@@ -404,7 +406,7 @@ class LeastSquaresCalculator:
         sr_ln = float(np.sum((ln_y - pred_lny) ** 2))
         r2 = max(0.0, (st_ln - sr_ln) / st_ln) if st_ln > 1e-12 else 1.0
 
-        # Cálculo seguro de y_pred
+        # Cálculo de predicción y residuos
         y_pred = a * (x**b)
         residuals = y - y_pred
         sr_orig = float(np.sum(residuals**2))
@@ -416,25 +418,18 @@ class LeastSquaresCalculator:
             rf"\begin{{bmatrix}} \ln(a) \\ b \end{{bmatrix}} = "
             rf"\begin{{bmatrix}} {sum_lny:.2f} \\ {sum_lnx_lny:.2f} \end{{bmatrix}}"
         )
-        a_latex = format_exp_coeff_latex(ln_a, precision=4)
-        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a_latex}, \quad b = {b:.5f}"
+        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a:.4f}, \quad b = {b:.5f}"
         transformed_latex = rf"\ln(y) = \ln(a) + b\ln(x) \iff \ln(y) = {ln_a:.4f} {('+' if b >= 0 else '-')} {abs(b):.5f}\ln(x)"
-        if "\\times" in a_latex:
-            formula_latex = rf"y = ({a_latex}) \cdot x^{{{b:.5f}}}"
-        else:
-            formula_latex = rf"y = {a_latex} \cdot x^{{{b:.5f}}}"
+        formula_latex = rf"y = {a:.4f} \cdot x^{{{b:.5f}}}"
 
-        # Generación segura de la curva de predicción
+        # Curva suave para gráficos con saneamiento de NaN / Inf
         x_min, x_max = float(np.min(x)), float(np.max(x))
         cx = np.linspace(max(x_min * 0.8, 1e-4), x_max * 1.05, 100)
-        
-        # CORRECCIÓN CLAVE: Sanear posibles valores inf/nan en la curva cy
-        with np.errstate(over='ignore', invalid='ignore'):
+
+        with np.errstate(over="ignore", invalid="ignore"):
             cy_raw = a * (cx**b)
-            # Reemplazar valores inf o nan con 0.0 o valores finitos para evitar corromper la respuesta JSON
             cy = np.nan_to_num(cy_raw, nan=0.0, posinf=1e12, neginf=-1e12)
 
-        # Proteger métricas finales contra valores non-finite
         r2_safe = float(r2) if math.isfinite(r2) else 0.0
         r_safe = math.sqrt(r2_safe) if math.isfinite(r2_safe) else 0.0
         sr_safe = float(sr_ln) if math.isfinite(sr_ln) else 0.0
@@ -444,7 +439,7 @@ class LeastSquaresCalculator:
             model_type="power",
             formula_latex=formula_latex,
             transformed_latex=transformed_latex,
-            parameters={"a": a_param, "b": round(b, 6), "ln_a": round(ln_a, 6)},
+            parameters={"a": round(a, 6), "b": round(b, 6), "ln_a": round(ln_a, 6)},
             metrics=RegressionMetrics(
                 st=st_ln, sr=sr_safe, r2=r2_safe, r=r_safe, syx=syx_safe
             ),
