@@ -46,13 +46,15 @@ export const RegressionPage: React.FC = () => {
             </p>
           </div>
 
-          <button
-            onClick={() => handlePrint()}
-            className="flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm cursor-pointer self-start sm:self-auto shrink-0"
-          >
-            <Printer size={16} />
-            <span>Imprimir Informe PDF</span>
-          </button>
+          {activeTab === 'solver' && (
+            <button
+              onClick={() => handlePrint()}
+              className="flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <Printer size={16} />
+              <span>Imprimir Simulación PDF</span>
+            </button>
+          )}
         </div>
 
         {/* 4-Tab Navigation */}
@@ -94,7 +96,8 @@ export const RegressionPage: React.FC = () => {
             }`}
           >
             <FileCheck2 size={18} className="shrink-0" />
-            <span>Ejercicios TP4</span>
+            <span className="hidden sm:inline">Ejercicios Resueltos</span>
+            <span className="sm:hidden">Ejercicios</span>
           </button>
         </div>
       </div>

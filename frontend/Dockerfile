@@ -1,7 +1,7 @@
-FROM node:20-slim as builder
+FROM node:22-slim AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install --legacy-peer-deps --registry=https://registry.npmmirror.com
 COPY . .
 RUN npm run build
 

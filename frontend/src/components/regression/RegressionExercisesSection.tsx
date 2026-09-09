@@ -1,6 +1,7 @@
 import React from 'react';
-import { FileCheck2, ArrowRight, Calculator } from 'lucide-react';
+import { Printer, ArrowRight, Calculator } from 'lucide-react';
 import InlineMath from '../InlineMath';
+import { useAppPrint } from '../../hooks/useAppPrint';
 import type { RegressionSolverConfig } from '../../types/regression';
 
 interface RegressionExercisesSectionProps {
@@ -141,38 +142,38 @@ const EXERCISES: SolvedExercise[] = [
 ];
 
 export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProps> = ({ onLoadExercise }) => {
+  const { printRef, handlePrint } = useAppPrint('Ejercicios-Resueltos-TP4');
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-700 border border-emerald-200/60 shadow-sm">
-            <FileCheck2 size={24} />
-          </div>
-          <div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full border border-emerald-200">
-              Guía de Trabajos Prácticos
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Ejercicios Resueltos · Trabajo Práctico Nº 4
-            </h2>
-          </div>
+      {/* Top Banner de Acción */}
+      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 print:hidden">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-black text-slate-900">Ejercicios Resueltos - TP Nº 4</h2>
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Resolución de los Problemas 1 hasta el 6 del Trabajo Práctico.
+          </p>
         </div>
-        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-          Colección de los 6 ejercicios prácticos de la cátedra con sus enunciados originales, tablas completas, modelo recomendado y resolución analítica. Puedes cargar cualquier ejercicio en el simulador con un solo clic.
-        </p>
+        <button
+          type="button"
+          onClick={() => handlePrint()}
+          className="flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+        >
+          <Printer size={16} />
+          <span>Imprimir Guía Completa PDF</span>
+        </button>
       </div>
 
-      {/* Grid of Exercises */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* CONTENEDOR IMPRIMIBLE */}
+      <div ref={printRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-1 print:gap-4">
         {EXERCISES.map((ex) => (
           <div
             key={ex.number}
-            className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-slate-300 transition-all"
+            className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-slate-300 transition-all print:border-slate-300 print:shadow-none print:break-inside-avoid"
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
                   Ejercicio Nº {ex.number}
                 </span>
                 <span className="text-xs font-mono font-bold text-slate-500">
@@ -198,11 +199,11 @@ export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProp
                 </div>
                 <div className="flex justify-between items-center text-slate-600">
                   <span className="font-medium">Bondad de ajuste:</span>
-                  <span className="font-mono font-bold text-emerald-600">r² = {ex.r2.toFixed(4)}</span>
+                  <span className="font-mono font-bold text-slate-900">r² = {ex.r2.toFixed(4)}</span>
                 </div>
               </div>
 
-              <p className="text-[11px] text-slate-600 italic bg-amber-50/50 p-2.5 rounded-xl border border-amber-100">
+              <p className="text-[11px] text-slate-600 italic bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
                 "{ex.explanation}"
               </p>
             </div>
@@ -217,7 +218,7 @@ export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProp
                   source: ex.source,
                 })
               }
-              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
+              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm print:hidden"
             >
               <Calculator size={14} />
               <span>Cargar en Calculadora Interactiva</span>

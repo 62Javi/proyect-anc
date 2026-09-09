@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { BookOpen, ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, Printer } from 'lucide-react';
 import InlineMath from '../InlineMath';
+import { useAppPrint } from '../../hooks/useAppPrint';
 
 export const RegressionTheorySection: React.FC = () => {
+  const { printRef, handlePrint } = useAppPrint('Guia-Teorica-Minimos-Cuadrados');
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     fundamento: true,
     modelos: true,
@@ -16,45 +18,47 @@ export const RegressionTheorySection: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header card */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-700 border border-indigo-200/60 shadow-sm">
-            <BookOpen size={24} />
-          </div>
-          <div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-indigo-800 bg-indigo-100/70 px-2.5 py-0.5 rounded-full border border-indigo-200">
-              Apunte Oficial Cátedra ANC
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Teoría de Ajuste por Mínimos Cuadrados
-            </h2>
-          </div>
+      {/* Top Banner con botón de acción */}
+      <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-slate-200 print:hidden">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-800 px-3 py-1 rounded-full">
+            Material de Estudio & Cátedra UTN
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black">Guía Teórica de Análisis Numérico</h2>
+          <p className="text-xs sm:text-sm text-slate-300">
+            Descargá o imprimí este documento en PDF con todos los teoremas, fórmulas y deducciones paso a paso.
+          </p>
         </div>
-        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-          Material conceptual basado en la bibliografía de la cátedra (Ing. Diego Federico Amiconi, UTN Facultad Regional La Plata).
-        </p>
+
+        <button
+          onClick={() => handlePrint()}
+          className="flex items-center justify-center gap-2.5 px-6 py-3.5 bg-white text-slate-900 hover:bg-slate-100 rounded-2xl text-xs font-black uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+        >
+          <Printer size={16} />
+          <span>Descargar / Imprimir PDF</span>
+        </button>
       </div>
 
-      {/* 1. FUNDAMENTO ANALÍTICO */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-        <button
-          onClick={() => toggleSection('fundamento')}
-          className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-xs font-black">
-              1
-            </span>
-            <h3 className="text-base font-bold text-slate-900">
-              El Principio de Mínimos Cuadrados & Deducción Analítica
-            </h3>
-          </div>
-          {openSections.fundamento ? <ChevronDown size={20} className="text-slate-400" /> : <ChevronRight size={20} className="text-slate-400" />}
-        </button>
+      {/* CONTENEDOR A IMPRIMIR */}
+      <div ref={printRef} className="space-y-6 print-container">
+        {/* 1. FUNDAMENTO ANALÍTICO */}
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden print:border-slate-300 print:shadow-none print:break-inside-avoid">
+          <button
+            onClick={() => toggleSection('fundamento')}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">
+                1
+              </span>
+              <h3 className="text-base font-bold text-slate-900">
+                El Principio de Mínimos Cuadrados & Deducción Analítica
+              </h3>
+            </div>
+            {openSections.fundamento ? <ChevronDown size={20} className="text-slate-400 print:hidden" /> : <ChevronRight size={20} className="text-slate-400 print:hidden" />}
+          </button>
 
-        {openSections.fundamento && (
-          <div className="p-6 pt-0 border-t border-slate-100 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+          <div className={`p-6 pt-0 border-t border-slate-100 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed ${openSections.fundamento ? 'block' : 'hidden print:block'}`}>
             <p>
               El principio de mínimos cuadrados establece que de todas las rectas o curvas que representan a una nube de puntos experimentales <InlineMath math="(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n)" />, la de mejor ajuste es aquella que minimiza la suma de los cuadrados de las desviaciones verticales:
             </p>
@@ -77,28 +81,26 @@ export const RegressionTheorySection: React.FC = () => {
               <InlineMath math="\sum_{k=1}^m a_k \left( \sum_{i=1}^n \phi_k(x_i) \phi_j(x_i) \right) = \sum_{i=1}^n y_i \phi_j(x_i), \quad \forall j=1,\dots,m" block />
             </div>
           </div>
-        )}
       </div>
 
       {/* 2. MODELOS PARTICULARES Y LINEALIZACIONES */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden print:border-slate-300 print:shadow-none print:break-inside-avoid">
         <button
           onClick={() => toggleSection('modelos')}
           className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-xs font-black">
+            <span className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">
               2
             </span>
             <h3 className="text-base font-bold text-slate-900">
               Modelos Estudiados y Procedimientos de Linealización
             </h3>
           </div>
-          {openSections.modelos ? <ChevronDown size={20} className="text-slate-400" /> : <ChevronRight size={20} className="text-slate-400" />}
+          {openSections.modelos ? <ChevronDown size={20} className="text-slate-400 print:hidden" /> : <ChevronRight size={20} className="text-slate-400 print:hidden" />}
         </button>
 
-        {openSections.modelos && (
-          <div className="p-6 pt-0 border-t border-slate-100 space-y-6 text-xs sm:text-sm text-slate-600 leading-relaxed">
+        <div className={`p-6 pt-0 border-t border-slate-100 space-y-6 text-xs sm:text-sm text-slate-600 leading-relaxed ${openSections.modelos ? 'block' : 'hidden print:block'}`}>
             {/* A. Lineal */}
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
               <h4 className="font-bold text-slate-900 text-sm">A. Ajuste Lineal: <InlineMath math="y = a_1 + a_2 x" /></h4>
@@ -159,29 +161,27 @@ export const RegressionTheorySection: React.FC = () => {
               </div>
               <p className="text-[11px] text-slate-500">Parámetros finales: <InlineMath math="a = \frac{1}{a_1}, \quad b = a_2 \cdot a" />.</p>
             </div>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* 3. BONDAD DE AJUSTE (r^2) */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden print:border-slate-300 print:shadow-none print:break-inside-avoid">
         <button
           onClick={() => toggleSection('bondad')}
           className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-xs font-black">
+            <span className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">
               3
             </span>
             <h3 className="text-base font-bold text-slate-900">
               Bondad del Ajuste: Coeficiente de Determinación (<InlineMath math="r^2" />)
             </h3>
           </div>
-          {openSections.bondad ? <ChevronDown size={20} className="text-slate-400" /> : <ChevronRight size={20} className="text-slate-400" />}
+          {openSections.bondad ? <ChevronDown size={20} className="text-slate-400 print:hidden" /> : <ChevronRight size={20} className="text-slate-400 print:hidden" />}
         </button>
 
-        {openSections.bondad && (
-          <div className="p-6 pt-0 border-t border-slate-100 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+        <div className={`p-6 pt-0 border-t border-slate-100 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed ${openSections.bondad ? 'block' : 'hidden print:block'}`}>
             <p>
               El coeficiente de determinación <InlineMath math="r^2" /> estima si el ajuste respecto a los datos experimentales ha sido efectivo:
             </p>
@@ -202,29 +202,27 @@ export const RegressionTheorySection: React.FC = () => {
                 <p>3. Cociente / Saturación: <InlineMath math="S_T = \sum (1/y_i - \bar{Y})^2, \quad S_R = \sum (1/y_i - 1/\hat{y}_i)^2" /></p>
               </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* 4. ANÁLISIS DE RESIDUOS */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden print:border-slate-300 print:shadow-none print:break-inside-avoid">
         <button
           onClick={() => toggleSection('residuos')}
           className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-xs font-black">
+            <span className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">
               4
             </span>
             <h3 className="text-base font-bold text-slate-900">
               Análisis de Residuos: Por qué <InlineMath math="r^2" /> no basta
             </h3>
           </div>
-          {openSections.residuos ? <ChevronDown size={20} className="text-slate-400" /> : <ChevronRight size={20} className="text-slate-400" />}
+          {openSections.residuos ? <ChevronDown size={20} className="text-slate-400 print:hidden" /> : <ChevronRight size={20} className="text-slate-400 print:hidden" />}
         </button>
 
-        {openSections.residuos && (
-          <div className="p-6 pt-0 border-t border-slate-100 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+        <div className={`p-6 pt-0 border-t border-slate-100 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed ${openSections.residuos ? 'block' : 'hidden print:block'}`}>
             <p>
               El profesor enfatiza en su consigna: <em>"No elegir el modelo de antemano ni confiarse por la forma aparente. La selección debe estar justificada mediante los residuos y la física del fenómeno."</em>
             </p>
@@ -245,8 +243,8 @@ export const RegressionTheorySection: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
-        )}
+        </div>
+      </div>
       </div>
     </div>
   );

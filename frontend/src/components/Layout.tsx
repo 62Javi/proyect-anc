@@ -24,8 +24,8 @@ export default function Layout() {
 
   const navItems = [
     { path: '/', icon: <Home size={20} />, label: 'Inicio' },
-    { path: '/regression', icon: <LineChart size={20} />, label: 'Mínimos Cuadrados (Caso 1)' },
-    { path: '/roots', icon: <Calculator size={20} />, label: 'Método de Newton & Punto Fijo' },
+    { path: '/regression', icon: <LineChart size={20} />, label: 'Mínimos Cuadrados' },
+    { path: '/roots', icon: <Calculator size={20} />, label: 'Método de Newton' },
     { path: '/fourier', icon: <Activity size={20} />, label: 'Fourier' },
     { path: '/harmonics', icon: <Music size={20} />, label: 'Armónicos' },
   ];
@@ -34,78 +34,99 @@ export default function Layout() {
     <div className="flex h-screen w-screen overflow-hidden bg-background">
       {/* Elegant Collapsible Sidebar */}
       <aside
-        className={`relative bg-white border-r border-slate-200 flex flex-col py-6 px-3 gap-8 shrink-0 z-50 shadow-sm transition-all duration-300 ${
-          isCollapsed ? 'w-16 lg:w-20' : 'w-16 lg:w-72'
+        className={`relative bg-white border-slate-200 flex flex-col py-6 shrink-0 z-50 shadow-sm transition-[width,padding] duration-300 ease-in-out ${
+          isCollapsed
+            ? 'w-0 px-0 border-r-0 lg:w-20 lg:px-3 lg:border-r'
+            : 'w-20 px-3 border-r lg:w-72 lg:px-4'
         }`}
       >
         {/* Toggle Collapse Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:scale-110 shadow-md transition-all cursor-pointer z-50"
-          title={isCollapsed ? 'Expandir barra lateral' : 'Ocultar barra lateral (Modo Presentación)'}
+          className={`absolute top-1/2 -translate-y-1/2 z-50 flex items-center justify-center bg-white border border-slate-200 shadow-md transition-all duration-300 ease-in-out cursor-pointer text-slate-600 hover:text-slate-900 hover:scale-105 active:scale-95 ${
+            isCollapsed
+              ? '-right-5 lg:-right-3.5 w-7 h-11 rounded-r-xl lg:w-7 lg:h-7 lg:rounded-full border-l-0 lg:border-l'
+              : '-right-3.5 w-7 h-7 rounded-full'
+          }`}
+          title={isCollapsed ? 'Expandir barra lateral' : 'Ocultar barra lateral'}
         >
           {isCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
         </button>
 
-        {/* Logo and Brand */}
-        <div className="px-2 flex items-center gap-3">
-          <Link to="/" className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-200 shrink-0">
-            <Calculator size={20} />
-          </Link>
-          {!isCollapsed && (
-            <div className="hidden lg:block overflow-hidden">
-              <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight">Proyecto ANC</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Análisis & Métodos</span>
-            </div>
-          )}
-        </div>
-        
-        {/* Nav Items */}
-        <nav className="flex flex-col gap-1.5 w-full">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center p-3 rounded-2xl transition-all duration-200 group ${
-                  isActive 
-                    ? 'bg-slate-900 text-white shadow-sm font-bold' 
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-                title={item.label}
-              >
-                <div className={`${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'} shrink-0`}>
-                  {item.icon}
-                </div>
-                {!isCollapsed && (
-                  <span className="ml-3 text-xs font-bold hidden lg:block truncate">
-                    {item.label}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* GitHub link at the bottom */}
-        <div className="mt-auto pt-4 border-t border-slate-100">
-          <a
-            href="https://github.com/62Javi/proyect-anc"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center p-3 rounded-2xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 group"
-            title="Ver en GitHub"
-          >
-            <div className="text-slate-400 group-hover:text-slate-900 shrink-0">
-              <GithubIcon size={20} />
-            </div>
+        {/* Sidebar Content */}
+        <div className={`flex flex-col h-full w-full gap-8 transition-opacity duration-200 ${isCollapsed ? 'hidden lg:flex' : 'flex'}`}>
+          {/* Logo and Brand */}
+          <div className={`flex items-center gap-3.5 w-full ${isCollapsed ? 'justify-center' : 'justify-center lg:justify-start px-1'}`}>
+            <Link 
+              to="/" 
+              className="w-11 h-11 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-md shadow-slate-200 shrink-0 hover:scale-105 transition-transform"
+              title="Proyecto ANC"
+            >
+              <Calculator size={20} />
+            </Link>
             {!isCollapsed && (
-              <span className="ml-3 text-xs font-semibold hidden lg:block text-slate-500 group-hover:text-slate-900">
-                Ver en GitHub
-              </span>
+              <div className="hidden lg:flex flex-col justify-center overflow-hidden whitespace-nowrap">
+                <span className="text-base font-black tracking-tight text-slate-900 block leading-tight">Proyecto ANC</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Análisis & Métodos</span>
+              </div>
             )}
-          </a>
+          </div>
+          
+          {/* Nav Items */}
+          <nav className="flex flex-col gap-2 w-full">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center rounded-2xl transition-colors duration-200 group ${
+                    isCollapsed 
+                      ? 'w-11 h-11 justify-center mx-auto' 
+                      : 'w-11 h-11 justify-center mx-auto lg:w-full lg:h-11 lg:px-3 lg:justify-start'
+                  } ${
+                    isActive 
+                      ? 'bg-slate-900 text-white shadow-sm font-bold' 
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                  title={item.label}
+                >
+                  <div className={`flex items-center justify-center shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'}`}>
+                    {item.icon}
+                  </div>
+                  {!isCollapsed && (
+                    <span className="ml-3 text-xs font-bold hidden lg:block truncate whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* GitHub link at the bottom */}
+          <div className="mt-auto pt-4 border-t border-slate-100 w-full">
+            <a
+              href="https://github.com/62Javi/proyect-anc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center rounded-2xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-200 group ${
+                isCollapsed
+                  ? 'w-11 h-11 justify-center mx-auto'
+                  : 'w-11 h-11 justify-center mx-auto lg:w-full lg:h-11 lg:px-3 lg:justify-start'
+              }`}
+              title="Ver en GitHub"
+            >
+              <div className="text-slate-400 group-hover:text-slate-900 shrink-0 flex items-center justify-center">
+                <GithubIcon size={20} />
+              </div>
+              {!isCollapsed && (
+                <span className="ml-3 text-xs font-semibold hidden lg:block text-slate-500 group-hover:text-slate-900 truncate whitespace-nowrap">
+                  Ver en GitHub
+                </span>
+              )}
+            </a>
+          </div>
         </div>
       </aside>
 

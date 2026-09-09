@@ -67,7 +67,7 @@ const FormulaDisplay = ({ label, formula, className = '' }: FormulaDisplayProps)
   const isFourierCoeff = ['a_0', 'a_n', 'b_n', 'c_n', 'A_0', 'A_n', 'B_n'].includes(trimmedLabel);
 
   return (
-    <div className={`p-4 sm:p-5 bg-slate-50/80 rounded-2xl overflow-x-auto w-full border border-slate-200 flex flex-col items-center justify-center relative ${className}`}>
+    <div className={`p-4 sm:p-5 bg-slate-50/80 rounded-2xl overflow-x-auto touch-pan-x w-full border border-slate-200 flex flex-col items-center justify-center relative scrollbar-thin [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full ${className}`}>
       {trimmedLabel && !isFunctionLabel && (
         <div className="self-start mb-2 flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
           {isFourierCoeff && (
