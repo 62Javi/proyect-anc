@@ -106,18 +106,18 @@ const PRESETS = [
   },
   {
     id: 'tp4_ex6',
-    title: 'TP4 · Ej. 6: Producción Petrolera',
+    title: 'TP4 · Ej. 6: Producción Petrolera (Hubbert)',
     model: 'polynomial' as RegressionModelType,
     degree: 3,
     points: [
-      { x: 1880, y: 30 },
-      { x: 1900, y: 149 },
-      { x: 1920, y: 689 },
-      { x: 1940, y: 2150 },
-      { x: 1960, y: 7674 },
-      { x: 1970, y: 16669 },
-      { x: 1980, y: 21732 },
-      { x: 1990, y: 17153 },
+      { x: 1, y: 30 },      // t = 1 (Año 1880)
+      { x: 21, y: 149 },    // t = 21 (Año 1900)
+      { x: 41, y: 689 },    // t = 41 (Año 1920)
+      { x: 61, y: 2150 },   // t = 61 (Año 1940)
+      { x: 81, y: 7674 },   // t = 81 (Año 1960)
+      { x: 91, y: 16669 },  // t = 91 (Año 1970)
+      { x: 101, y: 21732 }, // t = 101 (Año 1980)
+      { x: 111, y: 17153 }, // t = 111 (Año 1990)
     ],
   },
 ];
@@ -580,12 +580,14 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-emerald-600">
-                  {result.metrics.r2.toFixed(5)}
+                  {result?.metrics?.r2 != null ? result.metrics.r2.toFixed(5) : 'N/A'}
                 </span>
                 <span className="text-xs text-slate-400 font-bold">r²</span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
-                {result.metrics.r2 != null && result.metrics.r2 >= 0.85 ? '✅ Ajuste Válido (> 0.85)' : '⚠️ Ajuste Débil'}
+                {result?.metrics?.r2 != null && result.metrics.r2 >= 0.85
+                  ? '✅ Ajuste Válido (> 0.85)'
+                  : '⚠️ Ajuste Débil / Inestable'}
               </span>
             </div>
 
@@ -595,7 +597,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
-                  {result.metrics.r != null ? result.metrics.r.toFixed(5) : '-'}
+                  {result?.metrics?.r != null ? result.metrics.r.toFixed(5) : 'N/A'}
                 </span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
@@ -609,7 +611,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
-                  {result.metrics.sr != null ? result.metrics.sr.toFixed(4) : '-'}
+                  {result?.metrics?.sr != null ? result.metrics.sr.toFixed(4) : 'N/A'}
                 </span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
@@ -623,7 +625,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
-                  {result.metrics.syx != null ? result.metrics.syx.toFixed(4) : '-'}
+                  {result?.metrics?.syx != null ? result.metrics.syx.toFixed(4) : 'N/A'}
                 </span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
@@ -639,10 +641,10 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                 Ecuación de Regresión Resultante
               </span>
               <div className="text-lg sm:text-xl font-black text-slate-900 font-mono mt-1">
-                <InlineMath math={result.formula_latex} />
+                <InlineMath math={result?.formula_latex ?? '\\text{Sin ecuación}'} />
               </div>
             </div>
-            {result.transformed_latex && (
+            {result?.transformed_latex && (
               <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs font-mono text-slate-600">
                 <span className="text-[9px] uppercase font-bold text-slate-400 block">Forma Linealizada:</span>
                 <InlineMath math={result.transformed_latex} />

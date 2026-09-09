@@ -229,18 +229,13 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           '\\sum \\frac{1}{x_i} = 2.2833, \\quad \\sum \\frac{1}{y_i} = 3.1768, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.4636, \\quad \\sum \\frac{1}{x_i y_i} = 2.4598',
         systemLatex:
-          '\\begin{bmatrix} 5 & 2.2833 \\\\ 2.2833 & 1.4636 \\end{bmatrix} \\begin{bmatrix} C_1 \\\\ C_2 \\end{bmatrix} = \\begin{bmatrix} 3.1768 \\\\ 2.4598 \\end{bmatrix} \\quad \\left(C_1 = \\frac{1}{a}, \\; C_2 = \\frac{b}{a}\\right)',
+          '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} C_1 \\\\ C_2 \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 2.2833 \\\\ 2.2833 & 1.4636 \\end{bmatrix} \\begin{bmatrix} C_1 \\\\ C_2 \\end{bmatrix} = \\begin{bmatrix} 3.1768 \\\\ 2.4598 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 2.1045 \\implies C_1 = -0.4595 \\implies a = \\frac{1}{C_1} = -2.1764, \\quad C_2 = 2.3975 \\implies b = C_2 \\cdot a = -5.2178',
+          '\\Delta = 5(1.4636) - (2.2833)^2 = 2.1045 \\implies C_1 = -0.4595 \\implies a = \\frac{1}{C_1} = -2.1764, \\quad C_2 = 2.3975 \\implies b = C_2 \\cdot a = -5.2178',
         formulaLatex:
-          'y = \\frac{-2.1764x}{-5.2178 + x} = \\frac{2.1764x}{5.2178 - x}',
-        metrics: {
-          r2: 0.9838,
-          extraNote:
-            'r² en espacio transformado 1/y = 0.9838. En escala original produce una asíntota vertical en x = 5.2178.',
-        },
+          'y = \\frac{a \\cdot x}{b + x} = \\frac{-2.1764x}{-5.2178 + x} = \\frac{2.1764x}{5.2178 - x}',
         conclusion:
-          'Análisis crítico de cátedra: La ecuación del cociente está concebida para fenómenos con asíntota horizontal y desaceleración (curvas cóncavas hacia abajo). Al forzarla sobre observaciones convexas con aceleración creciente, el ajuste genera parámetros negativos y una asíntota vertical en x = 5.2178, provocando valores infinitos/negativos para x > 5. Esto confirma analíticamente que la ecuación del cociente NO es físicamente adecuada para esta tabla de datos.',
+          'Análisis crítico de cátedra: El despeje correcto genera a = -2.1764 y b = -5.2178. Esto produce un denominador (5.2178 - x) con una asíntota vertical en x = 5.2178. Al intentar evaluar el modelo para x > 5.2178, el valor de y se vuelve negativo/infinito, lo que demuestra matemáticamente que la ecuación del cociente es físicamente inadecuada para esta serie de datos convexos.',
       },
     ],
   },

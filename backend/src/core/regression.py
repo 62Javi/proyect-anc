@@ -391,10 +391,12 @@ class LeastSquaresCalculator:
 
         ln_a = (vector_b[0] * matrix_a[1][1] - vector_b[1] * matrix_a[0][1]) / det
         b = (matrix_a[0][0] * vector_b[1] - matrix_a[1][0] * vector_b[0]) / det
+        
+        # Proteger ante desbordamiento de e^(ln_a)
         try:
-            a = math.exp(ln_a) if abs(ln_a) <= 709 else (float("inf") if ln_a > 709 else 0.0)
+            a = math.exp(ln_a)
         except OverflowError:
-            a = float("inf")
+            raise ValueError("Desbordamiento numérico: los valores de 'x' son demasiado grandes para un ajuste potencial sin normalizar. Use un cambio de variable como t = año - 1879.")
 
         mean_lny = float(np.mean(ln_y))
         pred_lny = ln_a + b * ln_x
@@ -402,9 +404,8 @@ class LeastSquaresCalculator:
         sr_ln = float(np.sum((ln_y - pred_lny) ** 2))
         r2 = max(0.0, (st_ln - sr_ln) / st_ln) if st_ln > 1e-12 else 1.0
 
-        # Predicción original calculada en espacio logarítmico para evitar overflow numérico
-        log_pred = ln_a + b * ln_x
-        y_pred = np.exp(np.clip(log_pred, -700, 700))
+        # Cálculo seguro de y_pred
+        y_pred = a * (x**b)
         residuals = y - y_pred
         sr_orig = float(np.sum(residuals**2))
         syx = math.sqrt(sr_orig / (n - 2)) if n > 2 else 0.0
@@ -423,11 +424,21 @@ class LeastSquaresCalculator:
         else:
             formula_latex = rf"y = {a_latex} \cdot x^{{{b:.5f}}}"
 
+        # Generación segura de la curva de predicción
         x_min, x_max = float(np.min(x)), float(np.max(x))
         cx = np.linspace(max(x_min * 0.8, 1e-4), x_max * 1.05, 100)
-        cy = np.exp(np.clip(ln_a + b * np.log(cx), -700, 700))
+        
+        # CORRECCIÓN CLAVE: Sanear posibles valores inf/nan en la curva cy
+        with np.errstate(over='ignore', invalid='ignore'):
+            cy_raw = a * (cx**b)
+            # Reemplazar valores inf o nan con 0.0 o valores finitos para evitar corromper la respuesta JSON
+            cy = np.nan_to_num(cy_raw, nan=0.0, posinf=1e12, neginf=-1e12)
 
-        a_param = round(float(a), 6) if (0.0001 <= abs(a) <= 1e6) else (float(f"{a:.6e}") if a != 0 else 0.0)
+        # Proteger métricas finales contra valores non-finite
+        r2_safe = float(r2) if math.isfinite(r2) else 0.0
+        r_safe = math.sqrt(r2_safe) if math.isfinite(r2_safe) else 0.0
+        sr_safe = float(sr_ln) if math.isfinite(sr_ln) else 0.0
+        syx_safe = float(syx) if math.isfinite(syx) else 0.0
 
         return FitResponse(
             model_type="power",
@@ -435,7 +446,7 @@ class LeastSquaresCalculator:
             transformed_latex=transformed_latex,
             parameters={"a": a_param, "b": round(b, 6), "ln_a": round(ln_a, 6)},
             metrics=RegressionMetrics(
-                st=st_ln, sr=sr_ln, r2=r2, r=math.sqrt(r2), syx=syx
+                st=st_ln, sr=sr_safe, r2=r2_safe, r=r_safe, syx=syx_safe
             ),
             normal_equations=NormalEquationStep(
                 matrix_a=matrix_a,
@@ -455,8 +466,8 @@ class LeastSquaresCalculator:
                 ResidualPoint(
                     x=float(x[i]),
                     y_actual=float(y[i]),
-                    y_pred=float(y_pred[i]),
-                    residual=float(residuals[i]),
+                    y_pred=float(y_pred[i]) if math.isfinite(y_pred[i]) else 0.0,
+                    residual=float(residuals[i]) if math.isfinite(residuals[i]) else 0.0,
                 )
                 for i in range(n)
             ],
