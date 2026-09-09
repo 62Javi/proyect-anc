@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   ComposedChart,
   LineChart,
@@ -14,10 +14,11 @@ import {
 import {
   Calculator,
   Play,
-  Plus,
-  Trash2,
   FileSpreadsheet,
   AlertCircle,
+  CheckCircle2,
+  AlertTriangle,
+  Eye,
 } from 'lucide-react';
 import { fitRegression, type FitResponse, type RegressionDataPoint } from '../../services/api';
 import InlineMath from '../InlineMath';
@@ -106,85 +107,123 @@ const PRESETS = [
 ];
 
 export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverProps> = ({ initialConfig }) => {
-  const [modelType, setModelType] = useState<RegressionModelType>(initialConfig?.modelType || 'linear');
-  const [degree, setDegree] = useState<number>(initialConfig?.degree || 2);
-  const [points, setPoints] = useState<RegressionDataPoint[]>(
-    initialConfig?.points || [
+  const defaultPoints = useMemo(
+    () => [
       { x: 1, y: 0.5 },
       { x: 2, y: 1.7 },
       { x: 3, y: 3.4 },
       { x: 4, y: 5.7 },
       { x: 5, y: 8.4 },
-    ]
+    ],
+    []
   );
 
-  const [pasteText, setPasteText] = useState<string>('');
-  const [showPasteBox, setShowPasteBox] = useState<boolean>(false);
+  const [modelType, setModelType] = useState<RegressionModelType>(initialConfig?.modelType || 'linear');
+  const [degree, setDegree] = useState<number>(initialConfig?.degree || 2);
+  const [points, setPoints] = useState<RegressionDataPoint[]>(
+    initialConfig?.points || defaultPoints
+  );
+
+  const [pasteMode, setPasteMode] = useState<'separate' | 'table'>('separate');
+  const [pasteX, setPasteX] = useState<string>(
+    (initialConfig?.points || defaultPoints).map((p) => p.x).join(', ')
+  );
+  const [pasteY, setPasteY] = useState<string>(
+    (initialConfig?.points || defaultPoints).map((p) => p.y).join(', ')
+  );
+  const [pasteText, setPasteText] = useState<string>(
+    (initialConfig?.points || defaultPoints).map((p) => `${p.x}\t${p.y}`).join('\n')
+  );
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<FitResponse | null>(null);
 
+  const previewPoints = useMemo(() => {
+    if (pasteMode === 'separate') {
+      const xs = pasteX
+        .trim()
+        .split(/[\s,;]+/)
+        .map((v) => parseFloat(v.replace(',', '.')))
+        .filter((v) => !isNaN(v));
+      const ys = pasteY
+        .trim()
+        .split(/[\s,;]+/)
+        .map((v) => parseFloat(v.replace(',', '.')))
+        .filter((v) => !isNaN(v));
+      const count = Math.min(xs.length, ys.length);
+      const matched: RegressionDataPoint[] = [];
+      for (let i = 0; i < count; i++) {
+        matched.push({ x: xs[i], y: ys[i] });
+      }
+      return {
+        matched,
+        countX: xs.length,
+        countY: ys.length,
+        isEqual: xs.length === ys.length && xs.length > 0,
+        isValid: xs.length === ys.length && xs.length >= 2,
+      };
+    } else {
+      const lines = pasteText.trim().split('\n');
+      const matched: RegressionDataPoint[] = [];
+      for (const line of lines) {
+        const parts = line.trim().split(/[\t,; ]+/).filter(Boolean);
+        if (parts.length >= 2) {
+          const x = parseFloat(parts[0].replace(',', '.'));
+          const y = parseFloat(parts[1].replace(',', '.'));
+          if (!isNaN(x) && !isNaN(y)) {
+            matched.push({ x, y });
+          }
+        }
+      }
+      return {
+        matched,
+        countX: matched.length,
+        countY: matched.length,
+        isEqual: matched.length >= 2,
+        isValid: matched.length >= 2,
+      };
+    }
+  }, [pasteMode, pasteX, pasteY, pasteText]);
+
   useEffect(() => {
     if (initialConfig) {
       setModelType(initialConfig.modelType);
       if (initialConfig.degree) setDegree(initialConfig.degree);
-      if (initialConfig.points) setPoints(initialConfig.points);
+      if (initialConfig.points && initialConfig.points.length > 0) {
+        setPoints(initialConfig.points);
+        setPasteX(initialConfig.points.map((pt) => pt.x).join(', '));
+        setPasteY(initialConfig.points.map((pt) => pt.y).join(', '));
+        setPasteText(initialConfig.points.map((pt) => `${pt.x}\t${pt.y}`).join('\n'));
+      }
     }
   }, [initialConfig]);
 
-  const handlePointChange = (index: number, field: 'x' | 'y', val: string) => {
-    const num = parseFloat(val);
-    const next = [...points];
-    next[index] = { ...next[index], [field]: isNaN(num) ? 0 : num };
-    setPoints(next);
-  };
-
-  const handleAddPoint = () => {
-    const lastX = points.length > 0 ? points[points.length - 1].x : 0;
-    setPoints([...points, { x: lastX + 1, y: 0 }]);
-  };
-
-  const handleRemovePoint = (index: number) => {
-    if (points.length <= 2) return;
-    setPoints(points.filter((_, i) => i !== index));
-  };
-
-  const handleParsePaste = () => {
-    if (!pasteText.trim()) return;
-    const lines = pasteText.trim().split('\n');
-    const parsed: RegressionDataPoint[] = [];
-
-    for (const line of lines) {
-      // Split by tab, comma, semicolon, or space
-      const parts = line.trim().split(/[\t,; ]+/).filter(Boolean);
-      if (parts.length >= 2) {
-        const x = parseFloat(parts[0].replace(',', '.'));
-        const y = parseFloat(parts[1].replace(',', '.'));
-        if (!isNaN(x) && !isNaN(y)) {
-          parsed.push({ x, y });
-        }
-      }
-    }
-
-    if (parsed.length >= 2) {
-      setPoints(parsed);
-      setShowPasteBox(false);
-      setPasteText('');
-      setError(null);
-    } else {
-      setError('Formato no reconocido. Pega al menos dos filas con columnas X e Y.');
-    }
+  const handleSelectPreset = (p: (typeof PRESETS)[0]) => {
+    setModelType(p.model);
+    setDegree(p.degree);
+    setPoints(p.points);
+    setPasteX(p.points.map((pt) => pt.x).join(', '));
+    setPasteY(p.points.map((pt) => pt.y).join(', '));
+    setPasteText(p.points.map((pt) => `${pt.x}\t${pt.y}`).join('\n'));
+    setError(null);
   };
 
   const handleCalculate = async () => {
     try {
       setLoading(true);
       setError(null);
+      const activePoints = previewPoints.isValid ? previewPoints.matched : points;
+      if (previewPoints.isValid) {
+        setPoints(previewPoints.matched);
+      }
+      if (activePoints.length < 2) {
+        throw new Error('Se requieren al menos 2 observaciones válidas para calcular la regresión.');
+      }
       const res = await fitRegression({
         model_type: modelType,
         degree: modelType === 'polynomial' ? degree : undefined,
-        points,
+        points: activePoints,
       });
       setResult(res);
     } catch (err: any) {
@@ -242,14 +281,6 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </h2>
             </div>
           </div>
-
-          <button
-            onClick={() => setShowPasteBox(!showPasteBox)}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all self-start sm:self-auto cursor-pointer"
-          >
-            <FileSpreadsheet size={16} />
-            <span>{showPasteBox ? 'Cerrar Pegar Tabla' : 'Pegar desde Excel / CSV'}</span>
-          </button>
         </div>
 
         {/* Quick Presets */}
@@ -259,11 +290,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
             {PRESETS.map((p) => (
               <button
                 key={p.id}
-                onClick={() => {
-                  setModelType(p.model);
-                  setDegree(p.degree);
-                  setPoints(p.points);
-                }}
+                onClick={() => handleSelectPreset(p)}
                 className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 transition-all cursor-pointer"
               >
                 {p.title}
@@ -272,62 +299,33 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
           </div>
         </div>
 
-        {/* Excel Paste Modal/Area */}
-        {showPasteBox && (
-          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700">
-                Pega tus datos directamente aquí (columnas X e Y separadas por tabulador o espacio):
-              </label>
-              <span className="text-[10px] text-slate-400">Ejemplo: 1 [TAB] 2.5</span>
-            </div>
-            <textarea
-              rows={4}
-              value={pasteText}
-              onChange={(e) => setPasteText(e.target.value)}
-              placeholder="1   0.5&#10;2   1.7&#10;3   3.4&#10;4   5.7&#10;5   8.4"
-              className="w-full p-3 text-xs font-mono bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900"
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setShowPasteBox(false)}
-                className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleParsePaste}
-                className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-all cursor-pointer"
-              >
-                Importar Puntos
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Model Selection Tabs */}
         <div className="space-y-3">
           <label className="text-xs font-bold text-slate-700 block">Tipo de Regresión / Modelo:</label>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             {[
-              { id: 'linear', label: 'Lineal', formula: 'y = a1 + a2·x' },
-              { id: 'polynomial', label: 'Polinómico', formula: 'y = a1 + a2·x + ...' },
-              { id: 'exponential', label: 'Exponencial', formula: 'y = a·e^(bx)' },
-              { id: 'power', label: 'Potencial', formula: 'y = a·x^b' },
-              { id: 'saturation', label: 'Cociente', formula: 'y = a·x/(b+x)' },
+              { id: 'linear', label: 'Lineal', latex: 'y = a_1 + a_2 x' },
+              { id: 'polynomial', label: 'Polinómico', latex: 'y = a_1 + a_2 x + \\dots' },
+              { id: 'exponential', label: 'Exponencial', latex: 'y = a \\cdot e^{b x}' },
+              { id: 'power', label: 'Potencial', latex: 'y = a \\cdot x^b' },
+              { id: 'saturation', label: 'Cociente', latex: 'y = \\frac{a \\cdot x}{b + x}' },
             ].map((m) => (
               <button
                 key={m.id}
                 onClick={() => setModelType(m.id as RegressionModelType)}
-                className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[74px] last:col-span-2 sm:last:col-span-1 ${
                   modelType === m.id
                     ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                     : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                 }`}
               >
-                <span className="text-xs font-bold">{m.label}</span>
-                <span className={`text-[10px] font-mono mt-1 ${modelType === m.id ? 'text-slate-300' : 'text-slate-400'}`}>
-                  {m.formula}
+                <span className="text-xs font-bold leading-tight">{m.label}</span>
+                <span
+                  className={`text-xs mt-1.5 overflow-x-auto no-scrollbar ${
+                    modelType === m.id ? 'text-slate-200' : 'text-slate-600'
+                  }`}
+                >
+                  <InlineMath math={m.latex} />
                 </span>
               </button>
             ))}
@@ -355,72 +353,181 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
           )}
         </div>
 
-        {/* Data Table */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-slate-700">
-              Tabla de Observaciones ({points.length} puntos):
-            </label>
-            <button
-              onClick={handleAddPoint}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all cursor-pointer"
-            >
-              <Plus size={14} />
-              <span>Agregar Punto</span>
-            </button>
+        {/* Panel Principal de Entrada de Observaciones (Carga Rápida con Previsualización) */}
+        <div className="p-4 sm:p-6 bg-slate-50/80 rounded-3xl border border-slate-200 space-y-4 shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <FileSpreadsheet size={18} className="text-slate-700" />
+                <h3 className="text-sm font-black text-slate-900">
+                  Entrada de Observaciones (X e Y)
+                </h3>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium pt-0.5">
+                Ingresa o pega directamente los valores numéricos sin filas tediosas.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 text-xs self-start sm:self-auto shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setPasteMode('separate')}
+                className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                  pasteMode === 'separate'
+                    ? 'bg-slate-900 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                X e Y separados
+              </button>
+              <button
+                type="button"
+                onClick={() => setPasteMode('table')}
+                className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                  pasteMode === 'table'
+                    ? 'bg-slate-900 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Columnas (X Y)
+              </button>
+            </div>
           </div>
 
-          <div className="max-h-60 overflow-y-auto border border-slate-200 rounded-2xl p-2 bg-slate-50/50">
-            <div className="grid grid-cols-12 gap-2 px-3 py-1.5 text-[10px] font-black uppercase text-slate-400">
-              <span className="col-span-1">#</span>
-              <span className="col-span-5">Variable X</span>
-              <span className="col-span-5">Variable Y</span>
-              <span className="col-span-1 text-center">Acción</span>
+          {pasteMode === 'separate' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                    <span>Valores de X</span>
+                    <span className="text-[10px] font-mono text-slate-400 font-normal">
+                      (separados por coma o espacio)
+                    </span>
+                  </label>
+                  <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-md">
+                    {previewPoints.countX} números
+                  </span>
+                </div>
+                <textarea
+                  rows={3}
+                  value={pasteX}
+                  onChange={(e) => setPasteX(e.target.value)}
+                  placeholder="1, 2, 3, 4, 5"
+                  className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs leading-relaxed"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                    <span>Valores de Y</span>
+                    <span className="text-[10px] font-mono text-slate-400 font-normal">
+                      (separados por coma o espacio)
+                    </span>
+                  </label>
+                  <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-md">
+                    {previewPoints.countY} números
+                  </span>
+                </div>
+                <textarea
+                  rows={3}
+                  value={pasteY}
+                  onChange={(e) => setPasteY(e.target.value)}
+                  placeholder="0.5, 1.7, 3.4, 5.7, 8.4"
+                  className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs leading-relaxed"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700">
+                  Pega columnas X e Y directamente (Excel, Sheets, CSV o TSV):
+                </label>
+                <span className="text-[10px] text-slate-400">Ejemplo: 1 [TAB] 0.5</span>
+              </div>
+              <textarea
+                rows={4}
+                value={pasteText}
+                onChange={(e) => setPasteText(e.target.value)}
+                placeholder="1   0.5&#10;2   1.7&#10;3   3.4&#10;4   5.7&#10;5   8.4"
+                className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs"
+              />
+            </div>
+          )}
+
+          {/* PREVISUALIZACIÓN EN TIEMPO REAL */}
+          <div className="p-3.5 bg-white rounded-2xl border border-slate-200 space-y-2.5 shadow-2xs">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                <Eye size={14} className="text-slate-500" />
+                <span>Previsualización en tiempo real:</span>
+              </div>
+
+              {previewPoints.isValid ? (
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                  <CheckCircle2 size={13} />
+                  {previewPoints.matched.length} pares (X, Y) sincronizados
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                  <AlertTriangle size={13} />
+                  {pasteMode === 'separate' && previewPoints.countX !== previewPoints.countY
+                    ? `Disparidad: X (${previewPoints.countX}) ≠ Y (${previewPoints.countY}). Deben coincidir en cantidad.`
+                    : 'Ingresa al menos 2 pares válidos'}
+                </span>
+              )}
             </div>
 
-            <div className="space-y-1.5">
-              {points.map((p, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white p-2 rounded-xl border border-slate-200/70">
-                  <span className="col-span-1 text-xs font-bold text-slate-400">{idx + 1}</span>
-                  <div className="col-span-5">
-                    <input
-                      type="number"
-                      step="any"
-                      value={p.x}
-                      onChange={(e) => handlePointChange(idx, 'x', e.target.value)}
-                      className="w-full px-2.5 py-1 text-xs font-mono font-bold bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900"
-                    />
-                  </div>
-                  <div className="col-span-5">
-                    <input
-                      type="number"
-                      step="any"
-                      value={p.y}
-                      onChange={(e) => handlePointChange(idx, 'y', e.target.value)}
-                      className="w-full px-2.5 py-1 text-xs font-mono font-bold bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900"
-                    />
-                  </div>
-                  <div className="col-span-1 flex justify-center">
-                    <button
-                      onClick={() => handleRemovePoint(idx)}
-                      disabled={points.length <= 2}
-                      className="text-slate-400 hover:text-rose-600 disabled:opacity-30 transition-colors cursor-pointer p-1"
-                      title="Eliminar punto"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+            {previewPoints.matched.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-slate-50 rounded-xl border border-slate-100 scrollbar-thin">
+                {previewPoints.matched.map((pt, pIdx) => (
+                  <span
+                    key={pIdx}
+                    className="px-2 py-0.5 bg-white border border-slate-200 rounded-md text-[11px] font-mono text-slate-800 shadow-2xs"
+                  >
+                    ({pt.x}, {pt.y})
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Visualización tabular compacta opcional */}
+            {previewPoints.matched.length > 0 && (
+              <details className="text-xs text-slate-500 pt-1 group">
+                <summary className="cursor-pointer font-bold text-slate-700 hover:text-slate-900 select-none flex items-center gap-1.5 w-fit">
+                  <span>Ver tabla de pares ordenados ({previewPoints.matched.length} filas)</span>
+                </summary>
+                <div className="mt-2 max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/50 scrollbar-thin">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-slate-100 border-b border-slate-200 font-mono text-slate-700">
+                        <th className="px-3 py-1.5 font-bold w-12">#</th>
+                        <th className="px-3 py-1.5 font-bold">X</th>
+                        <th className="px-3 py-1.5 font-bold">Y</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 font-mono">
+                      {previewPoints.matched.map((pt, idx) => (
+                        <tr key={idx} className="hover:bg-slate-100/50">
+                          <td className="px-3 py-1 text-slate-400">{idx + 1}</td>
+                          <td className="px-3 py-1 text-slate-900 font-bold">{pt.x}</td>
+                          <td className="px-3 py-1 text-slate-900 font-bold">{pt.y}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              ))}
-            </div>
+              </details>
+            )}
           </div>
         </div>
 
         {/* Action Button */}
         <button
           onClick={handleCalculate}
-          disabled={loading}
-          className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer disabled:opacity-50"
+          disabled={loading || !previewPoints.isValid}
+          className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
