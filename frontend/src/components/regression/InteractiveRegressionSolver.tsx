@@ -312,21 +312,22 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
             ].map((m) => (
               <button
                 key={m.id}
+                type="button"
                 onClick={() => setModelType(m.id as RegressionModelType)}
-                className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[74px] last:col-span-2 sm:last:col-span-1 ${
+                className={`p-3 sm:p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[76px] last:col-span-2 sm:last:col-span-1 ${
                   modelType === m.id
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-sm ring-2 ring-slate-900/10'
                     : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                 }`}
               >
-                <span className="text-xs font-bold leading-tight">{m.label}</span>
-                <span
-                  className={`text-xs mt-1.5 overflow-x-auto no-scrollbar ${
-                    modelType === m.id ? 'text-slate-200' : 'text-slate-600'
+                <span className="text-xs font-black tracking-tight">{m.label}</span>
+                <div
+                  className={`mt-1.5 flex items-center overflow-hidden pointer-events-none text-xs ${
+                    modelType === m.id ? 'text-slate-100' : 'text-slate-600'
                   }`}
                 >
                   <InlineMath math={m.latex} />
-                </span>
+                </div>
               </button>
             ))}
           </div>
