@@ -104,6 +104,22 @@ const PRESETS = [
       { x: 32, y: 43.6 },
     ],
   },
+  {
+    id: 'tp4_ex6',
+    title: 'TP4 · Ej. 6: Producción Petrolera',
+    model: 'polynomial' as RegressionModelType,
+    degree: 3,
+    points: [
+      { x: 1880, y: 30 },
+      { x: 1900, y: 149 },
+      { x: 1920, y: 689 },
+      { x: 1940, y: 2150 },
+      { x: 1960, y: 7674 },
+      { x: 1970, y: 16669 },
+      { x: 1980, y: 21732 },
+      { x: 1990, y: 17153 },
+    ],
+  },
 ];
 
 export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverProps> = ({ initialConfig }) => {
@@ -245,18 +261,25 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
     const mapByX: Record<number, { x: number; actual?: number; predicted?: number }> = {};
 
     result.points_x.forEach((px, idx) => {
-      mapByX[px] = {
-        x: px,
-        actual: result.points_y[idx],
-      };
+      if (Number.isFinite(px)) {
+        const py = result.points_y[idx];
+        mapByX[px] = {
+          x: px,
+          actual: Number.isFinite(py) ? py : undefined,
+        };
+      }
     });
 
     result.curve_x.forEach((cx, idx) => {
-      const rounded = Math.round(cx * 100) / 100;
-      if (!mapByX[rounded]) {
-        mapByX[rounded] = { x: rounded, predicted: result.curve_y[idx] };
-      } else {
-        mapByX[rounded].predicted = result.curve_y[idx];
+      if (Number.isFinite(cx)) {
+        const rounded = Math.round(cx * 100) / 100;
+        const cy = result.curve_y[idx];
+        const predVal = Number.isFinite(cy) ? cy : undefined;
+        if (!mapByX[rounded]) {
+          mapByX[rounded] = { x: rounded, predicted: predVal };
+        } else {
+          mapByX[rounded].predicted = predVal;
+        }
       }
     });
 
@@ -562,7 +585,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                 <span className="text-xs text-slate-400 font-bold">r²</span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
-                {result.metrics.r2 >= 0.85 ? '✅ Ajuste Válido (> 0.85)' : '⚠️ Ajuste Débil'}
+                {result.metrics.r2 != null && result.metrics.r2 >= 0.85 ? '✅ Ajuste Válido (> 0.85)' : '⚠️ Ajuste Débil'}
               </span>
             </div>
 
@@ -572,7 +595,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
-                  {result.metrics.r.toFixed(5)}
+                  {result.metrics.r != null ? result.metrics.r.toFixed(5) : '-'}
                 </span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
@@ -586,7 +609,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
-                  {result.metrics.sr.toFixed(4)}
+                  {result.metrics.sr != null ? result.metrics.sr.toFixed(4) : '-'}
                 </span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
@@ -600,7 +623,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
-                  {result.metrics.syx.toFixed(4)}
+                  {result.metrics.syx != null ? result.metrics.syx.toFixed(4) : '-'}
                 </span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
@@ -652,7 +675,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                       fontSize: '12px',
                     }}
                     formatter={(val: any, name: any) => [
-                      `${Number(val).toFixed(3)}`,
+                      val != null && !isNaN(Number(val)) ? `${Number(val).toFixed(3)}` : '-',
                       name === 'actual' ? 'Dato Experimental' : 'Ajuste',
                     ]}
                   />
@@ -689,7 +712,10 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                       border: '1px solid #e2e8f0',
                       fontSize: '12px',
                     }}
-                    formatter={(val: any) => [`${Number(val).toFixed(4)}`, 'Residuo']}
+                    formatter={(val: any) => [
+                      val != null && !isNaN(Number(val)) ? `${Number(val).toFixed(4)}` : '-',
+                      'Residuo',
+                    ]}
                   />
                   <ReferenceLine y={0} stroke="#dc2626" strokeWidth={1.5} />
                   <Line

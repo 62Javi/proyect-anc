@@ -19,6 +19,20 @@ from src.models.regression import (
 CASE1_DATA_PATH = Path(__file__).parent / "case1_data.json"
 
 
+def format_exp_coeff_latex(ln_a: float, precision: int = 4) -> str:
+    """Format coefficient a = exp(ln_a) safely in LaTeX scientific notation if exponent is outside [-3, 4]."""
+    try:
+        log10_a = ln_a / math.log(10)
+        exp = int(math.floor(log10_a))
+        mantissa = math.exp((log10_a - exp) * math.log(10))
+        if -3 <= exp <= 4:
+            a = math.exp(ln_a)
+            return f"{a:.{precision}f}"
+        return f"{mantissa:.{precision}f} \\times 10^{{{exp}}}"
+    except Exception:
+        return "0.0000"
+
+
 class LeastSquaresCalculator:
     def __init__(self):
         self._case1_cache: Optional[Dict[str, List[Dict[str, Any]]]] = None
@@ -273,7 +287,10 @@ class LeastSquaresCalculator:
 
         ln_a = (vector_b[0] * matrix_a[1][1] - vector_b[1] * matrix_a[0][1]) / det
         b = (matrix_a[0][0] * vector_b[1] - matrix_a[1][0] * vector_b[0]) / det
-        a = math.exp(ln_a)
+        try:
+            a = math.exp(ln_a) if abs(ln_a) <= 709 else (float("inf") if ln_a > 709 else 0.0)
+        except OverflowError:
+            a = float("inf")
 
         # Bondad en espacio linealizado según apunte del Ing. Amiconi (pág 8)
         mean_lny = float(np.mean(ln_y))
@@ -282,8 +299,9 @@ class LeastSquaresCalculator:
         sr_ln = float(np.sum((ln_y - pred_lny) ** 2))
         r2 = max(0.0, (st_ln - sr_ln) / st_ln) if st_ln > 1e-12 else 1.0
 
-        # Predicción original
-        y_pred = a * np.exp(b * x)
+        # Predicción original en espacio logarítmico para estabilidad numérica absoluta
+        log_pred = ln_a + b * x
+        y_pred = np.exp(np.clip(log_pred, -700, 700))
         residuals = y - y_pred
         st_orig = float(np.sum((y - np.mean(y)) ** 2))
         sr_orig = float(np.sum(residuals**2))
@@ -295,21 +313,27 @@ class LeastSquaresCalculator:
             rf"\begin{{bmatrix}} \ln(a) \\ b \end{{bmatrix}} = "
             rf"\begin{{bmatrix}} {sum_lny:.2f} \\ {sum_x_lny:.2f} \end{{bmatrix}}"
         )
-        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a:.4f}, \quad b = {b:.5f}"
+        a_latex = format_exp_coeff_latex(ln_a, precision=4)
+        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a_latex}, \quad b = {b:.5f}"
 
         transformed_latex = rf"\ln(y) = \ln(a) + bx \iff \ln(y) = {ln_a:.4f} {('+' if b >= 0 else '-')} {abs(b):.5f}x"
-        formula_latex = rf"y = {a:.4f} \cdot e^{{{b:.5f}x}}"
+        if "\\times" in a_latex:
+            formula_latex = rf"y = ({a_latex}) \cdot e^{{{b:.5f}x}}"
+        else:
+            formula_latex = rf"y = {a_latex} \cdot e^{{{b:.5f}x}}"
 
         x_min, x_max = float(np.min(x)), float(np.max(x))
         x_span = max(x_max - x_min, 1.0)
         cx = np.linspace(x_min - 0.05 * x_span, x_max + 0.05 * x_span, 100)
-        cy = a * np.exp(b * cx)
+        cy = np.exp(np.clip(ln_a + b * cx, -700, 700))
+
+        a_param = round(float(a), 6) if (0.0001 <= abs(a) <= 1e6) else (float(f"{a:.6e}") if a != 0 else 0.0)
 
         return FitResponse(
             model_type="exponential",
             formula_latex=formula_latex,
             transformed_latex=transformed_latex,
-            parameters={"a": round(a, 6), "b": round(b, 6), "ln_a": round(ln_a, 6)},
+            parameters={"a": a_param, "b": round(b, 6), "ln_a": round(ln_a, 6)},
             metrics=RegressionMetrics(
                 st=st_ln, sr=sr_ln, r2=r2, r=math.sqrt(r2), syx=syx
             ),
@@ -367,7 +391,10 @@ class LeastSquaresCalculator:
 
         ln_a = (vector_b[0] * matrix_a[1][1] - vector_b[1] * matrix_a[0][1]) / det
         b = (matrix_a[0][0] * vector_b[1] - matrix_a[1][0] * vector_b[0]) / det
-        a = math.exp(ln_a)
+        try:
+            a = math.exp(ln_a) if abs(ln_a) <= 709 else (float("inf") if ln_a > 709 else 0.0)
+        except OverflowError:
+            a = float("inf")
 
         mean_lny = float(np.mean(ln_y))
         pred_lny = ln_a + b * ln_x
@@ -375,7 +402,9 @@ class LeastSquaresCalculator:
         sr_ln = float(np.sum((ln_y - pred_lny) ** 2))
         r2 = max(0.0, (st_ln - sr_ln) / st_ln) if st_ln > 1e-12 else 1.0
 
-        y_pred = a * (x**b)
+        # Predicción original calculada en espacio logarítmico para evitar overflow numérico
+        log_pred = ln_a + b * ln_x
+        y_pred = np.exp(np.clip(log_pred, -700, 700))
         residuals = y - y_pred
         sr_orig = float(np.sum(residuals**2))
         syx = math.sqrt(sr_orig / (n - 2)) if n > 2 else 0.0
@@ -386,19 +415,25 @@ class LeastSquaresCalculator:
             rf"\begin{{bmatrix}} \ln(a) \\ b \end{{bmatrix}} = "
             rf"\begin{{bmatrix}} {sum_lny:.2f} \\ {sum_lnx_lny:.2f} \end{{bmatrix}}"
         )
-        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a:.4f}, \quad b = {b:.5f}"
+        a_latex = format_exp_coeff_latex(ln_a, precision=4)
+        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a_latex}, \quad b = {b:.5f}"
         transformed_latex = rf"\ln(y) = \ln(a) + b\ln(x) \iff \ln(y) = {ln_a:.4f} {('+' if b >= 0 else '-')} {abs(b):.5f}\ln(x)"
-        formula_latex = rf"y = {a:.4f} \cdot x^{{{b:.5f}}}"
+        if "\\times" in a_latex:
+            formula_latex = rf"y = ({a_latex}) \cdot x^{{{b:.5f}}}"
+        else:
+            formula_latex = rf"y = {a_latex} \cdot x^{{{b:.5f}}}"
 
         x_min, x_max = float(np.min(x)), float(np.max(x))
         cx = np.linspace(max(x_min * 0.8, 1e-4), x_max * 1.05, 100)
-        cy = a * (cx**b)
+        cy = np.exp(np.clip(ln_a + b * np.log(cx), -700, 700))
+
+        a_param = round(float(a), 6) if (0.0001 <= abs(a) <= 1e6) else (float(f"{a:.6e}") if a != 0 else 0.0)
 
         return FitResponse(
             model_type="power",
             formula_latex=formula_latex,
             transformed_latex=transformed_latex,
-            parameters={"a": round(a, 6), "b": round(b, 6), "ln_a": round(ln_a, 6)},
+            parameters={"a": a_param, "b": round(b, 6), "ln_a": round(ln_a, 6)},
             metrics=RegressionMetrics(
                 st=st_ln, sr=sr_ln, r2=r2, r=math.sqrt(r2), syx=syx
             ),
@@ -470,7 +505,9 @@ class LeastSquaresCalculator:
         sr_inv = float(np.sum((inv_y - pred_invy) ** 2))
         r2 = max(0.0, (st_inv - sr_inv) / st_inv) if st_inv > 1e-12 else 1.0
 
-        y_pred = (a * x) / (b + x)
+        denom = b + x
+        denom = np.where(np.abs(denom) < 1e-10, 1e-10 * np.where(denom >= 0, 1.0, -1.0), denom)
+        y_pred = (a * x) / denom
         residuals = y - y_pred
         sr_orig = float(np.sum(residuals**2))
         syx = math.sqrt(sr_orig / (n - 2)) if n > 2 else 0.0
@@ -487,7 +524,11 @@ class LeastSquaresCalculator:
 
         x_min, x_max = float(np.min(x)), float(np.max(x))
         cx = np.linspace(max(x_min * 0.8, 1e-3), x_max * 1.05, 100)
-        cy = (a * cx) / (b + cx)
+        c_denom = b + cx
+        c_denom = np.where(np.abs(c_denom) < 1e-10, 1e-10 * np.where(c_denom >= 0, 1.0, -1.0), c_denom)
+        cy = (a * cx) / c_denom
+        y_bound = max(float(np.max(np.abs(y))) * 10.0, 1000.0)
+        cy = np.clip(cy, -y_bound, y_bound)
 
         return FitResponse(
             model_type="saturation",
