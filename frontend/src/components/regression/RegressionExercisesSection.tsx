@@ -298,7 +298,7 @@ const EXERCISES: SolvedExerciseItem[] = [
           'Si calculamos la Bondad del Ajuste para cada uno de los 4 casos anteriores ¿Cuál le parece que es la curva que mejor se ajusta a la tabla de valores dada? Explicar Por qué.',
         badge: 'Dictamen de Cátedra',
         description:
-          'Evaluación rigurosa de los 4 modelos analizados según coeficiente de determinación $r^2$, suma de residuos cuadráticos $S_r$ y principio de parsimonia.',
+          'La curva que mejor se ajusta a la tabla es la POTENCIAL ($y = 0.5009 \\cdot x^{1.7517}$): registra la menor suma de residuos al cuadrado ($S_r = 0.0016$), el mayor $r^2$ ($0.99997$) y respeta el principio de parsimonia (Navaja de Ockham) al requerir sólo 2 parámetros frente a los 3 del polinomio cuadrático.',
         tableData: {
           headers: ['Modelo', 'Ecuación Matemática', '$S_r$ (Residuos²)', '$r^2$ (Bondad)', 'Veredicto'],
           rows: [
@@ -308,8 +308,6 @@ const EXERCISES: SolvedExerciseItem[] = [
             ['Polinómico (2°)', '$y = -0.2000 + 0.4371x + 0.2571x^2$', '0.0023', '0.99994', 'Excelente (requiere 3 parámetros)'],
           ],
         },
-        conclusion:
-          '¿Cuál es la curva que mejor se ajusta? La curva que mejor se ajusta a la tabla de valores es la POTENCIAL ($y = 0.5009 \\cdot x^{1.7517}$). Razones: 1) Registra la menor suma de residuos al cuadrado ($S_r = 0.0016$) y el mayor $r^2$ ($0.99997$). 2) Respeta el principio de parsimonia (Navaja de Ockham): logra mayor precisión que el polinomio cuadrático pero con sólo 2 parámetros en lugar de 3. 3) El lineal es insuficiente por subestimar la curvatura, y el exponencial diverge rápidamente.',
       },
 
       // Inciso f: Cociente / Saturación

@@ -314,14 +314,6 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                     </div>
                   </div>
                 )}
-
-                {/* Nota conceptual de escala */}
-                {step.dispersionBreakdown.scaleNote && (
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans pt-0.5">
-                    <span className="font-semibold text-slate-800">Nota: </span>
-                    <MathText text={step.dispersionBreakdown.scaleNote} />
-                  </p>
-                )}
               </div>
             )}
 
@@ -368,14 +360,6 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                     </span>
                   </div>
                 )}
-              </div>
-            )}
-
-            {/* Conclusión del inciso */}
-            {step.conclusion && (
-              <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl text-xs text-slate-700 leading-relaxed font-sans">
-                <span className="font-bold text-slate-900 mr-1.5">Conclusión:</span>
-                <MathText text={step.conclusion} />
               </div>
             )}
           </div>
