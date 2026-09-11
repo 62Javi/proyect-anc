@@ -793,7 +793,9 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                     <span className="text-2xl font-black font-mono text-emerald-600">
                       {currentFit.metrics.r2.toFixed(5)}
                     </span>
-                    <span className="text-xs text-slate-400 font-bold">r²</span>
+                    <span className="text-xs text-slate-400 font-bold">
+                      <InlineMath math="r^2" />
+                    </span>
                   </div>
                   <span className="text-[10px] font-medium text-slate-500 block">
                     {currentFit.metrics.r2 >= 0.85 ? '✅ Ajuste Muy Alto (> 0.85)' : '⚠️ Ajuste Insuficiente'}
@@ -801,8 +803,8 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                 </div>
 
                 <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Suma Residuos (SR)
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                    <span>Suma Residuos</span> (<InlineMath math="S_r" />)
                   </span>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-black font-mono text-slate-900">
@@ -815,8 +817,8 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                 </div>
 
                 <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Desviación Estándar (Sy/x)
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                    <span>Desviación Estándar</span> (<InlineMath math="S_{y/x}" />)
                   </span>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-black font-mono text-slate-900">

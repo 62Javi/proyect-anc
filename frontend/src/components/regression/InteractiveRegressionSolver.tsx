@@ -582,7 +582,9 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                 <span className="text-2xl font-black font-mono text-emerald-600">
                   {result?.metrics?.r2 != null ? result.metrics.r2.toFixed(5) : 'N/A'}
                 </span>
-                <span className="text-xs text-slate-400 font-bold">r²</span>
+                <span className="text-xs text-slate-400 font-bold">
+                  <InlineMath math="r^2" />
+                </span>
               </div>
               <span className="text-[10px] font-medium text-slate-500 block">
                 {result?.metrics?.r2 != null && result.metrics.r2 >= 0.85
@@ -592,8 +594,8 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
             </div>
 
             <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Correlación (r)
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                <span>Correlación</span> (<InlineMath math="r" />)
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
@@ -606,8 +608,8 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
             </div>
 
             <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Suma Residuos (SR)
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                <span>Suma Residuos</span> (<InlineMath math="S_r" />)
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">
@@ -620,8 +622,8 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
             </div>
 
             <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Error Estándar (Sy/x)
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                <span>Error Estándar</span> (<InlineMath math="S_{y/x}" />)
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black font-mono text-slate-900">

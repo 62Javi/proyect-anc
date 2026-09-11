@@ -3,6 +3,8 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import { ChevronDown, CheckCircle2, Play } from 'lucide-react';
 import type { RegressionModelType } from '../../types/regression';
+import InlineMath from '../InlineMath';
+import MathText from '../MathText';
 
 interface MathBlockProps {
   math: string;
@@ -33,6 +35,19 @@ export const MathBlock: React.FC<MathBlockProps> = ({ math, className = '' }) =>
   );
 };
 
+export interface DispersionBreakdown {
+  meanLatex?: string;
+  stLatex?: string;
+  residualTable?: {
+    headers: string[];
+    rows: (string | number)[][];
+  };
+  srLatex?: string;
+  r2Latex?: string;
+  rLatex?: string;
+  scaleNote?: string;
+}
+
 export interface RegressionExerciseStep {
   letter: string;
   title: string;
@@ -49,6 +64,7 @@ export interface RegressionExerciseStep {
   systemLatex?: string;
   solutionLatex?: string;
   formulaLatex?: string;
+  dispersionBreakdown?: DispersionBreakdown;
   metrics?: {
     r2?: number;
     sr?: number;
@@ -119,14 +135,14 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                   {step.letter}
                 </span>
                 <h4 className="font-bold text-slate-900 text-xs sm:text-sm leading-snug">
-                  {step.title}
+                  <MathText text={step.title} />
                 </h4>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
                 {step.badge && (
                   <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-full">
-                    {step.badge}
+                    <MathText text={step.badge} />
                   </span>
                 )}
                 {onLoadModel && step.modelType && (
@@ -146,7 +162,7 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
             {/* Descripción técnica / Planteo del inciso */}
             {step.description && (
               <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                {step.description}
+                <MathText text={step.description} />
               </p>
             )}
 
@@ -162,7 +178,7 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                       <tr className="bg-slate-100 border-b border-slate-200 text-slate-700">
                         {step.tableData.headers.map((h, hIdx) => (
                           <th key={hIdx} className="px-3 py-2 font-bold font-mono">
-                            {h}
+                            <MathText text={h} />
                           </th>
                         ))}
                       </tr>
@@ -172,7 +188,7 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                         <tr key={rIdx} className="hover:bg-slate-100/50">
                           {row.map((cell, cIdx) => (
                             <td key={cIdx} className="px-3 py-1.5 font-mono text-slate-800">
-                              {cell}
+                              <MathText text={String(cell)} />
                             </td>
                           ))}
                         </tr>
@@ -231,13 +247,91 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
               </div>
             )}
 
+            {/* 4. Cálculo de dispersión, residuos y bondad de ajuste */}
+            {step.dispersionBreakdown && (
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block">
+                  4. Cálculo de dispersión (<InlineMath math="S_t" />), residuos (<InlineMath math="S_r" />) y bondad de ajuste (<InlineMath math="r^2" />):
+                </span>
+
+                {/* Cuadrado: Promedio muestral */}
+                {step.dispersionBreakdown.meanLatex && (
+                  <div className="p-2.5 sm:p-3 bg-slate-50 rounded-xl border border-slate-200 overflow-x-auto touch-pan-x scrollbar-thin">
+                    <MathBlock math={step.dispersionBreakdown.meanLatex} className="text-xs sm:text-sm" />
+                  </div>
+                )}
+
+                {/* Cuadrado: Dispersión total ST */}
+                {step.dispersionBreakdown.stLatex && (
+                  <div className="p-2.5 sm:p-3 bg-slate-50 rounded-xl border border-slate-200 overflow-x-auto touch-pan-x scrollbar-thin">
+                    <MathBlock math={step.dispersionBreakdown.stLatex} className="text-xs sm:text-sm" />
+                  </div>
+                )}
+
+                {/* Cuadrado: Residuos cuadráticos SR */}
+                {step.dispersionBreakdown.srLatex && (
+                  <div className="p-2.5 sm:p-3 bg-slate-50 rounded-xl border border-slate-200 overflow-x-auto touch-pan-x scrollbar-thin">
+                    <MathBlock math={step.dispersionBreakdown.srLatex} className="text-xs sm:text-sm" />
+                  </div>
+                )}
+
+                {/* Cuadrado: Coeficientes r² y r */}
+                {step.dispersionBreakdown.r2Latex && (
+                  <div className="p-2.5 sm:p-3 bg-slate-50 rounded-xl border border-slate-200 overflow-x-auto touch-pan-x scrollbar-thin">
+                    <MathBlock math={step.dispersionBreakdown.r2Latex} className="text-xs sm:text-sm font-semibold" />
+                  </div>
+                )}
+
+                {/* Cuadrado independiente: Tabla de residuos punto a punto */}
+                {step.dispersionBreakdown.residualTable && (
+                  <div className="pt-1 space-y-1">
+                    <span className="text-[10.5px] font-bold text-slate-600 block font-mono">
+                      Tabla de residuos punto a punto (<InlineMath math="e_i = y_i - \hat{y}_i" />):
+                    </span>
+                    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+                      <table className="w-full text-left text-xs border-collapse font-mono">
+                        <thead>
+                          <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-700">
+                            {step.dispersionBreakdown.residualTable.headers.map((h, hIdx) => (
+                              <th key={hIdx} className="px-2.5 py-1.5 font-bold">
+                                <MathText text={h} />
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-slate-800">
+                          {step.dispersionBreakdown.residualTable.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-slate-50">
+                              {row.map((cell, cIdx) => (
+                                <td key={cIdx} className="px-2.5 py-1">
+                                  <MathText text={String(cell)} />
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Nota conceptual de escala */}
+                {step.dispersionBreakdown.scaleNote && (
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans pt-0.5">
+                    <span className="font-semibold text-slate-800">Nota: </span>
+                    <MathText text={step.dispersionBreakdown.scaleNote} />
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Métricas del ajuste */}
             {step.metrics && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-xs">
                 {step.metrics.r2 !== undefined && (
                   <div className="p-2 bg-slate-50 border border-slate-200 rounded-lg">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">
-                      Coeficiente r²
+                    <span className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
+                      <span>Coeficiente</span> <InlineMath math="r^2" />
                     </span>
                     <span className="font-mono font-black text-slate-900">
                       {step.metrics.r2.toFixed(4)}
@@ -246,8 +340,8 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                 )}
                 {step.metrics.sr !== undefined && (
                   <div className="p-2 bg-slate-50 border border-slate-200 rounded-lg">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">
-                      S_r (Residuos)
+                    <span className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
+                      <InlineMath math="S_r" /> <span>(Residuos)</span>
                     </span>
                     <span className="font-mono font-bold text-slate-900">
                       {step.metrics.sr.toFixed(4)}
@@ -256,8 +350,8 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                 )}
                 {step.metrics.st !== undefined && (
                   <div className="p-2 bg-slate-50 border border-slate-200 rounded-lg">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">
-                      S_t (Dispersión)
+                    <span className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
+                      <InlineMath math="S_t" /> <span>(Dispersión)</span>
                     </span>
                     <span className="font-mono font-bold text-slate-900">
                       {step.metrics.st.toFixed(4)}
@@ -266,8 +360,8 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                 )}
                 {step.metrics.r !== undefined && (
                   <div className="p-2 bg-slate-50 border border-slate-200 rounded-lg">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">
-                      Correlación r
+                    <span className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
+                      <span>Correlación</span> <InlineMath math="r" />
                     </span>
                     <span className="font-mono font-bold text-slate-900">
                       {step.metrics.r.toFixed(4)}
@@ -281,7 +375,7 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
             {step.conclusion && (
               <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl text-xs text-slate-700 leading-relaxed font-sans">
                 <span className="font-bold text-slate-900 mr-1.5">Conclusión:</span>
-                {step.conclusion}
+                <MathText text={step.conclusion} />
               </div>
             )}
           </div>
@@ -295,7 +389,7 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
               <span className="font-black text-emerald-950 block">
                 Dictamen Final del Ejercicio:
               </span>
-              <p className="leading-relaxed">{bestModelNotice}</p>
+              <p className="leading-relaxed"><MathText text={bestModelNotice} /></p>
             </div>
           </div>
         )}
