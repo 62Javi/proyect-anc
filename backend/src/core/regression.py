@@ -33,6 +33,16 @@ def format_exp_coeff_latex(ln_a: float, precision: int = 4) -> str:
         return "0.0000"
 
 
+def format_num_clean(val: float, decimals: int = 4) -> str:
+    """Format numbers without redundant trailing zeros: 15.00 -> '15', 19.70 -> '19.7', -2.000 -> '-2'."""
+    if abs(val) < 1e-12:
+        return "0"
+    if abs(val - round(val)) < 1e-9:
+        return str(int(round(val)))
+    s = f"{val:.{decimals}f}".rstrip("0").rstrip(".")
+    return s
+
+
 class LeastSquaresCalculator:
     def __init__(self):
         self._case1_cache: Optional[Dict[str, List[Dict[str, Any]]]] = None
@@ -111,11 +121,11 @@ class LeastSquaresCalculator:
 
         sym_latex = r"\begin{bmatrix} n & \sum x_i \\ \sum x_i & \sum x_i^2 \end{bmatrix} \begin{bmatrix} a_1 \\ a_2 \end{bmatrix} = \begin{bmatrix} \sum y_i \\ \sum x_i y_i \end{bmatrix}"
         num_latex = (
-            rf"\begin{{bmatrix}} {n} & {sum_x:.2f} \\ {sum_x:.2f} & {sum_x2:.2f} \end{{bmatrix}} "
+            rf"\begin{{bmatrix}} {n} & {format_num_clean(sum_x, 2)} \\ {format_num_clean(sum_x, 2)} & {format_num_clean(sum_x2, 2)} \end{{bmatrix}} "
             rf"\begin{{bmatrix}} a_1 \\ a_2 \end{{bmatrix}} = "
-            rf"\begin{{bmatrix}} {sum_y:.2f} \\ {sum_xy:.2f} \end{{bmatrix}}"
+            rf"\begin{{bmatrix}} {format_num_clean(sum_y, 2)} \\ {format_num_clean(sum_xy, 2)} \end{{bmatrix}}"
         )
-        sol_latex = rf"a_1 = {a1:.4f}, \quad a_2 = {a2:.4f}"
+        sol_latex = rf"a_1 = {format_num_clean(a1, 4)}, \quad a_2 = {format_num_clean(a2, 4)}"
         matrix_latex = f"{sym_latex} \\implies {num_latex}"
 
         # Generate smooth curve
@@ -125,7 +135,7 @@ class LeastSquaresCalculator:
         cy = a1 + a2 * cx
 
         sign_str = "+" if a2 >= 0 else "-"
-        formula_latex = rf"y = {a1:.4f} {sign_str} {abs(a2):.4f}x"
+        formula_latex = rf"y = {format_num_clean(a1, 4)} {sign_str} {format_num_clean(abs(a2), 4)}x"
 
         return FitResponse(
             model_type="linear",

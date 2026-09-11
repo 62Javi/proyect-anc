@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  ComposedChart,
   LineChart,
   Line,
   XAxis,
@@ -10,6 +9,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   Scatter,
+  ScatterChart,
 } from 'recharts';
 import {
   Calculator,
@@ -19,128 +19,18 @@ import {
   CheckCircle2,
   AlertTriangle,
   Eye,
+  Thermometer,
 } from 'lucide-react';
 import { fitRegression, type FitResponse, type RegressionDataPoint } from '../../services/api';
 import InlineMath from '../InlineMath';
+import DynamicRegressionStepByStep from './DynamicRegressionStepByStep';
+import RegressionInteractivePlot from './RegressionInteractivePlot';
+import { CASE1_PRESETS, type Case1Preset } from '../../data/case1Datasets';
 import type { RegressionModelType, RegressionSolverConfig } from '../../types/regression';
 
 interface InteractiveRegressionSolverProps {
   initialConfig?: RegressionSolverConfig;
 }
-
-const PRESETS = [
-  {
-    id: 'tp4_ex1',
-    title: 'TP4 · Ej. 1: Serie de observaciones',
-    model: 'power' as RegressionModelType,
-    degree: 2,
-    points: [
-      { x: 1, y: 0.5 },
-      { x: 2, y: 1.7 },
-      { x: 3, y: 3.4 },
-      { x: 4, y: 5.7 },
-      { x: 5, y: 8.4 },
-    ],
-  },
-  {
-    id: 'tp4_ex2',
-    title: 'TP4 · Ej. 2: Censo Poblacional',
-    model: 'exponential' as RegressionModelType,
-    degree: 2,
-    points: [
-      { x: 1930, y: 123.203 },
-      { x: 1940, y: 131.669 },
-      { x: 1950, y: 150.697 },
-      { x: 1960, y: 179.323 },
-      { x: 1970, y: 203.212 },
-      { x: 1980, y: 226.505 },
-    ],
-  },
-  {
-    id: 'tp4_ex3',
-    title: 'TP4 · Ej. 3: Intensidad de Lluvia',
-    model: 'exponential' as RegressionModelType,
-    degree: 2,
-    points: [
-      { x: 5, y: 88.1 },
-      { x: 10, y: 72.4 },
-      { x: 15, y: 61.37 },
-      { x: 20, y: 52.02 },
-      { x: 30, y: 42.34 },
-      { x: 45, y: 32.13 },
-      { x: 60, y: 24.93 },
-      { x: 90, y: 20.13 },
-      { x: 120, y: 16.58 },
-    ],
-  },
-  {
-    id: 'tp4_ex4',
-    title: 'TP4 · Ej. 4: Saturación / Cociente',
-    model: 'saturation' as RegressionModelType,
-    degree: 2,
-    points: [
-      { x: 1, y: 0.4 },
-      { x: 2, y: 0.7 },
-      { x: 2.5, y: 0.8 },
-      { x: 4, y: 1.0 },
-      { x: 6, y: 1.2 },
-      { x: 8, y: 1.3 },
-      { x: 8.5, y: 1.4 },
-    ],
-  },
-  {
-    id: 'tp4_ex5',
-    title: 'TP4 · Ej. 5: Resistencia Cemento',
-    model: 'saturation' as RegressionModelType,
-    degree: 2,
-    points: [
-      { x: 1, y: 13.0 },
-      { x: 2, y: 21.9 },
-      { x: 3, y: 29.8 },
-      { x: 7, y: 32.4 },
-      { x: 12, y: 36.8 },
-      { x: 20, y: 38.9 },
-      { x: 28, y: 41.8 },
-      { x: 32, y: 43.6 },
-    ],
-  },
-  {
-    id: 'tp4_ex6',
-    title: 'TP4 · Ej. 6: Producción Petrolera (ONU 1880-1990)',
-    model: 'polynomial' as RegressionModelType,
-    degree: 3,
-    points: [
-      { x: 1880, y: 30 },
-      { x: 1890, y: 77 },
-      { x: 1900, y: 149 },
-      { x: 1905, y: 215 },
-      { x: 1910, y: 328 },
-      { x: 1915, y: 432 },
-      { x: 1920, y: 689 },
-      { x: 1925, y: 1069 },
-      { x: 1930, y: 1412 },
-      { x: 1935, y: 1655 },
-      { x: 1940, y: 2150 },
-      { x: 1945, y: 2595 },
-      { x: 1950, y: 3803 },
-      { x: 1955, y: 5626 },
-      { x: 1960, y: 7674 },
-      { x: 1962, y: 8882 },
-      { x: 1964, y: 10310 },
-      { x: 1966, y: 12016 },
-      { x: 1968, y: 14104 },
-      { x: 1970, y: 16669 },
-      { x: 1972, y: 18584 },
-      { x: 1974, y: 20389 },
-      { x: 1976, y: 20188 },
-      { x: 1978, y: 21922 },
-      { x: 1980, y: 21732 },
-      { x: 1982, y: 19403 },
-      { x: 1984, y: 19608 },
-      { x: 1990, y: 17153 },
-    ],
-  },
-];
 
 export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverProps> = ({ initialConfig }) => {
   const defaultPoints = useMemo(
@@ -160,15 +50,11 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
     initialConfig?.points || defaultPoints
   );
 
-  const [pasteMode, setPasteMode] = useState<'separate' | 'table'>('separate');
   const [pasteX, setPasteX] = useState<string>(
     (initialConfig?.points || defaultPoints).map((p) => p.x).join(', ')
   );
   const [pasteY, setPasteY] = useState<string>(
     (initialConfig?.points || defaultPoints).map((p) => p.y).join(', ')
-  );
-  const [pasteText, setPasteText] = useState<string>(
-    (initialConfig?.points || defaultPoints).map((p) => `${p.x}\t${p.y}`).join('\n')
   );
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -176,51 +62,29 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
   const [result, setResult] = useState<FitResponse | null>(null);
 
   const previewPoints = useMemo(() => {
-    if (pasteMode === 'separate') {
-      const xs = pasteX
-        .trim()
-        .split(/[\s,;]+/)
-        .map((v) => parseFloat(v.replace(',', '.')))
-        .filter((v) => !isNaN(v));
-      const ys = pasteY
-        .trim()
-        .split(/[\s,;]+/)
-        .map((v) => parseFloat(v.replace(',', '.')))
-        .filter((v) => !isNaN(v));
-      const count = Math.min(xs.length, ys.length);
-      const matched: RegressionDataPoint[] = [];
-      for (let i = 0; i < count; i++) {
-        matched.push({ x: xs[i], y: ys[i] });
-      }
-      return {
-        matched,
-        countX: xs.length,
-        countY: ys.length,
-        isEqual: xs.length === ys.length && xs.length > 0,
-        isValid: xs.length === ys.length && xs.length >= 2,
-      };
-    } else {
-      const lines = pasteText.trim().split('\n');
-      const matched: RegressionDataPoint[] = [];
-      for (const line of lines) {
-        const parts = line.trim().split(/[\t,; ]+/).filter(Boolean);
-        if (parts.length >= 2) {
-          const x = parseFloat(parts[0].replace(',', '.'));
-          const y = parseFloat(parts[1].replace(',', '.'));
-          if (!isNaN(x) && !isNaN(y)) {
-            matched.push({ x, y });
-          }
-        }
-      }
-      return {
-        matched,
-        countX: matched.length,
-        countY: matched.length,
-        isEqual: matched.length >= 2,
-        isValid: matched.length >= 2,
-      };
+    const xs = pasteX
+      .trim()
+      .split(/[\s,;]+/)
+      .map((v) => parseFloat(v.replace(',', '.')))
+      .filter((v) => !isNaN(v));
+    const ys = pasteY
+      .trim()
+      .split(/[\s,;]+/)
+      .map((v) => parseFloat(v.replace(',', '.')))
+      .filter((v) => !isNaN(v));
+    const count = Math.min(xs.length, ys.length);
+    const matched: RegressionDataPoint[] = [];
+    for (let i = 0; i < count; i++) {
+      matched.push({ x: xs[i], y: ys[i] });
     }
-  }, [pasteMode, pasteX, pasteY, pasteText]);
+    return {
+      matched,
+      countX: xs.length,
+      countY: ys.length,
+      isEqual: xs.length === ys.length && xs.length > 0,
+      isValid: xs.length === ys.length && xs.length >= 2,
+    };
+  }, [pasteX, pasteY]);
 
   useEffect(() => {
     if (initialConfig) {
@@ -230,35 +94,24 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
         setPoints(initialConfig.points);
         setPasteX(initialConfig.points.map((pt) => pt.x).join(', '));
         setPasteY(initialConfig.points.map((pt) => pt.y).join(', '));
-        setPasteText(initialConfig.points.map((pt) => `${pt.x}\t${pt.y}`).join('\n'));
       }
     }
   }, [initialConfig]);
 
-  const handleSelectPreset = (p: (typeof PRESETS)[0]) => {
-    setModelType(p.model);
-    setDegree(p.degree);
-    setPoints(p.points);
-    setPasteX(p.points.map((pt) => pt.x).join(', '));
-    setPasteY(p.points.map((pt) => pt.y).join(', '));
-    setPasteText(p.points.map((pt) => `${pt.x}\t${pt.y}`).join('\n'));
-    setError(null);
-  };
-
-  const handleCalculate = async () => {
+  const handleCalculateWithPoints = async (
+    activePoints: RegressionDataPoint[],
+    mType: RegressionModelType = modelType,
+    deg: number = degree
+  ) => {
     try {
       setLoading(true);
       setError(null);
-      const activePoints = previewPoints.isValid ? previewPoints.matched : points;
-      if (previewPoints.isValid) {
-        setPoints(previewPoints.matched);
-      }
       if (activePoints.length < 2) {
         throw new Error('Se requieren al menos 2 observaciones válidas para calcular la regresión.');
       }
       const res = await fitRegression({
-        model_type: modelType,
-        degree: modelType === 'polynomial' ? degree : undefined,
+        model_type: mType,
+        degree: mType === 'polynomial' ? deg : undefined,
         points: activePoints,
       });
       setResult(res);
@@ -270,41 +123,32 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
     }
   };
 
-  // Run on mount
+  const handleSelectCase1Preset = (c: Case1Preset) => {
+    setPoints(c.points);
+    setPasteX(c.points.map((pt) => pt.x).join(', '));
+    setPasteY(c.points.map((pt) => pt.y).join(', '));
+    setError(null);
+    setResult(null);
+  };
+
+  const handleCalculate = () => {
+    const activePoints = previewPoints.isValid ? previewPoints.matched : points;
+    if (previewPoints.isValid) {
+      setPoints(previewPoints.matched);
+    }
+    handleCalculateWithPoints(activePoints, modelType, degree);
+  };
+
+  // Run calculation only once on initial mount if initialConfig was provided
   useEffect(() => {
-    handleCalculate();
-  }, [modelType, degree]);
-
-  // Merge points and curve for recharts
-  const chartData = (() => {
-    if (!result) return [];
-    const mapByX: Record<number, { x: number; actual?: number; predicted?: number }> = {};
-
-    result.points_x.forEach((px, idx) => {
-      if (Number.isFinite(px)) {
-        const py = result.points_y[idx];
-        mapByX[px] = {
-          x: px,
-          actual: Number.isFinite(py) ? py : undefined,
-        };
-      }
-    });
-
-    result.curve_x.forEach((cx, idx) => {
-      if (Number.isFinite(cx)) {
-        const rounded = Math.round(cx * 100) / 100;
-        const cy = result.curve_y[idx];
-        const predVal = Number.isFinite(cy) ? cy : undefined;
-        if (!mapByX[rounded]) {
-          mapByX[rounded] = { x: rounded, predicted: predVal };
-        } else {
-          mapByX[rounded].predicted = predVal;
-        }
-      }
-    });
-
-    return Object.values(mapByX).sort((a, b) => a.x - b.x);
-  })();
+    if (initialConfig?.points && initialConfig.points.length >= 2) {
+      handleCalculateWithPoints(
+        initialConfig.points,
+        initialConfig.modelType,
+        initialConfig.degree || 2
+      );
+    }
+  }, [initialConfig]);
 
   return (
     <div className="space-y-6 sm:space-y-8 w-full min-w-0 max-w-full">
@@ -326,17 +170,32 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
           </div>
         </div>
 
-        {/* Quick Presets */}
-        <div className="space-y-2">
-          <span className="text-xs font-bold text-slate-500 block">Ejercicios precargados del apunte:</span>
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-            {PRESETS.map((p) => (
+        {/* Caso 1 Quick Load: 4 Recipientes (61 puntos c/u) */}
+        <div className="space-y-2.5 pt-1">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <Thermometer size={15} className="text-blue-600" />
+              <span>Precarga Rápida Caso 1 (Enfriamiento · 61 puntos c/u):</span>
+            </span>
+            <span className="text-[11px] text-slate-500 font-medium">
+              1-clic para precargar los valores de cada vaso particular
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {CASE1_PRESETS.map((c) => (
               <button
-                key={p.id}
-                onClick={() => handleSelectPreset(p)}
-                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 transition-all cursor-pointer"
+                key={c.id}
+                onClick={() => handleSelectCase1Preset(c)}
+                className="p-3.5 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 hover:border-slate-300 rounded-2xl text-left transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
               >
-                {p.title}
+                <div className="min-w-0">
+                  <span className="block truncate font-bold text-xs text-slate-800 group-hover:text-slate-950">
+                    {c.shortName}
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono block mt-0.5">
+                    61 puntos (0 a 120m)
+                  </span>
+                </div>
               </button>
             ))}
           </div>
@@ -356,8 +215,11 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               <button
                 key={m.id}
                 type="button"
-                onClick={() => setModelType(m.id as RegressionModelType)}
-                className={`p-2.5 sm:p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[72px] sm:min-h-[76px] last:col-span-2 sm:last:col-span-1 min-w-0 ${
+                onClick={() => {
+                  setModelType(m.id as RegressionModelType);
+                  if (result !== null) setResult(null);
+                }}
+                className={`p-3 sm:p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[76px] last:col-span-2 sm:last:col-span-1 min-w-0 overflow-hidden select-none ${
                   modelType === m.id
                     ? 'bg-slate-900 text-white border-slate-900 shadow-sm ring-2 ring-slate-900/10'
                     : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
@@ -365,7 +227,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               >
                 <span className="text-xs font-black tracking-tight">{m.label}</span>
                 <div
-                  className={`mt-1 flex items-center overflow-x-auto max-w-full pointer-events-none text-[11px] sm:text-xs scrollbar-none ${
+                  className={`mt-1.5 flex items-center text-[11px] sm:text-xs pointer-events-none overflow-hidden select-none ${
                     modelType === m.id ? 'text-slate-100' : 'text-slate-600'
                   }`}
                 >
@@ -382,7 +244,10 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                 {[2, 3, 4, 5].map((deg) => (
                   <button
                     key={deg}
-                    onClick={() => setDegree(deg)}
+                    onClick={() => {
+                      setDegree(deg);
+                      if (result !== null) setResult(null);
+                    }}
                     className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       degree === deg
                         ? 'bg-slate-900 text-white shadow-sm'
@@ -412,159 +277,138 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </p>
             </div>
 
-            <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 text-xs self-start sm:self-auto shadow-2xs">
-              <button
-                type="button"
-                onClick={() => setPasteMode('separate')}
-                className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                  pasteMode === 'separate'
-                    ? 'bg-slate-900 text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                X e Y separados
-              </button>
-              <button
-                type="button"
-                onClick={() => setPasteMode('table')}
-                className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                  pasteMode === 'table'
-                    ? 'bg-slate-900 text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Columnas (X Y)
-              </button>
-            </div>
           </div>
 
-          {pasteMode === 'separate' ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-                    <span>Valores de X</span>
-                    <span className="text-[10px] font-mono text-slate-400 font-normal">
-                      (separados por coma o espacio)
-                    </span>
-                  </label>
-                  <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-md">
-                    {previewPoints.countX} números
-                  </span>
-                </div>
-                <textarea
-                  rows={3}
-                  value={pasteX}
-                  onChange={(e) => setPasteX(e.target.value)}
-                  placeholder="1, 2, 3, 4, 5"
-                  className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs leading-relaxed"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-                    <span>Valores de Y</span>
-                    <span className="text-[10px] font-mono text-slate-400 font-normal">
-                      (separados por coma o espacio)
-                    </span>
-                  </label>
-                  <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-md">
-                    {previewPoints.countY} números
-                  </span>
-                </div>
-                <textarea
-                  rows={3}
-                  value={pasteY}
-                  onChange={(e) => setPasteY(e.target.value)}
-                  placeholder="0.5, 1.7, 3.4, 5.7, 8.4"
-                  className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs leading-relaxed"
-                />
-              </div>
-            </div>
-          ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700">
-                  Pega columnas X e Y directamente (Excel, Sheets, CSV o TSV):
+                <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                  <span>Valores de X</span>
+                  <span className="text-[10px] font-mono text-slate-400 font-normal">
+                    (separados por coma o espacio)
+                  </span>
                 </label>
-                <span className="text-[10px] text-slate-400">Ejemplo: 1 [TAB] 0.5</span>
+                <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-md">
+                  {previewPoints.countX} números
+                </span>
               </div>
               <textarea
-                rows={4}
-                value={pasteText}
-                onChange={(e) => setPasteText(e.target.value)}
-                placeholder="1   0.5&#10;2   1.7&#10;3   3.4&#10;4   5.7&#10;5   8.4"
-                className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs"
+                rows={3}
+                value={pasteX}
+                onChange={(e) => {
+                  setPasteX(e.target.value);
+                  if (result !== null) setResult(null);
+                }}
+                placeholder="1, 2, 3, 4, 5"
+                className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs leading-relaxed"
               />
             </div>
-          )}
 
-          {/* PREVISUALIZACIÓN EN TIEMPO REAL */}
-          <div className="p-3.5 bg-white rounded-2xl border border-slate-200 space-y-2.5 shadow-2xs">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                <Eye size={14} className="text-slate-500" />
-                <span>Previsualización en tiempo real:</span>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                  <span>Valores de Y</span>
+                  <span className="text-[10px] font-mono text-slate-400 font-normal">
+                    (separados por coma o espacio)
+                  </span>
+                </label>
+                <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-md">
+                  {previewPoints.countY} números
+                </span>
+              </div>
+              <textarea
+                rows={3}
+                value={pasteY}
+                onChange={(e) => {
+                  setPasteY(e.target.value);
+                  if (result !== null) setResult(null);
+                }}
+                placeholder="0.5, 1.7, 3.4, 5.7, 8.4"
+                className="w-full p-3 text-xs font-mono font-medium bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-2xs leading-relaxed"
+              />
+            </div>
+          </div>
+
+          {/* PREVISUALIZACIÓN: DIAGRAMA DE DISPERSIÓN EN VIVO */}
+          {!result && (
+            <div className="p-3.5 sm:p-5 bg-white rounded-2xl sm:rounded-3xl border border-slate-200 space-y-3 shadow-2xs min-w-0 max-w-full overflow-hidden">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                  <Eye size={15} className="text-slate-500" />
+                  <span>Nube de Puntos Experimental en Vivo:</span>
+                </div>
+
+                {previewPoints.isValid ? (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                    <CheckCircle2 size={13} />
+                    {previewPoints.matched.length} observaciones sincronizadas
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                    <AlertTriangle size={13} />
+                    {previewPoints.countX !== previewPoints.countY
+                      ? `Disparidad: X (${previewPoints.countX}) ≠ Y (${previewPoints.countY}). Deben coincidir en cantidad.`
+                      : 'Ingresa al menos 2 pares válidos'}
+                  </span>
+                )}
               </div>
 
-              {previewPoints.isValid ? (
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                  <CheckCircle2 size={13} />
-                  {previewPoints.matched.length} pares (X, Y) sincronizados
-                </span>
+              {/* Live Scatter Chart */}
+              {previewPoints.matched.length > 0 ? (
+                <div className="h-44 sm:h-52 w-full pt-1 min-w-0 max-w-full overflow-hidden">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart margin={{ top: 10, right: 15, left: -15, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                      <XAxis
+                        type="number"
+                        dataKey="x"
+                        name="X"
+                        stroke="#94a3b8"
+                        fontSize={11}
+                        tickLine={false}
+                        domain={['auto', 'auto']}
+                        tickFormatter={(val) =>
+                          Math.abs(val) >= 1e6
+                            ? `${(val / 1e6).toFixed(1)}M`
+                            : Math.abs(val) >= 1e4
+                            ? `${(val / 1e3).toFixed(0)}k`
+                            : String(val)
+                        }
+                      />
+                      <YAxis
+                        type="number"
+                        dataKey="y"
+                        name="Y"
+                        stroke="#94a3b8"
+                        fontSize={11}
+                        tickLine={false}
+                        domain={['auto', 'auto']}
+                      />
+                      <Tooltip
+                        cursor={{ strokeDasharray: '3 3' }}
+                        contentStyle={{
+                          backgroundColor: '#ffffff',
+                          borderRadius: '12px',
+                          border: '1px solid #e2e8f0',
+                          fontSize: '11px',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        }}
+                        formatter={(val: any, name: any) => [
+                          val != null && !isNaN(Number(val)) ? Number(val).toLocaleString() : '-',
+                          name === 'y' ? 'Dato Experimental Y' : name === 'x' ? 'Dato Experimental X' : name,
+                        ]}
+                      />
+                      <Scatter name="Datos" data={previewPoints.matched} fill="#0f172a" />
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                </div>
               ) : (
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                  <AlertTriangle size={13} />
-                  {pasteMode === 'separate' && previewPoints.countX !== previewPoints.countY
-                    ? `Disparidad: X (${previewPoints.countX}) ≠ Y (${previewPoints.countY}). Deben coincidir en cantidad.`
-                    : 'Ingresa al menos 2 pares válidos'}
-                </span>
+                <div className="h-32 flex items-center justify-center text-xs text-slate-400 bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+                  Ingresa valores de X e Y para previsualizar la nube de puntos en vivo
+                </div>
               )}
             </div>
-
-            {previewPoints.matched.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-slate-50 rounded-xl border border-slate-100 scrollbar-thin">
-                {previewPoints.matched.map((pt, pIdx) => (
-                  <span
-                    key={pIdx}
-                    className="px-2 py-0.5 bg-white border border-slate-200 rounded-md text-[11px] font-mono text-slate-800 shadow-2xs"
-                  >
-                    ({pt.x}, {pt.y})
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Visualización tabular compacta opcional */}
-            {previewPoints.matched.length > 0 && (
-              <details className="text-xs text-slate-500 pt-1 group">
-                <summary className="cursor-pointer font-bold text-slate-700 hover:text-slate-900 select-none flex items-center gap-1.5 w-fit">
-                  <span>Ver tabla de pares ordenados ({previewPoints.matched.length} filas)</span>
-                </summary>
-                <div className="mt-2 max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/50 scrollbar-thin">
-                  <table className="w-full text-left text-xs border-collapse">
-                    <thead>
-                      <tr className="bg-slate-100 border-b border-slate-200 font-mono text-slate-700">
-                        <th className="px-3 py-1.5 font-bold w-12">#</th>
-                        <th className="px-3 py-1.5 font-bold">X</th>
-                        <th className="px-3 py-1.5 font-bold">Y</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 font-mono">
-                      {previewPoints.matched.map((pt, idx) => (
-                        <tr key={idx} className="hover:bg-slate-100/50">
-                          <td className="px-3 py-1 text-slate-400">{idx + 1}</td>
-                          <td className="px-3 py-1 text-slate-900 font-bold">{pt.x}</td>
-                          <td className="px-3 py-1 text-slate-900 font-bold">{pt.y}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </details>
-            )}
-          </div>
+          )}
         </div>
 
         {/* Action Button */}
@@ -592,137 +436,13 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
       {/* RESULTS PRESENTATION */}
       {result && (
         <div className="space-y-6 sm:space-y-8 w-full min-w-0 max-w-full">
-          {/* Metrics Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 w-full min-w-0">
-            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
-              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate" title="Coeficiente de Determinación">
-                Determinación (r²)
-              </span>
-              <div className="flex items-baseline gap-1.5 min-w-0">
-                <span className="text-lg sm:text-2xl font-black font-mono text-emerald-600 truncate">
-                  {result?.metrics?.r2 != null
-                    ? (result.metrics.r2 > 0.9999 && result.metrics.r2 < 1
-                        ? result.metrics.r2.toString()
-                        : result.metrics.r2.toFixed(5))
-                    : 'N/A'}
-                </span>
-                <span className="text-xs text-slate-400 font-bold shrink-0">
-                  <InlineMath math="r^2" />
-                </span>
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
-                {result?.metrics?.r2 != null && result.metrics.r2 >= 0.85
-                  ? '✅ Ajuste Válido (> 0.85)'
-                  : '⚠️ Ajuste Débil'}
-              </span>
-            </div>
-
-            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
-              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 truncate" title="Dispersión Total (ST)">
-                <span>Dispersión Media</span> (<InlineMath math="S_T" />)
-              </span>
-              <div className="flex items-baseline gap-1.5 min-w-0">
-                <span className="text-lg sm:text-2xl font-black font-mono text-slate-900 truncate">
-                  {result?.metrics?.st != null
-                    ? (result.metrics.st > 0 && result.metrics.st < 0.001
-                        ? result.metrics.st.toString()
-                        : result.metrics.st.toFixed(4))
-                    : 'N/A'}
-                </span>
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
-                Suma resp. a media
-              </span>
-            </div>
-
-            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
-              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 truncate" title="Suma Residuos (Sr)">
-                <span>Suma Residuos</span> (<InlineMath math="S_r" />)
-              </span>
-              <div className="flex items-baseline gap-1.5 min-w-0">
-                <span className="text-lg sm:text-2xl font-black font-mono text-slate-900 truncate">
-                  {result?.metrics?.sr != null
-                    ? (result.metrics.sr > 0 && result.metrics.sr < 0.001
-                        ? result.metrics.sr.toString()
-                        : result.metrics.sr.toFixed(4))
-                    : 'N/A'}
-                </span>
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
-                Error cuadrático
-              </span>
-            </div>
-
-            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
-              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 truncate" title="Error Estándar (Sy/x)">
-                <span>Error Estándar</span> (<InlineMath math="S_{y/x}" />)
-              </span>
-              <div className="flex items-baseline gap-1.5 min-w-0">
-                <span className="text-lg sm:text-2xl font-black font-mono text-slate-900 truncate">
-                  {result?.metrics?.syx != null ? result.metrics.syx.toFixed(4) : 'N/A'}
-                </span>
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
-                Dispersión residual
-              </span>
-            </div>
-          </div>
-
-          {/* Model Formula Banner */}
-          <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4 min-w-0 max-w-full overflow-hidden">
-            <div className="min-w-0 max-w-full space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                Ecuación de Regresión Resultante
-              </span>
-              <div className="text-base sm:text-xl font-black text-slate-900 font-mono overflow-x-auto max-w-full pb-1 scrollbar-thin">
-                <InlineMath math={result?.formula_latex ?? '\\text{Sin ecuación}'} />
-              </div>
-            </div>
-            {result?.transformed_latex && (
-              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs font-mono text-slate-600 min-w-0 max-w-full overflow-hidden">
-                <span className="text-[9px] uppercase font-bold text-slate-400 block mb-1">Forma Linealizada:</span>
-                <div className="overflow-x-auto max-w-full pb-1 scrollbar-thin">
-                  <InlineMath math={result.transformed_latex} />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Chart 1: Scatter + Fit Curve */}
-          <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4 min-w-0 max-w-full overflow-hidden">
-            <div>
-              <h4 className="text-base font-bold text-slate-900">
-                Gráfico de Dispersión y Curva de Ajuste
-              </h4>
-              <p className="text-xs text-slate-500">
-                Puntos de la tabla experimental y función calculada por mínimos cuadrados
-              </p>
-            </div>
-
-            <div className="h-64 sm:h-72 w-full pt-4 min-w-0 max-w-full overflow-hidden">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="x" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} domain={['auto', 'auto']} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#ffffff',
-                      borderRadius: '16px',
-                      border: '1px solid #e2e8f0',
-                      fontSize: '12px',
-                    }}
-                    formatter={(val: any, name: any) => [
-                      val != null && !isNaN(Number(val)) ? `${Number(val).toFixed(3)}` : '-',
-                      name === 'actual' ? 'Dato Experimental' : 'Ajuste',
-                    ]}
-                  />
-                  <Scatter name="actual" dataKey="actual" fill="#0f172a" />
-                  <Line type="monotone" dataKey="predicted" stroke="#2563eb" strokeWidth={2.5} dot={false} connectNulls />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+          {/* Main GeoGebra-Style Interactive Plot (Zoom, Pan, Edge-to-Edge Continuous Curve) */}
+          <RegressionInteractivePlot
+            result={result}
+            modelType={modelType}
+            degree={degree}
+            points={points}
+          />
 
           {/* Chart 2: Residuals Plot */}
           <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4 min-w-0 max-w-full overflow-hidden">
@@ -741,8 +461,22 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={result.residuals} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="x" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
+                  <XAxis
+                    type="number"
+                    dataKey="x"
+                    stroke="#94a3b8"
+                    fontSize={11}
+                    tickLine={false}
+                    domain={['auto', 'auto']}
+                    tickFormatter={(val) =>
+                      Math.abs(val) >= 1e6
+                        ? `${(val / 1e6).toFixed(1)}M`
+                        : Math.abs(val) >= 1e4
+                        ? `${(val / 1e3).toFixed(0)}k`
+                        : String(val)
+                    }
+                  />
+                  <YAxis type="number" stroke="#94a3b8" fontSize={11} tickLine={false} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#ffffff',
@@ -768,27 +502,26 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
             </div>
           </div>
 
-          {/* Gauss Normal Equations LaTeX Box */}
+          {/* Mathematical Step-by-Step Resolution (Exact layout from Apunte / screenshot) */}
           <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4 min-w-0 max-w-full overflow-hidden">
-            <h4 className="text-base font-bold text-slate-900">
-              Sistema de Ecuaciones Normales Resuelto
-            </h4>
-            <p className="text-xs text-slate-500">
-              Matriz con las sumatorias experimentales calculadas y despeje de los parámetros:
-            </p>
-
-            <div className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3 min-w-0 max-w-full overflow-hidden">
-              <div className="text-xs sm:text-sm font-semibold text-slate-900 overflow-x-auto max-w-full pb-1 scrollbar-thin">
-                <InlineMath math={result.normal_equations.matrix_latex} block />
-              </div>
-              <div className="h-px bg-slate-200 w-full" />
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs font-mono text-slate-700 min-w-0 max-w-full">
-                <span className="font-bold text-slate-900 shrink-0">Parámetros obtenidos:</span>
-                <div className="overflow-x-auto max-w-full pb-0.5 scrollbar-thin">
-                  <InlineMath math={result.normal_equations.solution_latex} />
-                </div>
-              </div>
+            <div className="border-b border-slate-100 pb-3">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+                Desarrollo Matemático Paso a Paso
+              </span>
+              <h3 className="text-base sm:text-lg font-black text-slate-900">
+                Resolución Analítica por Ecuaciones Normales y Regla de Cramer
+              </h3>
+              <p className="text-xs text-slate-500">
+                Cálculo explícito de las sumatorias del sistema, sustitución en la matriz de Gauss, resolución por determinantes y desglose de varianza (ST, SR, r²).
+              </p>
             </div>
+
+            <DynamicRegressionStepByStep
+              modelType={modelType}
+              degree={degree}
+              points={points}
+              result={result}
+            />
           </div>
         </div>
       )}

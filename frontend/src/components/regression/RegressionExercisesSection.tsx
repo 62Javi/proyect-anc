@@ -76,14 +76,14 @@ const EXERCISES: SolvedExerciseItem[] = [
           ],
         },
         sumsLatex:
-          'N = 5, \\quad \\sum x_i = 15.00, \\quad \\sum y_i = 19.70, \\quad \\sum x_i^2 = 55.00, \\quad \\sum x_i y_i = 78.90',
+          'N = 5, \\quad \\sum x_i = 15, \\quad \\sum y_i = 19.7, \\quad \\sum x_i^2 = 55, \\quad \\sum x_i y_i = 78.9',
         systemLatex:
-          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15.00 \\\\ 15.00 & 55.00 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} 19.70 \\\\ 78.90 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15 \\\\ 15 & 55 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} 19.7 \\\\ 78.9 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 5(55) - (15)^2 = 50, \\quad a_1 = \\frac{19.7(55) - 78.9(15)}{50} = -2.0000, \\quad a_2 = \\frac{5(78.9) - 15(19.7)}{50} = 1.9800',
-        formulaLatex: 'y = -2.0000 + 1.9800x',
+          '\\Delta = 5(55) - (15)^2 = 50, \\quad a_1 = \\frac{19.7(55) - 78.9(15)}{50} = -2, \\quad a_2 = \\frac{5(78.9) - 15(19.7)}{50} = 1.98',
+        formulaLatex: 'y = -2 + 1.98x',
         dispersionBreakdown: {
-          meanLatex: 'y_{\\text{media}} = \\frac{\\sum_{i=1}^n y_i}{n} = \\frac{19.70}{5} = 3.9400',
+          meanLatex: 'y_{\\text{media}} = \\frac{\\sum_{i=1}^n y_i}{n} = \\frac{19.7}{5} = 3.94',
           stLatex:
             'ST = \\sum_{i=1}^n (y_i - y_{\\text{media}})^2 = 11.8336 + 5.0176 + 0.2916 + 3.0976 + 19.8916 = 40.1320',
           residualTable: {
@@ -139,15 +139,15 @@ const EXERCISES: SolvedExerciseItem[] = [
           ],
         },
         sumsLatex:
-          'N = 5, \\quad \\sum x_i = 15.00, \\quad \\sum \\ln(y_i) = 4.9300, \\quad \\sum x_i^2 = 55.00, \\quad \\sum x_i \\ln(y_i) = 21.6425',
+          'N = 5, \\quad \\sum x_i = 15, \\quad \\sum \\ln(y_i) = 4.93, \\quad \\sum x_i^2 = 55, \\quad \\sum x_i \\ln(y_i) = 21.6425',
         systemLatex:
-          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum x_i \\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15.00 \\\\ 15.00 & 55.00 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.9300 \\\\ 21.6425 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum x_i \\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15 \\\\ 15 & 55 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.93 \\\\ 21.6425 \\end{bmatrix}',
         solutionLatex:
           '\\Delta = 5(55) - (15)^2 = 50, \\quad \\ln(a) = \\frac{4.93(55) - 21.6425(15)}{50} \\approx -1.0698 \\implies a \\approx 0.3431, \\quad b = \\frac{5(21.6425) - 15(4.93)}{50} \\approx 0.6853',
         formulaLatex: 'y = 0.3431 \\cdot e^{0.6853x}',
         dispersionBreakdown: {
           meanLatex:
-            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{4.9300}{5} = 0.9860',
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{4.93}{5} = 0.986',
           stLatex:
             'ST = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{media}})^2 = 2.8194 + 0.2074 + 0.0565 + 0.5693 + 1.3047 = 4.9573',
           residualTable: {
@@ -203,15 +203,15 @@ const EXERCISES: SolvedExerciseItem[] = [
           ],
         },
         sumsLatex:
-          '\\sum \\ln(x_i) = 4.7875, \\quad \\sum \\ln(y_i) = 4.9300, \\quad \\sum [\\ln(x_i)]^2 = 6.1995, \\quad \\sum \\ln(x_i)\\ln(y_i) = 7.5503',
+          '\\sum \\ln(x_i) = 4.7875, \\quad \\sum \\ln(y_i) = 4.93, \\quad \\sum [\\ln(x_i)]^2 = 6.1995, \\quad \\sum \\ln(x_i)\\ln(y_i) = 7.5503',
         systemLatex:
-          '\\begin{bmatrix} N & \\sum \\ln(x_i) \\\\ \\sum \\ln(x_i) & \\sum [\\ln(x_i)]^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum \\ln(x_i)\\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 4.7875 \\\\ 4.7875 & 6.1995 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.9300 \\\\ 7.5503 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum \\ln(x_i) \\\\ \\sum \\ln(x_i) & \\sum [\\ln(x_i)]^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum \\ln(x_i)\\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 4.7875 \\\\ 4.7875 & 6.1995 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.93 \\\\ 7.5503 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 5(6.1995) - (4.7875)^2 \\approx 8.0773, \\quad \\ln(a) = \\frac{4.9300(6.1995) - 7.5503(4.7875)}{8.0773} \\approx -0.6913 \\implies a \\approx 0.5009, \\quad b = \\frac{5(7.5503) - 4.7875(4.9300)}{8.0773} \\approx 1.7517',
+          '\\Delta = 5(6.1995) - (4.7875)^2 \\approx 8.0773, \\quad \\ln(a) = \\frac{4.93(6.1995) - 7.5503(4.7875)}{8.0773} \\approx -0.6913 \\implies a \\approx 0.5009, \\quad b = \\frac{5(7.5503) - 4.7875(4.93)}{8.0773} \\approx 1.7517',
         formulaLatex: 'y = 0.5009 \\cdot x^{1.7517}',
         dispersionBreakdown: {
           meanLatex:
-            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{4.9300}{5} = 0.9860',
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{4.93}{5} = 0.986',
           stLatex:
             'ST = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{media}})^2 = 4.9573',
           residualTable: {
@@ -268,16 +268,16 @@ const EXERCISES: SolvedExerciseItem[] = [
           ],
         },
         sumsLatex:
-          'N = 5, \\quad \\sum x_i = 15.0, \\quad \\sum x_i^2 = 55.0, \\quad \\sum x_i^3 = 225.0, \\quad \\sum x_i^4 = 979.0, \\quad \\sum y_i = 19.7, \\quad \\sum x_i y_i = 78.9, \\quad \\sum x_i^2 y_i = 339.1',
+          'N = 5, \\quad \\sum x_i = 15, \\quad \\sum x_i^2 = 55, \\quad \\sum x_i^3 = 225, \\quad \\sum x_i^4 = 979, \\quad \\sum y_i = 19.7, \\quad \\sum x_i y_i = 78.9, \\quad \\sum x_i^2 y_i = 339.1',
         systemLatex:
-          '\\begin{bmatrix} N & \\sum x_i & \\sum x_i^2 \\\\ \\sum x_i & \\sum x_i^2 & \\sum x_i^3 \\\\ \\sum x_i^2 & \\sum x_i^3 & \\sum x_i^4 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\\\ \\sum x_i^2 y_i \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15.0 & 55.0 \\\\ 15.0 & 55.0 & 225.0 \\\\ 55.0 & 225.0 & 979.0 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} 19.70 \\\\ 78.90 \\\\ 339.10 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum x_i & \\sum x_i^2 \\\\ \\sum x_i & \\sum x_i^2 & \\sum x_i^3 \\\\ \\sum x_i^2 & \\sum x_i^3 & \\sum x_i^4 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\\\ \\sum x_i^2 y_i \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15 & 55 \\\\ 15 & 55 & 225 \\\\ 55 & 225 & 979 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} 19.7 \\\\ 78.9 \\\\ 339.1 \\end{bmatrix}',
         solutionLatex:
-          'a_1 = -0.2000, \\quad a_2 = 0.4371, \\quad a_3 = 0.2571',
-        formulaLatex: 'y = -0.2000 + 0.4371x + 0.2571x^2',
+          'a_1 = -0.2, \\quad a_2 = 0.4371, \\quad a_3 = 0.2571',
+        formulaLatex: 'y = -0.2 + 0.4371x + 0.2571x^2',
         dispersionBreakdown: {
-          meanLatex: 'y_{\\text{media}} = \\frac{\\sum_{i=1}^n y_i}{n} = \\frac{19.70}{5} = 3.9400',
+          meanLatex: 'y_{\\text{media}} = \\frac{\\sum_{i=1}^n y_i}{n} = \\frac{19.7}{5} = 3.94',
           stLatex:
-            'ST = \\sum_{i=1}^n (y_i - y_{\\text{media}})^2 = 11.8336 + 5.0176 + 0.2916 + 3.0976 + 19.8916 = 40.1320',
+            'ST = \\sum_{i=1}^n (y_i - y_{\\text{media}})^2 = 11.8336 + 5.0176 + 0.2916 + 3.0976 + 19.8916 = 40.132',
           residualTable: {
             headers: [
               'i',
@@ -832,7 +832,7 @@ const EXERCISES: SolvedExerciseItem[] = [
     summaryExplanation:
       'Ajuste asistido por software (Excel) de las 28 observaciones históricas de la ONU mediante polinomio cúbico (r² = 0.9125) y grado 4 (r² = 0.9532).',
     bestModelNotice:
-      'Conclusión de cátedra: Dentro de la muestra histórica (1880-1990) ambos polinomios capturan la campana de Hubbert, pero la extrapolación fuera de la muestra (1995-2006) ilustra la trampa matemática de los polinomios de alto grado en recursos finitos.',
+      'Conclusión de cátedra: Dentro de la muestra histórica (1880-1990) ambos polinomios ajustan con alta precisión (r² > 0.91), pero la extrapolación fuera de la muestra (1995-2006) ilustra la limitación matemática de los polinomios de alto grado para predecir el futuro.',
     steps: [],
   },
 ];
