@@ -731,15 +731,14 @@ const EXERCISES: SolvedExerciseItem[] = [
           srLatex:
             'SR = \\sum_{i=1}^n ((1/y_i) - y_{\\text{Ajuste}})^2 = 0.0008 + 0.0026 + 0.0010 + 0.0002 + 0.0002 + 0.0011 + 0.0001 = 0.0061',
           r2Latex:
-            'r^2 = \\frac{ST - SR}{ST} = \\frac{2.3394 - 0.0061}{2.3394} = \\frac{2.3333}{2.3394} \\approx 0.9974 \\implies r = +\\sqrt{0.9974} \\approx 0.9987',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{2.3394 - 0.0061}{2.3394} = \\frac{2.3333}{2.3394} \\approx 0.9974',
           scaleNote:
-            'En el espacio transformado de variables recíprocas ($1/y$ vs $1/x$), el modelo captura el $99.74\\%$ de la dispersión ($r^2 = 0.9974, r = +0.9987$). Al re-transformar a la escala física original ($y_i$), la dispersión total es $ST_{\\text{orig}} = 0.7743$ y la suma de residuos cuadráticos es $SR_{\\text{orig}} = 0.0052$, arrojando una bondad de ajuste física $r^2_{\\text{fís}} = \\frac{0.7743 - 0.0052}{0.7743} \\approx 0.9933$. Ambos valores superan holgadamente el criterio de aceptación de la cátedra ($r^2 > 0.85$).',
+            'En el espacio transformado de variables recíprocas ($1/y$ vs $1/x$), el modelo captura el $99.74\\%$ de la dispersión ($r^2 = 0.9974$). Al re-transformar a la escala física original ($y_i$), la dispersión total es $ST_{\\text{orig}} = 0.7743$ y la suma de residuos cuadráticos es $SR_{\\text{orig}} = 0.0052$, arrojando una bondad de ajuste física $r^2_{\\text{fís}} = \\frac{0.7743 - 0.0052}{0.7743} \\approx 0.9933$. Ambos valores superan holgadamente el criterio de aceptación de la cátedra ($r^2 > 0.85$).',
         },
         metrics: {
           r2: 0.9974,
           sr: 0.0061,
           st: 2.3394,
-          r: 0.9987,
           extraNote: 'r² transf = 0.9974 | r² fís = 0.9933',
         },
         conclusion:
@@ -769,7 +768,7 @@ const EXERCISES: SolvedExerciseItem[] = [
     ],
     modelType: 'saturation',
     bestFormula: 'y = \\frac{46.6767x}{2.4739 + x}',
-    r2: 0.9873,
+    r2: 0.9781,
     summaryExplanation:
       'El fraguado del cemento presenta endurecimiento rápido en la primera semana y luego estabilización asintótica hacia una resistencia límite calculada en $46.68\\text{ kg/cm}^2$.',
     bestModelNotice:
@@ -788,7 +787,7 @@ const EXERCISES: SolvedExerciseItem[] = [
         title:
           'Realizar el ajuste adecuado y calcular la Bondad del Ajuste. Estimar cuál será la resistencia obtenida a los 40 días de elaborado el cemento.',
         modelType: 'saturation',
-        badge: 'Bondad $r^2 = 0.9873$',
+        badge: 'Bondad $r^2 = 0.9781$',
         sumsLatex:
           'N = 8, \\quad \\sum \\frac{1}{x_i} = 2.1765, \\quad \\sum \\frac{1}{y_i} = 0.2867, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.3932, \\quad \\sum \\frac{1}{x_i y_i} = 0.1205',
         systemLatex:
@@ -797,11 +796,10 @@ const EXERCISES: SolvedExerciseItem[] = [
           '\\Delta = 8(1.3932) - (2.1765)^2 \\approx 6.4084, \\quad \\frac{1}{a} = \\frac{0.2867(1.3932) - 0.1205(2.1765)}{6.4084} \\approx 0.02142 \\implies a = \\frac{1}{0.02142} \\approx 46.6767 \\\\ \\frac{b}{a} = \\frac{8(0.1205) - 2.1765(0.2867)}{6.4084} \\approx 0.05299 \\implies b = 0.05299 \\cdot a \\approx 2.4739 \\\\ \\text{Estimación a 40 días: } y(40) = \\frac{46.6767(40)}{2.4739 + 40} = \\frac{1867.068}{42.4739} \\approx 43.9579 \\text{ kg/cm}^2',
         formulaLatex: 'y = \\frac{46.6767x}{2.4739 + x}',
         metrics: {
-          r2: 0.9873,
-          r: 0.9936,
+          r2: 0.9781,
         },
         conclusion:
-          'El modelo ajustado arroja una excelente bondad de ajuste ($r^2 = 0.9873$). A los 40 días de fraguado, la resistencia a compresión estimada es de aproximadamente $43.96\\text{ kg/cm}^2$, muy cercana al límite asintótico teórico final de $46.68\\text{ kg/cm}^2$.',
+          'El modelo ajustado arroja una excelente bondad de ajuste ($r^2 = 0.9781$). A los 40 días de fraguado, la resistencia a compresión estimada es de aproximadamente $43.96\\text{ kg/cm}^2$, muy cercana al límite asintótico teórico final de $46.68\\text{ kg/cm}^2$.',
       },
     ],
   },
