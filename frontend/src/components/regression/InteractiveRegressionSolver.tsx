@@ -88,13 +88,19 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
 
   useEffect(() => {
     if (initialConfig) {
-      setModelType(initialConfig.modelType);
+      if (initialConfig.modelType === 'newton_cooling') {
+        setModelType('exponential');
+      } else {
+        setModelType(initialConfig.modelType);
+      }
       if (initialConfig.degree) setDegree(initialConfig.degree);
       if (initialConfig.points && initialConfig.points.length > 0) {
         setPoints(initialConfig.points);
         setPasteX(initialConfig.points.map((pt) => pt.x).join(', '));
         setPasteY(initialConfig.points.map((pt) => pt.y).join(', '));
       }
+      setResult(null);
+      setError(null);
     }
   }, [initialConfig]);
 
@@ -138,17 +144,6 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
     }
     handleCalculateWithPoints(activePoints, modelType, degree);
   };
-
-  // Run calculation only once on initial mount if initialConfig was provided
-  useEffect(() => {
-    if (initialConfig?.points && initialConfig.points.length >= 2) {
-      handleCalculateWithPoints(
-        initialConfig.points,
-        initialConfig.modelType,
-        initialConfig.degree || 2
-      );
-    }
-  }, [initialConfig]);
 
   return (
     <div className="space-y-6 sm:space-y-8 w-full min-w-0 max-w-full">
