@@ -334,11 +334,11 @@ export const RegressionTheorySection: React.FC = () => {
               </p>
               <FormulaDisplay formula="\frac{1}{y} = \frac{b + x}{a \cdot x} = \frac{1}{a} + \frac{b}{a} \cdot \frac{1}{x}" />
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                Comparando con la función lineal (<InlineMath math="Y = \frac{1}{y}, \; X = \frac{1}{x}, \; C_1 = \frac{1}{a}, \; C_2 = \frac{b}{a}" />):
+                Comparando con la función lineal:
               </p>
               <FormulaDisplay formula="\begin{bmatrix} n & \sum \frac{1}{x_i} \\ \sum \frac{1}{x_i} & \sum \left(\frac{1}{x_i}\right)^2 \end{bmatrix} \begin{bmatrix} \frac{1}{a} \\ \frac{b}{a} \end{bmatrix} = \begin{bmatrix} \sum \frac{1}{y_i} \\ \sum \frac{1}{x_i y_i} \end{bmatrix}" />
               <p className="text-xs text-slate-600 font-sans">
-                Despeje final: <InlineMath math="a = \frac{1}{C_1}" /> y <InlineMath math="b = C_2 \cdot a" />.
+                Despeje final: <InlineMath math="a = \frac{1}{1/a}" /> y <InlineMath math="b = \left(\frac{b}{a}\right) \cdot a" />.
               </p>
             </div>
           </div>
@@ -406,7 +406,7 @@ export const RegressionTheorySection: React.FC = () => {
               </span>
             </div>
             <FormulaDisplay
-              formula="r^2 = \frac{S_t - S_r}{S_t}, \qquad r = \operatorname{signo}(a_1) \cdot \sqrt{r^2}"
+              formula="r^2 = \frac{S_t - S_r}{S_t}, \qquad r = \operatorname{signo}(a_2) \cdot \sqrt{r^2}"
             />
             <p className="text-xs text-slate-300 leading-relaxed font-sans">
               El coeficiente de determinación <InlineMath math="r^2" /> indica el porcentaje de la dispersión de los datos que queda capturado por el modelo propuesto. El coeficiente de correlación <InlineMath math="r" /> refleja además el sentido o signo de la pendiente en regresiones lineales.

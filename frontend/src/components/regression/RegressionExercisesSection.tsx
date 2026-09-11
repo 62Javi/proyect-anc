@@ -60,7 +60,7 @@ const EXERCISES: SolvedExerciseItem[] = [
         modelType: 'linear',
         badge: '$r^2 = 0.9769$',
         description:
-          'Ajuste por mínimos cuadrados de una recta $y = a_0 + a_1 x$ minimizando la suma de residuos cuadráticos $S_r = \\sum (y_i - a_0 - a_1 x_i)^2$',
+          'Ajuste por mínimos cuadrados de una recta $y = a_1 + a_2 x$ minimizando la suma de residuos cuadráticos $S_r = \\sum (y_i - a_1 - a_2 x_i)^2$',
         tableData: {
           headers: ['i', '$x_i$', '$y_i$', '$x_i^2$', '$x_i \\cdot y_i$'],
           rows: [
@@ -75,39 +75,36 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           'N = 5, \\quad \\sum x_i = 15.00, \\quad \\sum y_i = 19.70, \\quad \\sum x_i^2 = 55.00, \\quad \\sum x_i y_i = 78.90',
         systemLatex:
-          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} a_0 \\\\ a_1 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15.00 \\\\ 15.00 & 55.00 \\end{bmatrix} \\begin{bmatrix} a_0 \\\\ a_1 \\end{bmatrix} = \\begin{bmatrix} 19.70 \\\\ 78.90 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15.00 \\\\ 15.00 & 55.00 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} 19.70 \\\\ 78.90 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 5(55) - (15)^2 = 50, \\quad a_0 = \\frac{19.7(55) - 78.9(15)}{50} = -2.0000, \\quad a_1 = \\frac{5(78.9) - 15(19.7)}{50} = 1.9800',
+          '\\Delta = 5(55) - (15)^2 = 50, \\quad a_1 = \\frac{19.7(55) - 78.9(15)}{50} = -2.0000, \\quad a_2 = \\frac{5(78.9) - 15(19.7)}{50} = 1.9800',
         formulaLatex: 'y = -2.0000 + 1.9800x',
         dispersionBreakdown: {
-          meanLatex: '\\sum y_i = 19.70 \\implies \\bar{y} = \\frac{19.70}{5} = 3.9400',
+          meanLatex: 'y_{\\text{media}} = \\frac{\\sum_{i=1}^n y_i}{n} = \\frac{19.70}{5} = 3.9400',
           stLatex:
-            'S_t = \\sum_{i=1}^5 (y_i - \\bar{y})^2 = 11.8336 + 5.0176 + 0.2916 + 3.0976 + 19.8916 = 40.1320',
+            'ST = \\sum_{i=1}^n (y_i - y_{\\text{media}})^2 = 11.8336 + 5.0176 + 0.2916 + 3.0976 + 19.8916 = 40.1320',
           residualTable: {
             headers: [
               'i',
               '$x_i$',
               '$y_i$',
-              '$\\hat{y}_i$',
-              '$(y_i - \\bar{y})^2$',
-              '$e_i = y_i - \\hat{y}_i$',
-              '$e_i^2$',
+              '$y_{\\text{Ajuste}}$',
+              '$(y_i - y_{\\text{media}})^2$',
+              '$(y_i - y_{\\text{Ajuste}})^2$',
             ],
             rows: [
-              [1, 1, 0.5, -0.02, 11.8336, '+0.5200', 0.2704],
-              [2, 2, 1.7, 1.96, 5.0176, '-0.2600', 0.0676],
-              [3, 3, 3.4, 3.94, 0.2916, '-0.5400', 0.2916],
-              [4, 4, 5.7, 5.92, 3.0976, '-0.2200', 0.0484],
-              [5, 5, 8.4, 7.9, 19.8916, '+0.5000', 0.25],
-              ['Σ', 15.0, 19.7, 19.7, 40.132, '0.0000', 0.928],
+              [1, 1, 0.5, -0.02, 11.8336, 0.2704],
+              [2, 2, 1.7, 1.96, 5.0176, 0.0676],
+              [3, 3, 3.4, 3.94, 0.2916, 0.2916],
+              [4, 4, 5.7, 5.92, 3.0976, 0.0484],
+              [5, 5, 8.4, 7.9, 19.8916, 0.25],
+              ['Σ', 15.0, 19.7, 19.7, 40.132, 0.928],
             ],
           },
           srLatex:
-            'S_r = \\sum_{i=1}^5 (y_i - \\hat{y}_i)^2 = 0.2704 + 0.0676 + 0.2916 + 0.0484 + 0.2500 = 0.9280',
+            'SR = \\sum_{i=1}^n (y_i - y_{\\text{Ajuste}})^2 = 0.2704 + 0.0676 + 0.2916 + 0.0484 + 0.2500 = 0.9280',
           r2Latex:
-            'r^2 = \\frac{S_t - S_r}{S_t} = \\frac{40.1320 - 0.9280}{40.1320} = \\frac{39.2040}{40.1320} \\approx 0.976876 \\approx 0.9769 \\implies r = +\\sqrt{0.9769} = 0.9884',
-          scaleNote:
-            'En modelos lineales y polinómicos, $S_t$ y $S_r$ se calculan directamente en la escala física original de $y$, minimizando la distancia vertical euclídea de los residuos. La suma algebraica de residuos $\\sum e_i = 0.0000$ se anula exactamente por las propiedades de Gauss.',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{40.1320 - 0.9280}{40.1320} = \\frac{39.2040}{40.1320} \\approx 0.9769 \\implies r = +\\sqrt{0.9769} \\approx 0.9884',
         },
         metrics: {
           r2: 0.9769,
@@ -126,7 +123,7 @@ const EXERCISES: SolvedExerciseItem[] = [
         modelType: 'exponential',
         badge: '$r^2 = 0.9472$ (transf)',
         description:
-          'Linealización mediante logaritmo natural en ambos miembros: $\\ln(y) = \\ln(a) + bx \\iff Y = A_0 + A_1 x$ con $Y = \\ln(y)$, $A_0 = \\ln(a)$ y $A_1 = b$.',
+          'Linealización mediante logaritmo natural en ambos miembros: $\\ln(y) = \\ln(a) + bx \\iff Y = a_1 + a_2 x$ con $Y = \\ln(y)$, $a_1 = \\ln(a)$ y $a_2 = b$.',
         tableData: {
           headers: ['i', '$x_i$', '$y_i$', '$\\ln(y_i)$', '$x_i^2$', '$x_i \\cdot \\ln(y_i)$'],
           rows: [
@@ -141,46 +138,43 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           'N = 5, \\quad \\sum x_i = 15.00, \\quad \\sum \\ln(y_i) = 4.9300, \\quad \\sum x_i^2 = 55.00, \\quad \\sum x_i \\ln(y_i) = 21.6425',
         systemLatex:
-          '\\begin{bmatrix} 5 & 15.00 \\\\ 15.00 & 55.00 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.9300 \\\\ 21.6425 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum x_i \\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15.00 \\\\ 15.00 & 55.00 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.9300 \\\\ 21.6425 \\end{bmatrix}',
         solutionLatex:
-          '\\ln(a) = \\frac{4.93(55) - 21.6425(15)}{50} = -1.0698 \\implies a = 0.3431, \\quad b = \\frac{5(21.6425) - 15(4.93)}{50} = 0.6853',
+          '\\Delta = 5(55) - (15)^2 = 50, \\quad \\ln(a) = \\frac{4.93(55) - 21.6425(15)}{50} \\approx -1.0698 \\implies a \\approx 0.3431, \\quad b = \\frac{5(21.6425) - 15(4.93)}{50} \\approx 0.6853',
         formulaLatex: 'y = 0.3431 \\cdot e^{0.6853x}',
         dispersionBreakdown: {
           meanLatex:
-            '\\bar{Y}_{\\text{transf}} = \\frac{\\sum \\ln(y_i)}{N} = 0.9860, \\qquad \\bar{y}_{\\text{orig}} = \\frac{19.70}{5} = 3.9400',
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{4.9300}{5} = 0.9860',
           stLatex:
-            'S_{t,\\text{transf}} = \\sum_{i=1}^5 (\\ln y_i - \\bar{Y})^2 = 4.9573, \\qquad S_{t,\\text{orig}} = \\sum_{i=1}^5 (y_i - \\bar{y})^2 = 40.1320',
+            'ST = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{media}})^2 = 2.8194 + 0.2074 + 0.0565 + 0.5693 + 1.3047 = 4.9573',
           residualTable: {
             headers: [
               'i',
               '$x_i$',
               '$y_i$',
-              '$\\ln(y_i)$',
-              '$\\widehat{\\ln(y)}_i$',
-              '$e_{\\text{transf}}^2$',
-              '$\\hat{y}_{\\text{orig}}$',
-              '$e_{\\text{orig}}^2$',
+              '$\\text{Ln}(y_i)$',
+              '$y_{\\text{Ajuste}}$',
+              '$(\\text{Ln}(y_i) - y_{\\text{media}})^2$',
+              '$(\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2$',
             ],
             rows: [
-              [1, 1, 0.5, -0.6931, -0.3845, 0.0952, 0.6808, 0.0327],
-              [2, 2, 1.7, 0.5306, 0.3008, 0.0528, 1.351, 0.1218],
-              [3, 3, 3.4, 1.2238, 0.9861, 0.0565, 2.6808, 0.5173],
-              [4, 4, 5.7, 1.7405, 1.6714, 0.0048, 5.3197, 0.1447],
-              [5, 5, 8.4, 2.1282, 2.3567, 0.0522, 10.556, 4.6486],
-              ['Σ', 15.0, 19.7, 4.93, 4.9305, 0.2615, 20.588, 5.4651],
+              [1, 1, 0.5, -0.6931, -0.3845, 2.8194, 0.0952],
+              [2, 2, 1.7, 0.5306, 0.3008, 0.2074, 0.0528],
+              [3, 3, 3.4, 1.2238, 0.9861, 0.0565, 0.0565],
+              [4, 4, 5.7, 1.7405, 1.6714, 0.5693, 0.0048],
+              [5, 5, 8.4, 2.1282, 2.3567, 1.3047, 0.0522],
+              ['Σ', 15.0, 19.7, 4.93, 4.9305, 4.9573, 0.2615],
             ],
           },
           srLatex:
-            'S_{r,\\text{transf}} = \\sum_{i=1}^5 (\\ln y_i - \\widehat{\\ln y}_i)^2 = 0.2615, \\qquad S_{r,\\text{orig}} = \\sum_{i=1}^5 (y_i - \\hat{y}_i)^2 = 5.4651',
+            'SR = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2 = 0.0952 + 0.0528 + 0.0565 + 0.0048 + 0.0522 = 0.2615',
           r2Latex:
-            'r_{\\text{transf}}^2 = \\frac{4.9573 - 0.2615}{4.9573} = \\frac{4.6958}{4.9573} \\approx 0.947249 \\approx 0.9472, \\qquad r_{\\text{orig}}^2 = \\frac{40.1320 - 5.4651}{40.1320} = \\frac{34.6669}{40.1320} \\approx 0.863822 \\approx 0.8638',
-          scaleNote:
-            'Diferencia de escala (Linealizada vs Original): En el espacio $\\ln(y)$, el modelo reporta $r^2 = 0.9472$ minimizando los residuos logarítmicos. Sin embargo, al des-transformar a la escala física original, el error cuadrático acumulado asciende a $S_r = 5.4651$, reduciendo el $r^2$ real al $86.38\\%$ debido a la penalización en valores altos ($x=5$).',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{4.9573 - 0.2615}{4.9573} = \\frac{4.6958}{4.9573} \\approx 0.9472 \\implies r = +\\sqrt{0.9472} \\approx 0.9732',
         },
         metrics: {
           r2: 0.9472,
-          sr: 5.4576,
-          st: 40.132,
+          sr: 0.2615,
+          st: 4.9573,
           r: 0.9732,
         },
         conclusion:
@@ -209,26 +203,43 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           '\\sum \\ln(x_i) = 4.7875, \\quad \\sum \\ln(y_i) = 4.9300, \\quad \\sum [\\ln(x_i)]^2 = 6.1995, \\quad \\sum \\ln(x_i)\\ln(y_i) = 7.5503',
         systemLatex:
-          '\\begin{bmatrix} 5 & 4.7875 \\\\ 4.7875 & 6.1995 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.9300 \\\\ 7.5503 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum \\ln(x_i) \\\\ \\sum \\ln(x_i) & \\sum [\\ln(x_i)]^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum \\ln(x_i)\\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 4.7875 \\\\ 4.7875 & 6.1995 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 4.9300 \\\\ 7.5503 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 5(6.1995) - (4.7875)^2 = 8.0773, \\quad \\ln(a) = -0.6913 \\implies a = 0.5009, \\quad b = 1.7517',
+          '\\Delta = 5(6.1995) - (4.7875)^2 \\approx 8.0773, \\quad \\ln(a) = \\frac{4.9300(6.1995) - 7.5503(4.7875)}{8.0773} \\approx -0.6913 \\implies a \\approx 0.5009, \\quad b = \\frac{5(7.5503) - 4.7875(4.9300)}{8.0773} \\approx 1.7517',
         formulaLatex: 'y = 0.5009 \\cdot x^{1.7517}',
         dispersionBreakdown: {
           meanLatex:
-            '\\bar{Y}_{\\text{transf}} = 0.9860, \\qquad \\bar{X}_{\\text{transf}} = 0.9575',
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{4.9300}{5} = 0.9860',
           stLatex:
-            'S_{t,\\text{transf}} = 4.9573, \\qquad S_{t,\\text{orig}} = 40.1320',
+            'ST = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{media}})^2 = 4.9573',
+          residualTable: {
+            headers: [
+              'i',
+              '$x_i$',
+              '$y_i$',
+              '$\\text{Ln}(x_i)$',
+              '$\\text{Ln}(y_i)$',
+              '$y_{\\text{Ajuste}}$',
+              '$(\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2$',
+            ],
+            rows: [
+              [1, 1, 0.5, 0.0, -0.6931, -0.6913, 0.000003],
+              [2, 2, 1.7, 0.6931, 0.5306, 0.5227, 0.000062],
+              [3, 3, 3.4, 1.0986, 1.2238, 1.233, 0.000085],
+              [4, 4, 5.7, 1.3863, 1.7405, 1.737, 0.000012],
+              [5, 5, 8.4, 1.6094, 2.1282, 2.1279, 0.000001],
+              ['Σ', 15.0, 19.7, 4.7874, 4.93, 4.9293, 0.000163],
+            ],
+          },
           srLatex:
-            'S_{r,\\text{transf}} = 0.000163, \\qquad S_{r,\\text{orig}} = 0.0016',
+            'SR = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2 = 0.000163',
           r2Latex:
-            'r_{\\text{transf}}^2 = \\frac{4.9573 - 0.000163}{4.9573} = \\frac{4.957137}{4.9573} \\approx 0.999967 \\approx 0.99997, \\qquad r_{\\text{orig}}^2 = \\frac{40.1320 - 0.0016}{40.1320} = \\frac{40.1304}{40.1320} \\approx 0.999960 \\approx 0.99997',
-          scaleNote:
-            'Alineación perfecta multiescala: A diferencia del ajuste exponencial, el modelo potencial preserva una fidelidad geométrica casi perfecta tanto en el espacio bilogarítmico ($r^2 = 0.99997$) como en la escala física original ($S_r = 0.0016$), lo cual ratifica que la ley fenomenológica que rige las observaciones es intrínsecamente potencial.',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{4.9573 - 0.000163}{4.9573} = \\frac{4.957137}{4.9573} \\approx 0.99997 \\implies r = +\\sqrt{0.99997} \\approx 0.99998',
         },
         metrics: {
           r2: 0.99997,
-          sr: 0.0016,
-          st: 40.132,
+          sr: 0.000163,
+          st: 4.9573,
           r: 0.99998,
         },
         conclusion:
@@ -243,43 +254,51 @@ const EXERCISES: SolvedExerciseItem[] = [
         degree: 2,
         badge: '$r^2 = 0.99994$',
         description:
-          'Ajuste por parábola cuadrática de segundo grado $y = a_0 + a_1 x + a_2 x^2$ resolviendo el sistema de ecuaciones normales de Gauss de orden $3 \\times 3$.',
+          'Ajuste por parábola cuadrática de segundo grado $y = a_1 + a_2 x + a_3 x^2$ resolviendo el sistema de ecuaciones normales de orden $3 \\times 3$.',
+        tableData: {
+          headers: ['i', '$x_i$', '$y_i$', '$x_i^2$', '$x_i^3$', '$x_i^4$', '$x_i \\cdot y_i$', '$x_i^2 \\cdot y_i$'],
+          rows: [
+            [1, 1, 0.5, 1, 1, 1, 0.5, 0.5],
+            [2, 2, 1.7, 4, 8, 16, 3.4, 6.8],
+            [3, 3, 3.4, 9, 27, 81, 10.2, 30.6],
+            [4, 4, 5.7, 16, 64, 256, 22.8, 91.2],
+            [5, 5, 8.4, 25, 125, 625, 42.0, 210.0],
+            ['Σ', 15.0, 19.7, 55.0, 225.0, 979.0, 78.9, 339.1],
+          ],
+        },
         sumsLatex:
-          '\\sum x_i = 15.0, \\quad \\sum x_i^2 = 55.0, \\quad \\sum x_i^3 = 225.0, \\quad \\sum x_i^4 = 979.0, \\quad \\sum y_i = 19.7, \\quad \\sum x_i y_i = 78.9, \\quad \\sum x_i^2 y_i = 339.1',
+          'N = 5, \\quad \\sum x_i = 15.0, \\quad \\sum x_i^2 = 55.0, \\quad \\sum x_i^3 = 225.0, \\quad \\sum x_i^4 = 979.0, \\quad \\sum y_i = 19.7, \\quad \\sum x_i y_i = 78.9, \\quad \\sum x_i^2 y_i = 339.1',
         systemLatex:
-          '\\begin{bmatrix} 5 & 15.0 & 55.0 \\\\ 15.0 & 55.0 & 225.0 \\\\ 55.0 & 225.0 & 979.0 \\end{bmatrix} \\begin{bmatrix} a_0 \\\\ a_1 \\end{bmatrix} = \\begin{bmatrix} 19.70 \\\\ 78.90 \\\\ 339.10 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum x_i & \\sum x_i^2 \\\\ \\sum x_i & \\sum x_i^2 & \\sum x_i^3 \\\\ \\sum x_i^2 & \\sum x_i^3 & \\sum x_i^4 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\\\ \\sum x_i^2 y_i \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 15.0 & 55.0 \\\\ 15.0 & 55.0 & 225.0 \\\\ 55.0 & 225.0 & 979.0 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} 19.70 \\\\ 78.90 \\\\ 339.10 \\end{bmatrix}',
         solutionLatex:
-          '\\text{Eliminación de Gauss} \\implies a_0 = -0.2000, \\quad a_1 = 0.4371, \\quad a_2 = 0.2571',
+          'a_1 = -0.2000, \\quad a_2 = 0.4371, \\quad a_3 = 0.2571',
         formulaLatex: 'y = -0.2000 + 0.4371x + 0.2571x^2',
         dispersionBreakdown: {
-          meanLatex: '\\sum y_i = 19.70 \\implies \\bar{y} = \\frac{19.70}{5} = 3.9400',
+          meanLatex: 'y_{\\text{media}} = \\frac{\\sum_{i=1}^n y_i}{n} = \\frac{19.70}{5} = 3.9400',
           stLatex:
-            'S_t = \\sum_{i=1}^5 (y_i - \\bar{y})^2 = 11.8336 + 5.0176 + 0.2916 + 3.0976 + 19.8916 = 40.1320',
+            'ST = \\sum_{i=1}^n (y_i - y_{\\text{media}})^2 = 11.8336 + 5.0176 + 0.2916 + 3.0976 + 19.8916 = 40.1320',
           residualTable: {
             headers: [
               'i',
               '$x_i$',
               '$y_i$',
-              '$\\hat{y}_i$',
-              '$(y_i - \\bar{y})^2$',
-              '$e_i = y_i - \\hat{y}_i$',
-              '$e_i^2$',
+              '$y_{\\text{Ajuste}}$',
+              '$(y_i - y_{\\text{media}})^2$',
+              '$(y_i - y_{\\text{Ajuste}})^2$',
             ],
             rows: [
-              [1, 1, 0.5, 0.4942, 11.8336, '+0.0058', 0.000034],
-              [2, 2, 1.7, 1.7026, 5.0176, '-0.0026', 0.000007],
-              [3, 3, 3.4, 3.4252, 0.2916, '-0.0252', 0.000635],
-              [4, 4, 5.7, 5.662, 3.0976, '+0.0380', 0.001444],
-              [5, 5, 8.4, 8.413, 19.8916, '-0.0130', 0.000169],
-              ['Σ', 15.0, 19.7, 19.697, 40.132, '+0.0030', 0.002289],
+              [1, 1, 0.5, 0.4942, 11.8336, 0.000034],
+              [2, 2, 1.7, 1.7026, 5.0176, 0.000007],
+              [3, 3, 3.4, 3.4252, 0.2916, 0.000635],
+              [4, 4, 5.7, 5.662, 3.0976, 0.001444],
+              [5, 5, 8.4, 8.413, 19.8916, 0.000169],
+              ['Σ', 15.0, 19.7, 19.697, 40.132, 0.002289],
             ],
           },
           srLatex:
-            'S_r = \\sum_{i=1}^5 (y_i - \\hat{y}_i)^2 = 0.000034 + 0.000007 + 0.000635 + 0.001444 + 0.000169 = 0.002289 \\approx 0.0023',
+            'SR = \\sum_{i=1}^n (y_i - y_{\\text{Ajuste}})^2 = 0.000034 + 0.000007 + 0.000635 + 0.001444 + 0.000169 \\approx 0.0023',
           r2Latex:
-            'r^2 = \\frac{S_t - S_r}{S_t} = \\frac{40.1320 - 0.0023}{40.1320} = \\frac{40.1297}{40.1320} \\approx 0.9999427 \\approx 0.99994 \\implies r = +\\sqrt{0.99994} = 0.99997',
-          scaleNote:
-            'En el polinomio de segundo grado, la distancia se evalúa en escala física original directa. Con 3 coeficientes libres ($a_0, a_1, a_2$), la suma de residuos cuadráticos cae a $S_r = 0.0023$, alcanzando un coeficiente de determinación de $99.994\\%$.',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{40.1320 - 0.0023}{40.1320} = \\frac{40.1297}{40.1320} \\approx 0.99994 \\implies r = +\\sqrt{0.99994} \\approx 0.99997',
         },
         metrics: {
           r2: 0.99994,
@@ -288,7 +307,7 @@ const EXERCISES: SolvedExerciseItem[] = [
           r: 0.99997,
         },
         conclusion:
-          'Excelente ajuste cuadrático ($r^2 = 0.99994$, $S_r = 0.0023$). Al disponer de 3 grados de libertad ($a_0, a_1, a_2$) captura con gran exactitud la aceleración de los puntos.',
+          'Excelente ajuste cuadrático ($r^2 = 0.99994$, $S_r = 0.0023$). Al disponer de 3 grados de libertad ($a_1, a_2, a_3$) captura con gran exactitud la aceleración de los puntos.',
       },
 
       // Inciso e: Comparativa de Bondad
@@ -298,13 +317,13 @@ const EXERCISES: SolvedExerciseItem[] = [
           'Si calculamos la Bondad del Ajuste para cada uno de los 4 casos anteriores ¿Cuál le parece que es la curva que mejor se ajusta a la tabla de valores dada? Explicar Por qué.',
         badge: 'Dictamen de Cátedra',
         description:
-          'La curva que mejor se ajusta a la tabla es la POTENCIAL ($y = 0.5009 \\cdot x^{1.7517}$): registra la menor suma de residuos al cuadrado ($S_r = 0.0016$), el mayor $r^2$ ($0.99997$) y respeta el principio de parsimonia (Navaja de Ockham) al requerir sólo 2 parámetros frente a los 3 del polinomio cuadrático.',
+          'La curva que mejor se ajusta a la tabla es la POTENCIAL ($y = 0.5009 \\cdot x^{1.7517}$): registra la menor suma de residuos ($SR = 0.000163$), el mayor $r^2$ ($0.99997$) y respeta el principio de parsimonia (Navaja de Ockham) al requerir sólo 2 parámetros frente a los 3 del polinomio cuadrático.',
         tableData: {
-          headers: ['Modelo', 'Ecuación Matemática', '$S_r$ (Residuos²)', '$r^2$ (Bondad)', 'Veredicto'],
+          headers: ['Modelo', 'Ecuación Matemática', '$SR$ (Residuos²)', '$r^2$ (Bondad)', 'Veredicto'],
           rows: [
             ['Lineal', '$y = -2.0000 + 1.9800x$', '0.9280', '0.9769', 'Descartado: error sistemático'],
-            ['Exponencial', '$y = 0.3431 \\cdot e^{0.6853x}$', '5.4576', '0.8640 (orig)', 'Descartado: dispersión severa'],
-            ['Potencial', '$y = 0.5009 \\cdot x^{1.7517}$', '0.0016', '0.99997', 'Óptimo: Mejor ajuste y 2 parámetros'],
+            ['Exponencial', '$y = 0.3431 \\cdot e^{0.6853x}$', '0.2615', '0.9472', 'Descartado: menor bondad'],
+            ['Potencial', '$y = 0.5009 \\cdot x^{1.7517}$', '0.000163', '0.99997', 'Óptimo: Mejor ajuste y 2 parámetros'],
             ['Polinómico (2°)', '$y = -0.2000 + 0.4371x + 0.2571x^2$', '0.0023', '0.99994', 'Excelente (requiere 3 parámetros)'],
           ],
         },
@@ -317,7 +336,7 @@ const EXERCISES: SolvedExerciseItem[] = [
         modelType: 'saturation',
         badge: 'Ecuación del Cociente',
         description:
-          'Modelo de saturación linealizado invirtiendo ambas variables: $\\frac{1}{y} = \\frac{1}{a} + \\left(\\frac{b}{a}\\right) \\frac{1}{x} \\iff Y\' = C_1 + C_2 X\'$ con $X\' = \\frac{1}{x}$, $Y\' = \\frac{1}{y}$, $C_1 = \\frac{1}{a}$ y $C_2 = \\frac{b}{a}$.',
+          'Modelo de saturación linealizado invirtiendo ambas variables: $\\frac{1}{y} = \\frac{1}{a} + \\left(\\frac{b}{a}\\right) \\frac{1}{x}$ con incógnitas directas $\\frac{1}{a}$ y $\\frac{b}{a}$.',
         tableData: {
           headers: ['i', '$x_i$', '$y_i$', '$\\frac{1}{x_i}$', '$\\frac{1}{y_i}$', '$\\left(\\frac{1}{x_i}\\right)^2$', '$\\frac{1}{x_i \\cdot y_i}$'],
           rows: [
@@ -332,22 +351,40 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           '\\sum \\frac{1}{x_i} = 2.2833, \\quad \\sum \\frac{1}{y_i} = 3.1768, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.4636, \\quad \\sum \\frac{1}{x_i y_i} = 2.4598',
         systemLatex:
-          '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} C_1 \\\\ C_2 \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 2.2833 \\\\ 2.2833 & 1.4636 \\end{bmatrix} \\begin{bmatrix} C_1 \\\\ C_2 \\end{bmatrix} = \\begin{bmatrix} 3.1768 \\\\ 2.4598 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 5 & 2.2833 \\\\ 2.2833 & 1.4636 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} 3.1768 \\\\ 2.4598 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 5(1.4636) - (2.2833)^2 = 2.1045 \\implies C_1 = -0.4595 \\implies a = \\frac{1}{C_1} = -2.1764, \\quad C_2 = 2.3975 \\implies b = C_2 \\cdot a = -5.2178',
+          '\\Delta = 5(1.4636) - (2.2833)^2 \\approx 2.1045, \\quad \\frac{1}{a} = \\frac{3.1768(1.4636) - 2.4598(2.2833)}{2.1045} \\approx -0.4595 \\implies a = \\frac{1}{-0.4595} \\approx -2.1764, \\quad \\frac{b}{a} = \\frac{5(2.4598) - 2.2833(3.1768)}{2.1045} \\approx 2.3975 \\implies b = 2.3975 \\cdot a \\approx -5.2178',
         formulaLatex:
           'y = \\frac{a \\cdot x}{b + x} = \\frac{-2.1764x}{-5.2178 + x} = \\frac{2.1764x}{5.2178 - x}',
         dispersionBreakdown: {
           meanLatex:
-            '\\bar{Y\'}_{\\text{transf}} = \\frac{3.1768}{5} = 0.6354, \\qquad \\bar{y}_{\\text{orig}} = \\frac{19.70}{5} = 3.9400',
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n (1/y_i)}{n} = \\frac{3.1768}{5} \\approx 0.6354',
           stLatex:
-            'S_{t,\\text{transf}} = \\sum_{i=1}^5 \\left(\\frac{1}{y_i} - \\bar{Y\'}\\right)^2 = 2.4590, \\qquad S_{t,\\text{orig}} = 40.1320',
+            'ST = \\sum_{i=1}^n ((1/y_i) - y_{\\text{media}})^2 = 1.8621 + 0.0022 + 0.1165 + 0.2116 + 0.2666 = 2.4590',
+          residualTable: {
+            headers: [
+              'i',
+              '$x_i$',
+              '$y_i$',
+              '$\\frac{1}{x_i}$',
+              '$\\frac{1}{y_i}$',
+              '$y_{\\text{Ajuste}}$',
+              '$((1/y_i) - y_{\\text{media}})^2$',
+              '$((1/y_i) - y_{\\text{Ajuste}})^2$',
+            ],
+            rows: [
+              [1, 1, 0.5, 1.0, 2.0, 1.938, 1.8621, 0.0038],
+              [2, 2, 1.7, 0.5, 0.5882, 0.7393, 0.0022, 0.0228],
+              [3, 3, 3.4, 0.3333, 0.2941, 0.3396, 0.1165, 0.0021],
+              [4, 4, 5.7, 0.25, 0.1754, 0.1399, 0.2116, 0.0013],
+              [5, 5, 8.4, 0.2, 0.119, 0.02, 0.2666, 0.0098],
+              ['Σ', 15.0, 19.7, 2.2833, 3.1768, 3.1768, 2.459, 0.0398],
+            ],
+          },
           srLatex:
-            'S_{r,\\text{transf}} = \\sum_{i=1}^5 \\left(\\frac{1}{y_i} - \\widehat{Y\'}_i\\right)^2 = 0.0398',
+            'SR = \\sum_{i=1}^n ((1/y_i) - y_{\\text{Ajuste}})^2 = 0.0398',
           r2Latex:
-            'r_{\\text{transf}}^2 = \\frac{2.4590 - 0.0398}{2.4590} = \\frac{2.4192}{2.4590} \\approx 0.983815 \\approx 0.9838 \\quad (98.38\\% \\text{ en escala recíproca})',
-          scaleNote:
-            'Distorción crítica por transformación recíproca: Al transformar $Y\' = 1/y$, la derivada $-\\frac{1}{y^2}$ provoca que las desviaciones para valores pequeños de $y$ (como $y_1 = 0.5$) se magnifiquen cuadráticamente con un factor $(1/0.5^2) = 4$, mientras que para $y_5 = 8.4$ el factor es apenas $0.014$. Esto sesga artificialmente las pendientes generando un polo o asíntota vertical espuria en $x = 5.2178$.',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{2.4590 - 0.0398}{2.4590} = \\frac{2.4192}{2.4590} \\approx 0.9838',
         },
         metrics: {
           r2: 0.9838,
@@ -369,65 +406,65 @@ const EXERCISES: SolvedExerciseItem[] = [
     title: 'Censo Nacional y Crecimiento Poblacional Histórico',
     source: 'TP Nº4 · Ejercicio 2 (Cátedra ANC)',
     context:
-      'Serie censal de población (en millones) entre 1930 y 1980. Se solicita realizar el ajuste exponencial clásico mediante cambio de variable temporal $t = \\text{año} - 1930$, y proyectar la población para los años 1990, 1995 y 2000.',
+      'Serie censal de población (habitantes) entre 1930 y 1980. Ajuste de tipo Potencial directo sobre el año cronológico $x$, y proyección demográfica para los años 1990, 1995 y 2000.',
     points: [
-      { x: 1930, y: 123.203 },
-      { x: 1940, y: 131.669 },
-      { x: 1950, y: 150.697 },
-      { x: 1960, y: 179.323 },
-      { x: 1970, y: 203.212 },
-      { x: 1980, y: 226.505 },
+      { x: 1930, y: 123203 },
+      { x: 1940, y: 131669 },
+      { x: 1950, y: 150697 },
+      { x: 1960, y: 179323 },
+      { x: 1970, y: 203212 },
+      { x: 1980, y: 226505 },
     ],
-    modelType: 'exponential',
-    bestFormula: 'y = 119.4674 \\cdot e^{0.01292(t)}',
-    r2: 0.9852,
+    modelType: 'power',
+    bestFormula: 'y = e^{-179.2975} \\cdot x^{25.2453}',
+    r2: 0.9887,
     summaryExplanation:
-      'El modelo exponencial demográfico clásico captura la tasa de crecimiento anual sostenida ($b \\approx 1.29\\%$ anual) permitiendo realizar proyecciones confiables para fines del siglo XX.',
+      'Ajuste potencial directo de la población según el año censal $x$, modelando el crecimiento con excelente correlación ($r^2 = 0.9887, r = 0.9944$).',
     bestModelNotice:
-      'Proyecciones demográficas calculadas: Año 1990 ($t=60$): $259.30$ millones | Año 1995 ($t=65$): $276.60$ millones | Año 2000 ($t=70$): $295.05$ millones.',
+      'Proyecciones demográficas calculadas: Año 1990: $258491$ hab. | Año 1995: $275396$ hab. | Año 2000: $293361$ hab.',
     steps: [
       {
         letter: 'a',
-        title: 'Transformación temporal y linealización semilogarítmica',
-        modelType: 'exponential',
-        badge: '$t = \\text{año} - 1930$',
+        title: 'Linealización bilogarítmica del Ajuste Potencial',
+        modelType: 'power',
+        badge: 'Modelo Potencial $y = a \\cdot x^b$',
         description:
-          'Para evitar números de año elevados que desestabilizan el cálculo numérico, se define la variable temporal $t = \\text{año} - 1930$ ($t \\in [0, 50]$). Modelo: $y = a \\cdot e^{bt} \\iff \\ln(y) = \\ln(a) + bt$.',
+          'Linealización bilogarítmica aplicando logaritmo natural en ambos miembros: $\\ln(y) = \\ln(a) + b \\cdot \\ln(x) \\iff Y = a_1 + a_2 X$ con $X = \\ln(x)$, $Y = \\ln(y)$, $a_1 = \\ln(a)$ y $a_2 = b$.',
         tableData: {
-          headers: ['Año', '$t_i$', 'Población $y_i$', '$\\ln(y_i)$', '$t_i^2$', '$t_i \\cdot \\ln(y_i)$'],
+          headers: ['Año ($x_i$)', 'Población ($y_i$)', '$\\ln(x_i)$', '$\\ln(y_i)$', '$[\\ln(x_i)]^2$', '$\\ln(x_i) \\cdot \\ln(y_i)$'],
           rows: [
-            [1930, 0, 123.203, 4.8138, 0, 0.0],
-            [1940, 10, 131.669, 4.8803, 100, 48.803],
-            [1950, 20, 150.697, 5.0153, 400, 100.306],
-            [1960, 30, 179.323, 5.1892, 900, 155.676],
-            [1970, 40, 203.212, 5.3142, 1600, 212.57],
-            [1980, 50, 226.505, 5.4228, 2500, 271.138],
-            ['Σ', 150, 1014.609, 30.6356, 5500, 788.4923],
+            [1930, 123203, 7.5653, 11.7216, 57.2334, 88.6771],
+            [1940, 131669, 7.5704, 11.7880, 57.3116, 89.2404],
+            [1950, 150697, 7.5756, 11.9230, 57.3895, 90.3240],
+            [1960, 179323, 7.5807, 12.0969, 57.4670, 91.7032],
+            [1970, 203212, 7.5858, 12.2220, 57.5442, 92.7135],
+            [1980, 226505, 7.5909, 12.3305, 57.6210, 93.5995],
+            ['Σ', 1014609, 45.4686, 72.0821, 344.5667, 546.2577],
           ],
         },
         sumsLatex:
-          'N = 6, \\quad \\sum t_i = 150.0, \\quad \\sum \\ln(y_i) = 30.6356, \\quad \\sum t_i^2 = 5500.0, \\quad \\sum t_i \\ln(y_i) = 788.4923',
+          'N = 6, \\quad \\sum \\ln(x_i) = 45.4686, \\quad \\sum \\ln(y_i) = 72.0821, \\quad \\sum [\\ln(x_i)]^2 = 344.5667, \\quad \\sum \\ln(x_i)\\ln(y_i) = 546.2577',
         systemLatex:
-          '\\begin{bmatrix} 6 & 150.0 \\\\ 150.0 & 5500.0 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 30.6356 \\\\ 788.4923 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum \\ln(x_i) \\\\ \\sum \\ln(x_i) & \\sum [\\ln(x_i)]^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum \\ln(x_i)\\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 6 & 45.4686 \\\\ 45.4686 & 344.5667 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 72.0821 \\\\ 546.2577 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 6(5500) - (150)^2 = 10500, \\quad \\ln(a) = 4.7830 \\implies a = 119.4674, \\quad b = 0.01292',
-        formulaLatex: 'y(t) = 119.4674 \\cdot e^{0.01292 \\cdot t}',
+          '\\Delta = 6(344.5667) - (45.4686)^2 \\approx 0.002748, \\quad b = \\frac{6(546.2577) - 45.4686(72.0821)}{0.002748} \\approx 25.2453, \\quad \\ln(a) = \\frac{72.0821(344.5667) - 546.2577(45.4686)}{0.002748} \\approx -179.2975 \\implies a = e^{-179.2975}',
+        formulaLatex: '\\ln(y) = -179.2975 + 25.2453 \\cdot \\ln(x) \\iff y = e^{-179.2975} \\cdot x^{25.2453}',
         metrics: {
-          r2: 0.9852,
-          r: 0.9926,
+          r2: 0.9887,
+          r: 0.9944,
         },
         conclusion:
-          'La tasa continua estimada de crecimiento es del $1.29\\%$ por año, con excelente bondad $r^2 = 0.9852$.',
+          'El modelo potencial reporta un excelente ajuste con $r^2 = 0.9887$ y coeficiente de correlación $r = 0.9944$.',
       },
       {
         letter: 'b',
         title: 'Estimación y Proyección Demográfica Futura',
         description:
-          'Evaluación del modelo ajustado para los años 1990 ($t=60$), 1995 ($t=65$) y 2000 ($t=70$):',
+          'Evaluación del modelo potencial ajustado para los años 1990, 1995 y 2000 sustituyendo directamente el año $x$:',
         solutionLatex:
-          'y(1990, t=60) = 119.4674 \\cdot e^{0.01292(60)} = 259.30 \\text{ millones}\\\\ y(1995, t=65) = 119.4674 \\cdot e^{0.01292(65)} = 276.60 \\text{ millones}\\\\ y(2000, t=70) = 119.4674 \\cdot e^{0.01292(70)} = 295.05 \\text{ millones}',
+          '\\ln(y_{1990}) = -179.2975 + 25.2453 \\cdot \\ln(1990) \\approx 12.4626 \\implies y(1990) \\approx 258491 \\text{ habitantes}\\\\ \\ln(y_{1995}) = -179.2975 + 25.2453 \\cdot \\ln(1995) \\approx 12.5260 \\implies y(1995) \\approx 275396 \\text{ habitantes}\\\\ \\ln(y_{2000}) = -179.2975 + 25.2453 \\cdot \\ln(2000) \\approx 12.5892 \\implies y(2000) \\approx 293361 \\text{ habitantes}',
         conclusion:
-          'El modelo predice una población aproximada de $295$ millones de habitantes para el año 2000.',
+          'El modelo potencial predice una población aproximada de $293361$ habitantes para el año 2000.',
       },
     ],
   },
@@ -470,9 +507,9 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           'N = 9, \\quad \\sum x_i = 395.0, \\quad \\sum \\ln(y_i) = 33.0712, \\quad \\sum x_i^2 = 29775.0, \\quad \\sum x_i \\ln(y_i) = 1274.6603',
         systemLatex:
-          '\\begin{bmatrix} 9 & 395.0 \\\\ 395.0 & 29775.0 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 33.0712 \\\\ 1274.6603 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum x_i \\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 9 & 395.0 \\\\ 395.0 & 29775.0 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 33.0712 \\\\ 1274.6603 \\end{bmatrix}',
         solutionLatex:
-          '\\ln(a) = 4.2984 \\implies a = 73.5814, \\quad b = -0.01421',
+          '\\Delta = 9(29775) - (395)^2 = 111950, \\quad \\ln(a) = \\frac{33.0712(29775) - 1274.6603(395)}{111950} \\approx 4.2984 \\implies a = e^{4.2984} \\approx 73.5814, \\quad b = \\frac{9(1274.6603) - 395(33.0712)}{111950} \\approx -0.01421',
         formulaLatex: 'y = 73.5814 \\cdot e^{-0.01421x}',
         metrics: {
           r2: 0.9884,
@@ -528,9 +565,9 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           '\\sum \\frac{1}{x_i} = 2.5593, \\quad \\sum \\frac{1}{y_i} = 8.4954, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.5297, \\quad \\sum \\frac{1}{x_i y_i} = 4.2834',
         systemLatex:
-          '\\begin{bmatrix} 7 & 2.5593 \\\\ 2.5593 & 1.5297 \\end{bmatrix} \\begin{bmatrix} C_1 \\\\ C_2 \\end{bmatrix} = \\begin{bmatrix} 8.4954 \\\\ 4.2834 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 7 & 2.5593 \\\\ 2.5593 & 1.5297 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} 8.4954 \\\\ 4.2834 \\end{bmatrix}',
         solutionLatex:
-          'C_1 = 0.4890 \\implies a = \\frac{1}{C_1} = 2.0450, \\quad C_2 = 1.9819 \\implies b = C_2 \\cdot a = 4.0530',
+          '\\Delta = 7(1.5297) - (2.5593)^2 \\approx 4.1579, \\quad \\frac{1}{a} = \\frac{8.4954(1.5297) - 4.2834(2.5593)}{4.1579} \\approx 0.4890 \\implies a = \\frac{1}{0.4890} \\approx 2.0450, \\quad \\frac{b}{a} = \\frac{7(4.2834) - 2.5593(8.4954)}{4.1579} \\approx 1.9819 \\implies b = 1.9819 \\cdot a \\approx 4.0530',
         formulaLatex: 'y = \\frac{2.0450x}{4.0530 + x}',
         metrics: {
           r2: 0.9961,
@@ -579,9 +616,9 @@ const EXERCISES: SolvedExerciseItem[] = [
         sumsLatex:
           'N = 8, \\quad \\sum \\frac{1}{x_i} = 2.1765, \\quad \\sum \\frac{1}{y_i} = 0.2867, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.3932, \\quad \\sum \\frac{1}{x_i y_i} = 0.1205',
         systemLatex:
-          '\\begin{bmatrix} 8 & 2.1765 \\\\ 2.1765 & 1.3932 \\end{bmatrix} \\begin{bmatrix} C_1 \\\\ C_2 \\end{bmatrix} = \\begin{bmatrix} 0.2867 \\\\ 0.1205 \\end{bmatrix}',
+          '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 8 & 2.1765 \\\\ 2.1765 & 1.3932 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} 0.2867 \\\\ 0.1205 \\end{bmatrix}',
         solutionLatex:
-          'C_1 = 0.02142 \\implies a = 46.6767, \\quad C_2 = 0.05299 \\implies b = 2.4739',
+          '\\Delta = 8(1.3932) - (2.1765)^2 \\approx 6.4084, \\quad \\frac{1}{a} = \\frac{0.2867(1.3932) - 0.1205(2.1765)}{6.4084} \\approx 0.02142 \\implies a = \\frac{1}{0.02142} \\approx 46.6767, \\quad \\frac{b}{a} = \\frac{8(0.1205) - 2.1765(0.2867)}{6.4084} \\approx 0.05299 \\implies b = 0.05299 \\cdot a \\approx 2.4739',
         formulaLatex: 'y = \\frac{46.6767x}{2.4739 + x}',
         metrics: {
           r2: 0.9873,
@@ -628,9 +665,9 @@ const EXERCISES: SolvedExerciseItem[] = [
         degree: 3,
         badge: 'Grado $3$',
         description:
-          'Ajuste polinómico de grado 3 con sistema de ecuaciones normales de Gauss de orden $4 \\times 4$ para modelar la subida acelerada y la posterior desaceleración.',
+          'Ajuste polinómico de grado 3 con sistema de ecuaciones normales de orden $4 \\times 4$ para modelar la subida acelerada y la posterior desaceleración.',
         formulaLatex:
-          'y = a_0 + a_1(t) + a_2(t^2) + a_3(t^3) \\quad \\text{con } t = \\text{año} - 1880',
+          'y = a_1 + a_2(t) + a_3(t^2) + a_4(t^3) \\quad \\text{con } t = \\text{año} - 1880',
         metrics: {
           r2: 0.9912,
         },
@@ -661,7 +698,7 @@ export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProp
           </div>
           <p className="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-2xl">
             Desarrollo matemático completo paso a paso de los Problemas 1 al 6 con tablas de sumatorias,
-            sistemas normales de Gauss, ecuaciones ajustadas y justificaciones analíticas.
+            sistemas de ecuaciones normales, ecuaciones ajustadas y justificaciones analíticas.
           </p>
         </div>
 

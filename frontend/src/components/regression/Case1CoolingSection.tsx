@@ -973,7 +973,7 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
               <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center gap-2">
                   <h4 className="text-base font-bold text-slate-900">
-                    Procedimiento de Cálculo y Ecuaciones Normales de Gauss
+                    Procedimiento de Cálculo y Ecuaciones Normales
                   </h4>
                 </div>
                 <p className="text-xs text-slate-500">

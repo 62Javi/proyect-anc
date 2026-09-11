@@ -66,10 +66,10 @@ export interface RegressionExerciseStep {
   formulaLatex?: string;
   dispersionBreakdown?: DispersionBreakdown;
   metrics?: {
-    r2?: number;
-    sr?: number;
-    st?: number;
-    r?: number;
+    r2?: number | string;
+    sr?: number | string;
+    st?: number | string;
+    r?: number | string;
     extraNote?: string;
   };
   conclusion?: string;
@@ -81,6 +81,20 @@ interface RegressionStepAccordionProps {
   onLoadModel?: (modelType: RegressionModelType, degree?: number) => void;
   bestModelNotice?: string;
 }
+
+const formatMetricValue = (val: number | string | undefined): string => {
+  if (val === undefined) return '';
+  if (typeof val === 'string') return val;
+  // Si el valor está muy próximo a 1 pero no es 1 exacto (ej: 0.99997), mostrar todos sus dígitos para no redondear falsamente a 1.0000
+  if (val > 0.9999 && val < 1) {
+    return val.toString();
+  }
+  // Si es un residuo muy pequeño (ej: SR = 0.000163), mostrar sus cifras significativas sin truncar
+  if (val > 0 && val < 0.001) {
+    return val.toString();
+  }
+  return val.toFixed(4);
+};
 
 export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = ({
   steps,
@@ -251,7 +265,7 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
             {step.dispersionBreakdown && (
               <div className="space-y-2">
                 <span className="text-[11px] font-bold text-slate-700 block">
-                  4. Cálculo de dispersión (<InlineMath math="S_t" />), residuos (<InlineMath math="S_r" />) y bondad de ajuste (<InlineMath math="r^2" />):
+                  4. Cálculo de dispersión (<InlineMath math="ST" />), residuos (<InlineMath math="SR" />) y bondad de ajuste (<InlineMath math="r^2" />):
                 </span>
 
                 {/* Cuadrado: Promedio muestral */}
@@ -282,11 +296,11 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                   </div>
                 )}
 
-                {/* Cuadrado independiente: Tabla de residuos punto a punto */}
+                {/* Cuadrado independiente: Tabla de cálculo de dispersión y residuos */}
                 {step.dispersionBreakdown.residualTable && (
                   <div className="pt-1 space-y-1">
                     <span className="text-[10.5px] font-bold text-slate-600 block font-mono">
-                      Tabla de residuos punto a punto (<InlineMath math="e_i = y_i - \hat{y}_i" />):
+                      Tabla de cálculo de dispersión y residuos:
                     </span>
                     <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
                       <table className="w-full text-left text-xs border-collapse font-mono">
@@ -326,27 +340,27 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                       <span>Coeficiente</span> <InlineMath math="r^2" />
                     </span>
                     <span className="font-mono font-black text-slate-900">
-                      {step.metrics.r2.toFixed(4)}
+                      {formatMetricValue(step.metrics.r2)}
                     </span>
                   </div>
                 )}
                 {step.metrics.sr !== undefined && (
                   <div className="p-2 bg-slate-50 border border-slate-200 rounded-lg">
                     <span className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
-                      <InlineMath math="S_r" /> <span>(Residuos)</span>
+                      <InlineMath math="SR" /> <span>(Residuos)</span>
                     </span>
                     <span className="font-mono font-bold text-slate-900">
-                      {step.metrics.sr.toFixed(4)}
+                      {formatMetricValue(step.metrics.sr)}
                     </span>
                   </div>
                 )}
                 {step.metrics.st !== undefined && (
                   <div className="p-2 bg-slate-50 border border-slate-200 rounded-lg">
                     <span className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
-                      <InlineMath math="S_t" /> <span>(Dispersión)</span>
+                      <InlineMath math="ST" /> <span>(Dispersión)</span>
                     </span>
                     <span className="font-mono font-bold text-slate-900">
-                      {step.metrics.st.toFixed(4)}
+                      {formatMetricValue(step.metrics.st)}
                     </span>
                   </div>
                 )}
@@ -356,7 +370,7 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                       <span>Correlación</span> <InlineMath math="r" />
                     </span>
                     <span className="font-mono font-bold text-slate-900">
-                      {step.metrics.r.toFixed(4)}
+                      {formatMetricValue(step.metrics.r)}
                     </span>
                   </div>
                 )}

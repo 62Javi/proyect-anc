@@ -737,7 +737,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
           {/* Gauss Normal Equations LaTeX Box */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
             <h4 className="text-base font-bold text-slate-900">
-              Sistema de Ecuaciones Normales de Gauss Resuelto
+              Sistema de Ecuaciones Normales Resuelto
             </h4>
             <p className="text-xs text-slate-500">
               Matriz con las sumatorias experimentales calculadas y despeje de los parámetros:

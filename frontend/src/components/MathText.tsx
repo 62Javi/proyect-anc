@@ -37,7 +37,7 @@ export const MathText: React.FC<MathTextProps> = ({ text = '', className = '' })
         }
 
         // Auto-detect common math metrics in plain text segments
-        const subParts = part.split(/(\bS_r\b|\bSr\b|\bS_t\b|\bSt\b|\br²\b|\br\^2\b|\bS_{y\/x}\b|\bSy\/x\b|\bxᵢ\b|\byᵢ\b|\ba₀\b|\ba₁\b|\ba₂\b)/g);
+        const subParts = part.split(/(\bS_r\b|\bSr\b|\bS_t\b|\bSt\b|\br²\b|\br\^2\b|\bS_{y\/x}\b|\bSy\/x\b|\bxᵢ\b|\byᵢ\b|\ba₀\b|\ba₁\b|\ba₂\b|\ba₃\b|\ba₄\b)/g);
         if (subParts.length > 1) {
           return (
             <React.Fragment key={i}>
@@ -51,6 +51,8 @@ export const MathText: React.FC<MathTextProps> = ({ text = '', className = '' })
                 if (sub === 'a₀') return <InlineMath key={j} math="a_0" />;
                 if (sub === 'a₁') return <InlineMath key={j} math="a_1" />;
                 if (sub === 'a₂') return <InlineMath key={j} math="a_2" />;
+                if (sub === 'a₃') return <InlineMath key={j} math="a_3" />;
+                if (sub === 'a₄') return <InlineMath key={j} math="a_4" />;
                 return <span key={j}>{sub}</span>;
               })}
             </React.Fragment>
