@@ -110,7 +110,7 @@ export const RegressionTheorySection: React.FC = () => {
               <strong>Regresión:</strong> Se refiere a la obtención de la ecuación matemática que permite relacionar a la variable dependiente <InlineMath math="y" /> con una o más variables independientes <InlineMath math="x" /> conocidas, posibilitando estimar o pronosticar valores de <InlineMath math="y" />.
             </li>
             <li>
-              <strong>Correlación:</strong> Mide o cuantifica el grado de dependencia o asociación entre la variable dependiente y las variables independientes mediante el coeficiente de correlación.
+              <strong>Correlación:</strong> Nos da el grado de correlación o asociación existente entre las variables intervinientes.
             </li>
             <li>
               <strong>Diagrama de Dispersión:</strong> Es la representación gráfica en el plano cartesiano <InlineMath math="xy" /> de los pares experimentales observados, permitiendo detectar si los datos siguen una tendencia lineal o no lineal e identificar posibles valores atípicos.
@@ -395,21 +395,21 @@ export const RegressionTheorySection: React.FC = () => {
             </div>
           </div>
 
-          {/* Coeficientes r² y r */}
+          {/* Fórmula de Bondad del Ajuste r² según apunte de cátedra */}
           <div className="p-5 bg-slate-900 text-white rounded-2xl space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-xs font-black uppercase tracking-widest text-amber-400">
-                Fórmulas Canónicas de Bondad y Correlación
+                Fórmula de la Bondad del Ajuste
               </span>
               <span className="text-[11px] font-mono text-slate-300">
-                Balance de Varianzas: S_t = (S_t - S_r) + S_r
+                Criterio Cátedra: r² &gt; 0.85
               </span>
             </div>
             <FormulaDisplay
-              formula="r^2 = \frac{S_t - S_r}{S_t}, \qquad r = \operatorname{signo}(a_2) \cdot \sqrt{r^2}"
+              formula="r^2 = \frac{S_T - S_R}{S_T}"
             />
             <p className="text-xs text-slate-300 leading-relaxed font-sans">
-              El coeficiente de determinación <InlineMath math="r^2" /> indica el porcentaje de la dispersión de los datos que queda capturado por el modelo propuesto. El coeficiente de correlación <InlineMath math="r" /> refleja además el sentido o signo de la pendiente en regresiones lineales.
+              La bondad del ajuste <InlineMath math="r^2" /> es un parámetro que nos permite estimar si el ajuste realizado con respecto a los datos experimentales ha sido efectivo o no. Es un valor numérico que varía siempre entre 0 y 1 (<InlineMath math="0 \le r^2 \le 1" />). Se considera que una bondad mayor a <strong>0.85</strong> representa un buen ajuste que describe adecuadamente los datos en el corto plazo.
             </p>
           </div>
 

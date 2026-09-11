@@ -314,7 +314,10 @@ class LeastSquaresCalculator:
             rf"\begin{{bmatrix}} {sum_lny:.2f} \\ {sum_x_lny:.2f} \end{{bmatrix}}"
         )
         a_latex = format_exp_coeff_latex(ln_a, precision=4)
-        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a_latex}, \quad b = {b:.5f}"
+        if abs(ln_a) >= 10:
+            sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = e^{{{ln_a:.4f}}} \approx {a_latex}, \quad b = {b:.5f}"
+        else:
+            sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a_latex}, \quad b = {b:.5f}"
 
         transformed_latex = rf"\ln(y) = \ln(a) + bx \iff \ln(y) = {ln_a:.4f} {('+' if b >= 0 else '-')} {abs(b):.5f}x"
         if "\\times" in a_latex:
@@ -394,11 +397,9 @@ class LeastSquaresCalculator:
 
         # Recuperar parámetro 'a' con protección de desbordamiento (OverflowError)
         try:
-            a = math.exp(ln_a)
+            a = math.exp(ln_a) if abs(ln_a) <= 709 else (float("inf") if ln_a > 709 else 0.0)
         except OverflowError:
-            raise ValueError(
-                "Desbordamiento numérico: los valores de 'x' son demasiado grandes para un ajuste potencial sin normalizar. Aplique un cambio de variable."
-            )
+            a = float("inf") if ln_a > 0 else 0.0
 
         mean_lny = float(np.mean(ln_y))
         pred_lny = ln_a + b * ln_x
@@ -406,8 +407,8 @@ class LeastSquaresCalculator:
         sr_ln = float(np.sum((ln_y - pred_lny) ** 2))
         r2 = max(0.0, (st_ln - sr_ln) / st_ln) if st_ln > 1e-12 else 1.0
 
-        # Cálculo de predicción y residuos
-        y_pred = a * (x**b)
+        # Cálculo de predicción y residuos mediante espacio logarítmico para estabilidad numérica
+        y_pred = np.exp(np.clip(ln_a + b * ln_x, -700, 700))
         residuals = y - y_pred
         sr_orig = float(np.sum(residuals**2))
         syx = math.sqrt(sr_orig / (n - 2)) if n > 2 else 0.0
@@ -418,28 +419,36 @@ class LeastSquaresCalculator:
             rf"\begin{{bmatrix}} \ln(a) \\ b \end{{bmatrix}} = "
             rf"\begin{{bmatrix}} {sum_lny:.2f} \\ {sum_lnx_lny:.2f} \end{{bmatrix}}"
         )
-        sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a:.4f}, \quad b = {b:.5f}"
+
+        sci_a = format_exp_coeff_latex(ln_a, precision=4)
+        if abs(ln_a) >= 5:
+            # Notación analítica de cátedra y científica para evitar redondeo falso a 0.0000
+            a_formula = rf"e^{{{ln_a:.4f}}}"
+            sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = e^{{{ln_a:.4f}}} \approx {sci_a}, \quad b = {b:.5f}"
+        else:
+            a_formula = rf"{a:.4f}"
+            sol_latex = rf"\ln(a) = {ln_a:.4f} \implies a = {a:.4f}, \quad b = {b:.5f}"
+
         transformed_latex = rf"\ln(y) = \ln(a) + b\ln(x) \iff \ln(y) = {ln_a:.4f} {('+' if b >= 0 else '-')} {abs(b):.5f}\ln(x)"
-        formula_latex = rf"y = {a:.4f} \cdot x^{{{b:.5f}}}"
+        formula_latex = rf"y = {a_formula} \cdot x^{{{b:.5f}}}"
 
         # Curva suave para gráficos con saneamiento de NaN / Inf
         x_min, x_max = float(np.min(x)), float(np.max(x))
         cx = np.linspace(max(x_min * 0.8, 1e-4), x_max * 1.05, 100)
-
-        with np.errstate(over="ignore", invalid="ignore"):
-            cy_raw = a * (cx**b)
-            cy = np.nan_to_num(cy_raw, nan=0.0, posinf=1e12, neginf=-1e12)
+        cy = np.exp(np.clip(ln_a + b * np.log(cx), -700, 700))
 
         r2_safe = float(r2) if math.isfinite(r2) else 0.0
         r_safe = math.sqrt(r2_safe) if math.isfinite(r2_safe) else 0.0
         sr_safe = float(sr_ln) if math.isfinite(sr_ln) else 0.0
         syx_safe = float(syx) if math.isfinite(syx) else 0.0
 
+        a_param = round(float(a), 6) if (0.0001 <= abs(a) <= 1e6) else (float(f"{a:.6e}") if a != 0 else 0.0)
+
         return FitResponse(
             model_type="power",
             formula_latex=formula_latex,
             transformed_latex=transformed_latex,
-            parameters={"a": round(a, 6), "b": round(b, 6), "ln_a": round(ln_a, 6)},
+            parameters={"a": a_param, "b": round(b, 6), "ln_a": round(ln_a, 6)},
             metrics=RegressionMetrics(
                 st=st_ln, sr=sr_safe, r2=r2_safe, r=r_safe, syx=syx_safe
             ),

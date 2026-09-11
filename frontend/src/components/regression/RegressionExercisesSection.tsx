@@ -32,10 +32,9 @@ const EXERCISES: SolvedExerciseItem[] = [
   // ==========================================
   {
     number: 1,
-    title: 'Serie de Observaciones: Comparativa de Ajustes y Ecuación del Cociente',
+    title: 'Ejercicio Nº 1: Serie de Observaciones',
     source: 'TP Nº4 · Ejercicio 1 (Cátedra ANC)',
-    context:
-      'Dada la tabla de valores obtenida de una serie de observaciones, se resuelven los 4 ajustes solicitados en los incisos a-d (Lineal, Exponencial, Potencial y Polinómico), se evalúa la bondad de ajuste $r^2$ para determinar la curva óptima y, finalmente, se analiza el ajuste mediante la ecuación del Cociente (inciso f).',
+    context: 'Dada la siguiente tabla de valores obtenida de una serie de observaciones:',
     points: [
       { x: 1, y: 0.5 },
       { x: 2, y: 1.7 },
@@ -50,8 +49,6 @@ const EXERCISES: SolvedExerciseItem[] = [
     sr: 0.0016,
     summaryExplanation:
       'El modelo Potencial ($r^2 = 0.99997$, $S_r = 0.0016$) se corona como el modelo óptimo al describir con máxima fidelidad la aceleración convexa de las observaciones respetando el principio de parsimonia con sólo 2 parámetros.',
-    bestModelNotice:
-      'Veredicto final: El modelo Potencial $y = 0.5009 \\cdot x^{1.7517}$ es la curva óptima de ajuste. Supera al modelo lineal y exponencial en concordancia física y residuos, y aventaja al polinomio de segundo grado al lograr menor dispersión residual ($S_r = 0.0016$ vs $0.0023$) utilizando un parámetro menos.',
     steps: [
       // Inciso a: Lineal
       {
@@ -104,7 +101,7 @@ const EXERCISES: SolvedExerciseItem[] = [
           srLatex:
             'SR = \\sum_{i=1}^n (y_i - y_{\\text{Ajuste}})^2 = 0.2704 + 0.0676 + 0.2916 + 0.0484 + 0.2500 = 0.9280',
           r2Latex:
-            'r^2 = \\frac{ST - SR}{ST} = \\frac{40.1320 - 0.9280}{40.1320} = \\frac{39.2040}{40.1320} \\approx 0.9769 \\implies r = +\\sqrt{0.9769} \\approx 0.9884',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{40.1320 - 0.9280}{40.1320} = \\frac{39.2040}{40.1320} \\approx 0.9769',
         },
         metrics: {
           r2: 0.9769,
@@ -169,13 +166,12 @@ const EXERCISES: SolvedExerciseItem[] = [
           srLatex:
             'SR = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2 = 0.0952 + 0.0528 + 0.0565 + 0.0048 + 0.0522 = 0.2615',
           r2Latex:
-            'r^2 = \\frac{ST - SR}{ST} = \\frac{4.9573 - 0.2615}{4.9573} = \\frac{4.6958}{4.9573} \\approx 0.9472 \\implies r = +\\sqrt{0.9472} \\approx 0.9732',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{4.9573 - 0.2615}{4.9573} = \\frac{4.6958}{4.9573} \\approx 0.9472',
         },
         metrics: {
           r2: 0.9472,
           sr: 0.2615,
           st: 4.9573,
-          r: 0.9732,
         },
         conclusion:
           'En el espacio linealizado $\\ln(y)$ el ajuste reporta $r^2 = 0.9472$, pero al evaluar en la escala original las desviaciones son muy grandes ($S_r = 5.4576$, $r^2 = 0.8640$). La tasa de crecimiento de las observaciones no es exponencial pura.',
@@ -194,7 +190,7 @@ const EXERCISES: SolvedExerciseItem[] = [
           rows: [
             [1, 1, 0.5, 0.0, -0.6931, 0.0, 0.0],
             [2, 2, 1.7, 0.6931, 0.5306, 0.4805, 0.3678],
-            [3, 3, 3.4, 1.0986, 1.2238, 1.2069, 1.3444],
+            [3, 3, 3.4, 1.0986, 1.2238, 1.2069, 1.3445],
             [4, 4, 5.7, 1.3863, 1.7405, 1.9218, 2.4128],
             [5, 5, 8.4, 1.6094, 2.1282, 2.5903, 3.4253],
             ['Σ', 15.0, 19.7, 4.7875, 4.93, 6.1995, 7.5503],
@@ -234,13 +230,12 @@ const EXERCISES: SolvedExerciseItem[] = [
           srLatex:
             'SR = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2 = 0.000163',
           r2Latex:
-            'r^2 = \\frac{ST - SR}{ST} = \\frac{4.9573 - 0.000163}{4.9573} = \\frac{4.957137}{4.9573} \\approx 0.99997 \\implies r = +\\sqrt{0.99997} \\approx 0.99998',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{4.9573 - 0.000163}{4.9573} = \\frac{4.957137}{4.9573} \\approx 0.99997',
         },
         metrics: {
           r2: 0.99997,
           sr: 0.000163,
           st: 4.9573,
-          r: 0.99998,
         },
         conclusion:
           'Ajuste prácticamente perfecto. La suma residual cuadrática es casi nula ($S_r = 0.0016$) y $r^2$ supera el $99.99\\%$. Modela la física del fenómeno de manera impecable con el exponente $b \\approx 1.75$.',
@@ -298,13 +293,12 @@ const EXERCISES: SolvedExerciseItem[] = [
           srLatex:
             'SR = \\sum_{i=1}^n (y_i - y_{\\text{Ajuste}})^2 = 0.000034 + 0.000007 + 0.000635 + 0.001444 + 0.000169 \\approx 0.0023',
           r2Latex:
-            'r^2 = \\frac{ST - SR}{ST} = \\frac{40.1320 - 0.0023}{40.1320} = \\frac{40.1297}{40.1320} \\approx 0.99994 \\implies r = +\\sqrt{0.99994} \\approx 0.99997',
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{40.1320 - 0.0023}{40.1320} = \\frac{40.1297}{40.1320} \\approx 0.99994',
         },
         metrics: {
           r2: 0.99994,
           sr: 0.0023,
           st: 40.132,
-          r: 0.99997,
         },
         conclusion:
           'Excelente ajuste cuadrático ($r^2 = 0.99994$, $S_r = 0.0023$). Al disponer de 3 grados de libertad ($a_1, a_2, a_3$) captura con gran exactitud la aceleración de los puntos.',
@@ -327,6 +321,8 @@ const EXERCISES: SolvedExerciseItem[] = [
             ['Polinómico (2°)', '$y = -0.2000 + 0.4371x + 0.2571x^2$', '0.0023', '0.99994', 'Excelente (requiere 3 parámetros)'],
           ],
         },
+        conclusion:
+          'La curva que mejor se ajusta a la tabla es la POTENCIAL ($y = 0.5009 \\cdot x^{1.7517}$): registra la menor suma de residuos ($SR = 0.000163$), el mayor $r^2$ ($0.99997$) y respeta el principio de parsimonia (Navaja de Ockham) al requerir sólo 2 parámetros frente a los 3 del polinomio cuadrático.',
       },
 
       // Inciso f: Cociente / Saturación
@@ -342,9 +338,9 @@ const EXERCISES: SolvedExerciseItem[] = [
           rows: [
             [1, 1, 0.5, 1.0, 2.0, 1.0, 2.0],
             [2, 2, 1.7, 0.5, 0.5882, 0.25, 0.2941],
-            [3, 3, 3.4, 0.3333, 0.2941, 0.1111, 0.098],
+            [3, 3, 3.4, 0.3333, 0.2941, 0.1111, 0.0980],
             [4, 4, 5.7, 0.25, 0.1754, 0.0625, 0.0439],
-            [5, 5, 8.4, 0.2, 0.119, 0.04, 0.0238],
+            [5, 5, 8.4, 0.2, 0.1190, 0.04, 0.0238],
             ['Σ', 15.0, 19.7, 2.2833, 3.1768, 1.4636, 2.4598],
           ],
         },
@@ -403,10 +399,10 @@ const EXERCISES: SolvedExerciseItem[] = [
   // ==========================================
   {
     number: 2,
-    title: 'Censo Nacional y Crecimiento Poblacional Histórico',
+    title: 'Ejercicio Nº 2: Censo de Población',
     source: 'TP Nº4 · Ejercicio 2 (Cátedra ANC)',
     context:
-      'Serie censal de población (habitantes) entre 1930 y 1980. Ajuste de tipo Potencial directo sobre el año cronológico $x$, y proyección demográfica para los años 1990, 1995 y 2000.',
+      'Dada la siguiente tabla de población con datos obtenidos a través de la realización de censos nacionales.',
     points: [
       { x: 1930, y: 123203 },
       { x: 1940, y: 131669 },
@@ -419,26 +415,24 @@ const EXERCISES: SolvedExerciseItem[] = [
     bestFormula: 'y = e^{-179.2975} \\cdot x^{25.2453}',
     r2: 0.9887,
     summaryExplanation:
-      'Ajuste potencial directo de la población según el año censal $x$, modelando el crecimiento con excelente correlación ($r^2 = 0.9887, r = 0.9944$).',
-    bestModelNotice:
-      'Proyecciones demográficas calculadas: Año 1990: $258491$ hab. | Año 1995: $275396$ hab. | Año 2000: $293361$ hab.',
+      'Ajuste potencial directo de la población según el año censal $x$, modelando el crecimiento con excelente bondad de ajuste ($r^2 = 0.9887 > 0.85$).',
     steps: [
       {
         letter: 'a',
-        title: 'Linealización bilogarítmica del Ajuste Potencial',
+        title: 'Realizar un Ajuste de tipo Potencial.',
         modelType: 'power',
         badge: 'Modelo Potencial $y = a \\cdot x^b$',
         description:
-          'Linealización bilogarítmica aplicando logaritmo natural en ambos miembros: $\\ln(y) = \\ln(a) + b \\cdot \\ln(x) \\iff Y = a_1 + a_2 X$ con $X = \\ln(x)$, $Y = \\ln(y)$, $a_1 = \\ln(a)$ y $a_2 = b$.',
+          'Linealización bilogarítmica aplicando logaritmo natural en ambos miembros: $\\ln(y) = \\ln(a) + b \\cdot \\ln(x) \\iff Y = a_1 + a_2 X$ con $X = \\ln(x)$, $Y = \\ln(y)$, $a_1 = \\ln(a)$ y $a_2 = b$. Los términos $\\ln(x_i) \\cdot \\ln(y_i)$ corresponden a los valores exactos evaluados en calculadora/software redondeados a 4 decimales.',
         tableData: {
           headers: ['Año ($x_i$)', 'Población ($y_i$)', '$\\ln(x_i)$', '$\\ln(y_i)$', '$[\\ln(x_i)]^2$', '$\\ln(x_i) \\cdot \\ln(y_i)$'],
           rows: [
-            [1930, 123203, 7.5653, 11.7216, 57.2334, 88.6771],
-            [1940, 131669, 7.5704, 11.7880, 57.3116, 89.2404],
-            [1950, 150697, 7.5756, 11.9230, 57.3895, 90.3240],
-            [1960, 179323, 7.5807, 12.0969, 57.4670, 91.7032],
+            [1930, 123203, 7.5653, 11.7216, 57.2334, 88.6770],
+            [1940, 131669, 7.5704, 11.7880, 57.3116, 89.2407],
+            [1950, 150697, 7.5756, 11.9230, 57.3895, 90.3239],
+            [1960, 179323, 7.5807, 12.0969, 57.4670, 91.7033],
             [1970, 203212, 7.5858, 12.2220, 57.5442, 92.7135],
-            [1980, 226505, 7.5909, 12.3305, 57.6210, 93.5995],
+            [1980, 226505, 7.5909, 12.3305, 57.6210, 93.5992],
             ['Σ', 1014609, 45.4686, 72.0821, 344.5667, 546.2577],
           ],
         },
@@ -449,16 +443,48 @@ const EXERCISES: SolvedExerciseItem[] = [
         solutionLatex:
           '\\Delta = 6(344.5667) - (45.4686)^2 \\approx 0.002748, \\quad b = \\frac{6(546.2577) - 45.4686(72.0821)}{0.002748} \\approx 25.2453, \\quad \\ln(a) = \\frac{72.0821(344.5667) - 546.2577(45.4686)}{0.002748} \\approx -179.2975 \\implies a = e^{-179.2975}',
         formulaLatex: '\\ln(y) = -179.2975 + 25.2453 \\cdot \\ln(x) \\iff y = e^{-179.2975} \\cdot x^{25.2453}',
+        dispersionBreakdown: {
+          meanLatex:
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{72.0821}{6} = 12.0137',
+          stLatex:
+            'ST = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{media}})^2 = 0.0853 + 0.0509 + 0.0082 + 0.0069 + 0.0434 + 0.1004 = 0.2952',
+          residualTable: {
+            headers: [
+              'Año ($x_i$)',
+              'Población ($y_i$)',
+              '$\\text{Ln}(x_i)$',
+              '$\\text{Ln}(y_i)$',
+              '$y_{\\text{Ajuste}}$',
+              '$(\\text{Ln}(y_i) - y_{\\text{media}})^2$',
+              '$(\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2$',
+            ],
+            rows: [
+              [1930, 123203, 7.5653, 11.7216, 11.6897, 0.0853, 0.001014],
+              [1940, 131669, 7.5704, 11.7880, 11.8202, 0.0509, 0.001034],
+              [1950, 150697, 7.5756, 11.9230, 11.9500, 0.0082, 0.000728],
+              [1960, 179323, 7.5807, 12.0969, 12.0791, 0.0069, 0.000317],
+              [1970, 203212, 7.5858, 12.2220, 12.2076, 0.0434, 0.000207],
+              [1980, 226505, 7.5909, 12.3305, 12.3354, 0.1004, 0.000024],
+              ['Σ', 1014609, 45.4686, 72.0821, 72.0821, 0.2952, 0.003325],
+            ],
+          },
+          srLatex:
+            'SR = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2 = 0.003325 \\approx 0.0033',
+          r2Latex:
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{0.2952 - 0.0033}{0.2952} = \\frac{0.2919}{0.2952} \\approx 0.9887',
+        },
         metrics: {
           r2: 0.9887,
-          r: 0.9944,
+          sr: 0.0033,
+          st: 0.2952,
+          extraNote: 'Escala bilogarítmica ln(y) vs ln(x)',
         },
         conclusion:
-          'El modelo potencial reporta un excelente ajuste con $r^2 = 0.9887$ y coeficiente de correlación $r = 0.9944$.',
+          'El modelo potencial reporta un excelente ajuste con $r^2 = 0.9887 > 0.85$.',
       },
       {
         letter: 'b',
-        title: 'Estimación y Proyección Demográfica Futura',
+        title: 'Estimar la población para los años 1990, 1995 y 2000.',
         description:
           'Evaluación del modelo potencial ajustado para los años 1990, 1995 y 2000 sustituyendo directamente el año $x$:',
         solutionLatex:
@@ -474,10 +500,9 @@ const EXERCISES: SolvedExerciseItem[] = [
   // ==========================================
   {
     number: 3,
-    title: 'Intensidad de Lluvia en Tormentas (Servicio Meteorológico)',
+    title: 'Ejercicio Nº 3: Servicio Meteorológico Nacional',
     source: 'TP Nº4 · Ejercicio 3 (Cátedra ANC)',
-    context:
-      'Medición de la intensidad de precipitación pluvial (ml/min) en función de la duración temporal (segundos). Decaimiento exponencial y estimación a 200 segundos.',
+    context: 'Dada la siguiente tabla obtenida por el Servicio Meteorológico Nacional.',
     points: [
       { x: 5, y: 88.1 },
       { x: 10, y: 72.4 },
@@ -491,40 +516,116 @@ const EXERCISES: SolvedExerciseItem[] = [
     ],
     modelType: 'exponential',
     bestFormula: 'y = 73.5814 \\cdot e^{-0.01421x}',
-    r2: 0.9884,
+    r2: 0.9145,
+    sr: 0.2349,
     summaryExplanation:
-      'El modelo de atenuación exponencial describe con gran correlación la pérdida de intensidad en los chaparrones torrenciales tras los primeros minutos de descarga.',
-    bestModelNotice:
-      'Estimación a 200 segundos: $y(200) = 73.5814 \\cdot e^{-0.01421 \\cdot 200} = 4.29\\text{ ml/min}$.',
+      'El modelo de atenuación exponencial describe con gran fidelidad el decaimiento de intensidad en chaparrones torrenciales tras el pico inicial de descarga, alcanzando un coeficiente de determinación de $r^2 = 0.9145$ (espacio transformado) y $r^2 = 0.8781$ (escala física), superando holgadamente el criterio de la cátedra ($r^2 > 0.85$).',
     steps: [
+      // Inciso a: Ajuste Exponencial
       {
         letter: 'a',
-        title: 'Linealización Semilogarítmica del Decaimiento Pluvial',
+        title: 'Realizar un Ajuste de tipo Exponencial.',
         modelType: 'exponential',
-        badge: 'Decaimiento $b < 0$',
+        badge: 'Modelo Exponencial $y = a \\cdot e^{bx}$',
         description:
-          'Modelo de intensidad: $y = a \\cdot e^{bx}$ con decaimiento continuo ($b < 0$). Aplicando logaritmo natural: $\\ln(y) = \\ln(a) + bx$.',
-        sumsLatex:
-          'N = 9, \\quad \\sum x_i = 395.0, \\quad \\sum \\ln(y_i) = 33.0712, \\quad \\sum x_i^2 = 29775.0, \\quad \\sum x_i \\ln(y_i) = 1274.6603',
-        systemLatex:
-          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum x_i \\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 9 & 395.0 \\\\ 395.0 & 29775.0 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 33.0712 \\\\ 1274.6603 \\end{bmatrix}',
-        solutionLatex:
-          '\\Delta = 9(29775) - (395)^2 = 111950, \\quad \\ln(a) = \\frac{33.0712(29775) - 1274.6603(395)}{111950} \\approx 4.2984 \\implies a = e^{4.2984} \\approx 73.5814, \\quad b = \\frac{9(1274.6603) - 395(33.0712)}{111950} \\approx -0.01421',
-        formulaLatex: 'y = 73.5814 \\cdot e^{-0.01421x}',
-        metrics: {
-          r2: 0.9884,
-          r: 0.9942,
+          'Se propone el modelo exponencial $y = a \\cdot e^{bx}$. Aplicando logaritmo natural en ambos miembros: $\\ln(y) = \\ln(a) + bx \\iff Y = a_1 + a_2 x$, con variable dependiente transformada $Y = \\ln(y)$, ordenada al origen $a_1 = \\ln(a)$ y pendiente $a_2 = b$. Al tratarse de una tormenta que va perdiendo fuerza con el tiempo, se espera una tasa de atenuación negativa ($b < 0$).',
+        tableData: {
+          headers: [
+            'i',
+            'Duración $x_i$ (s)',
+            'Intensidad $y_i$ (ml)',
+            '$\\ln(y_i)$',
+            '$x_i^2$',
+            '$x_i \\cdot \\ln(y_i)$',
+          ],
+          rows: [
+            [1, 5, 88.10, 4.4785, 25, 22.3924],
+            [2, 10, 72.40, 4.2822, 100, 42.8221],
+            [3, 15, 61.37, 4.1169, 225, 61.7538],
+            [4, 20, 52.02, 3.9516, 400, 79.0326],
+            [5, 30, 42.34, 3.7457, 900, 112.3720],
+            [6, 45, 32.13, 3.4698, 2025, 156.1406],
+            [7, 60, 24.93, 3.2161, 3600, 192.9643],
+            [8, 90, 20.13, 3.0022, 8100, 270.1990],
+            [9, 120, 16.58, 2.8082, 14400, 336.9837],
+            ['Σ', 395.0, 410.00, 33.0712, 29775.0, 1274.6603],
+          ],
         },
+        sumsLatex:
+          'N = 9, \\quad \\sum x_i = 395.00, \\quad \\sum y_i = 410.00, \\quad \\sum \\ln(y_i) = 33.0712, \\quad \\sum x_i^2 = 29775.00, \\quad \\sum x_i \\ln(y_i) = 1274.6603',
+        systemLatex:
+          '\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum x_i \\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} 9 & 395.00 \\\\ 395.00 & 29775.00 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} 33.0712 \\\\ 1274.6603 \\end{bmatrix}',
+        solutionLatex:
+          '\\Delta = 9(29775) - (395)^2 = 267975 - 156025 = 111950 \\\\ \\ln(a) = \\frac{33.0712(29775) - 1274.6603(395)}{111950} = \\frac{984695.48 - 503490.82}{111950} = \\frac{481204.66}{111950} \\approx 4.2984 \\implies a = e^{4.2984} \\approx 73.5814 \\\\ b = \\frac{9(1274.6603) - 395(33.0712)}{111950} = \\frac{11471.94 - 13063.12}{111950} = \\frac{-1591.18}{111950} \\approx -0.01421',
+        formulaLatex:
+          'y = 73.5814 \\cdot e^{-0.01421x} \\iff \\ln(y) = 4.2984 - 0.01421x',
         conclusion:
-          'La tasa de atenuación pluvial estimada es de $-0.01421\\text{ s}^{-1}$ con un coeficiente $r^2 = 0.9884$.',
+          'Se obtiene la función exponencial ajustada de decaimiento: el parámetro $a = 73.5814\\text{ ml}$ representa la intensidad de lluvia extrapolada en el instante inicial ($x = 0\\text{ s}$), mientras que el exponente $b = -0.01421\\text{ s}^{-1}$ cuantifica la tasa de amortiguamiento pluvial por segundo.',
       },
+
+      // Inciso b: Bondad del Ajuste
       {
         letter: 'b',
-        title: 'Estimación de la Intensidad Residual a 200 segundos',
-        solutionLatex:
-          'y(200) = 73.5814 \\cdot e^{-0.01421 \\cdot 200} = 73.5814 \\cdot e^{-2.8420} = 4.288 \\text{ ml/min}',
+        title: 'Calcular la Bondad del Ajuste.',
+        modelType: 'exponential',
+        badge: 'Bondad $r^2 = 0.9145$',
+        dispersionBreakdown: {
+          meanLatex:
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n \\text{Ln}(y_i)}{n} = \\frac{33.0712}{9} = 3.6746',
+          stLatex:
+            'ST = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{media}})^2 = 0.6462 + 0.3692 + 0.1957 + 0.0768 + 0.0051 + 0.0419 + 0.2102 + 0.4521 + 0.7506 = 2.7478',
+          residualTable: {
+            headers: [
+              'i',
+              '$x_i$',
+              '$y_i$',
+              '$\\text{Ln}(y_i)$',
+              '$y_{\\text{Ajuste}}$',
+              '$(\\text{Ln}(y_i) - y_{\\text{media}})^2$',
+              '$(\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2$',
+            ],
+            rows: [
+              [1, 5, 88.1, 4.4785, 4.2273, 0.6462, 0.0631],
+              [2, 10, 72.4, 4.2822, 4.1563, 0.3692, 0.0159],
+              [3, 15, 61.37, 4.1169, 4.0852, 0.1957, 0.001],
+              [4, 20, 52.02, 3.9516, 4.0141, 0.0768, 0.0039],
+              [5, 30, 42.34, 3.7457, 3.872, 0.0051, 0.0159],
+              [6, 45, 32.13, 3.4698, 3.6588, 0.0419, 0.0357],
+              [7, 60, 24.93, 3.2161, 3.4456, 0.2102, 0.0527],
+              [8, 90, 20.13, 3.0022, 3.0192, 0.4521, 0.0003],
+              [9, 120, 16.58, 2.8082, 2.5928, 0.7506, 0.0464],
+              ['Σ', 395.0, 410.0, 33.0712, 33.0712, 2.7478, 0.2349],
+            ],
+          },
+          srLatex:
+            'SR = \\sum_{i=1}^n (\\text{Ln}(y_i) - y_{\\text{Ajuste}})^2 = 0.0631 + 0.0159 + 0.0010 + 0.0039 + 0.0159 + 0.0357 + 0.0527 + 0.0003 + 0.0464 = 0.2349',
+          r2Latex:
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{2.7478 - 0.2349}{2.7478} = \\frac{2.5129}{2.7478} \\approx 0.9145',
+          scaleNote:
+            'El cálculo riguroso en el espacio transformado linealizado $\\text{Ln}(y)$ arroja $r^2 = 0.9145$. En la escala física original ($y_i$), la dispersión total es $ST_{\\text{orig}} = 4924.58$ y la suma de residuos cuadráticos es $SR_{\\text{orig}} = 600.13$, arrojando una bondad de ajuste física $r^2_{\\text{fís}} = \\frac{4924.58 - 600.13}{4924.58} \\approx 0.8781$. Ambos valores superan holgadamente el criterio de aceptación de la cátedra ($r^2 > 0.85$).',
+        },
+        metrics: {
+          r2: 0.9145,
+          sr: 0.2349,
+          st: 2.7478,
+          extraNote: 'r² transf = 0.9145 | r² fís = 0.8781',
+        },
         conclusion:
-          'A los 200 segundos (3 min 20 s) la precipitación se habrá reducido prácticamente al $5\\%$ de la intensidad inicial.',
+          'El ajuste exponencial reproduce adecuadamente el fenómeno de tormenta ($r^2 = 0.9145 > 0.85$), explicando más del $91\\%$ de la dispersión de las mediciones registradas por el Servicio Meteorológico Nacional.',
+      },
+
+      // Inciso c: Estimación a 200 segundos
+      {
+        letter: 'c',
+        title:
+          'Estimar cuál sería la Intensidad de Lluvia en Mili-Litros si la misma tuviese una duración de 200 segundos.',
+        badge: 'Estimación a 200 s',
+        description:
+          'Se evalúa la función exponencial ajustada para una duración de precipitación de $x = 200\\text{ segundos}$ sustituyendo directamente el valor de la variable independiente en la ley matemática hallada:',
+        solutionLatex:
+          'y(200) = 73.5814 \\cdot e^{-0.01421 \\cdot 200} = 73.5814 \\cdot e^{-2.8420} \\approx 73.5814 \\cdot 0.058308 \\approx 4.2904 \\text{ ml/min} \\\\ \\text{O bien mediante la ecuación logarítmica: } \\ln(y(200)) = 4.2984 - 0.01421(200) = 1.4564 \\implies y(200) = e^{1.4564} \\approx 4.2904 \\text{ ml/min}',
+        conclusion:
+          'A los 200 segundos (3 minutos y 20 segundos) desde el inicio de la tormenta, la intensidad de lluvia residual estimada caerá a aproximadamente $4.29\\text{ ml/min}$ (o mililitros por minuto), habiéndose amortiguado más del $95\\%$ respecto a la medición inicial torrencial de $88.10\\text{ ml/min}$.',
       },
     ],
   },
@@ -534,10 +635,9 @@ const EXERCISES: SolvedExerciseItem[] = [
   // ==========================================
   {
     number: 4,
-    title: 'Cinética de Crecimiento y Ecuación del Cociente',
+    title: 'Ejercicio Nº 4: Mediciones Experimentales',
     source: 'TP Nº4 · Ejercicio 4 (Cátedra ANC)',
-    context:
-      'Mediciones de saturación biológica/química en laboratorio donde la velocidad se desacelera tendiendo asintóticamente a un valor máximo.',
+    context: 'Dada la siguiente tabla obtenida a través de mediciones:',
     points: [
       { x: 1, y: 0.4 },
       { x: 2, y: 0.7 },
@@ -549,32 +649,101 @@ const EXERCISES: SolvedExerciseItem[] = [
     ],
     modelType: 'saturation',
     bestFormula: 'y = \\frac{2.0450x}{4.0530 + x}',
-    r2: 0.9961,
+    r2: 0.9974,
+    sr: 0.0061,
     summaryExplanation:
-      'Aquí el modelo del cociente es conceptualmente ideal: los datos son cóncavos con techo asintótico, permitiendo estimar el límite de saturación máxima $y_{\\max} = a = 2.0450$.',
-    bestModelNotice:
-      'Asíntota horizontal de saturación: $y_{\\max} = a = 2.0450$ unidades de concentración.',
+      'El modelo de la ecuación del cociente se ajusta con extraordinaria fidelidad a la tendencia cóncava asintótica de las mediciones ($r^2 = 0.9974$, $SR = 0.0061$ en escala recíproca; $r^2 = 0.9933$ en escala física), permitiendo estimar el techo de saturación máxima en $y_{\\max} = a = 2.0450$.',
     steps: [
+      // Inciso a: Ajuste mediante la ecuación del Cociente
       {
         letter: 'a',
-        title: 'Linealización por Inversión de Variables (Lineweaver-Burk)',
+        title: 'Realizar un Ajuste mediante la ecuación del Cociente.',
         modelType: 'saturation',
-        badge: '$\\frac{1}{y}$ vs $\\frac{1}{x}$',
+        badge: 'Ecuación del Cociente',
         description:
-          'Cinética de saturación: $y = \\frac{a \\cdot x}{b + x} \\iff \\frac{1}{y} = \\frac{1}{a} + \\left(\\frac{b}{a}\\right) \\frac{1}{x}$. Se definen variables transformadas $X\' = \\frac{1}{x}$ e $Y\' = \\frac{1}{y}$.',
+          'Modelo de cinética de saturación $y = \\frac{a \\cdot x}{b + x}$. Invirtiendo ambos miembros se obtiene la forma lineal: $\\frac{1}{y} = \\frac{b + x}{a \\cdot x} = \\frac{1}{a} + \\left(\\frac{b}{a}\\right) \\frac{1}{x} \\iff Y = a_1 + a_2 X$, donde $X = \\frac{1}{x}$, $Y = \\frac{1}{y}$, $a_1 = \\frac{1}{a}$ y $a_2 = \\frac{b}{a}$.',
+        tableData: {
+          headers: [
+            'i',
+            '$x_i$',
+            '$y_i$',
+            '$\\frac{1}{x_i}$',
+            '$\\frac{1}{y_i}$',
+            '$\\left(\\frac{1}{x_i}\\right)^2$',
+            '$\\frac{1}{x_i \\cdot y_i}$',
+          ],
+          rows: [
+            [1, 1.0, 0.4, 1.0, 2.5, 1.0, 2.5],
+            [2, 2.0, 0.7, 0.5, 1.4286, 0.25, 0.7143],
+            [3, 2.5, 0.8, 0.4, 1.25, 0.16, 0.5],
+            [4, 4.0, 1.0, 0.25, 1.0, 0.0625, 0.25],
+            [5, 6.0, 1.2, 0.1667, 0.8333, 0.0278, 0.1389],
+            [6, 8.0, 1.3, 0.125, 0.7692, 0.0156, 0.0962],
+            [7, 8.5, 1.4, 0.1176, 0.7143, 0.0138, 0.084],
+            ['Σ', 32.0, 6.8, 2.5593, 8.4954, 1.5297, 4.2834],
+          ],
+        },
         sumsLatex:
-          '\\sum \\frac{1}{x_i} = 2.5593, \\quad \\sum \\frac{1}{y_i} = 8.4954, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.5297, \\quad \\sum \\frac{1}{x_i y_i} = 4.2834',
+          'N = 7, \\quad \\sum \\frac{1}{x_i} = 2.5593, \\quad \\sum \\frac{1}{y_i} = 8.4954, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.5297, \\quad \\sum \\frac{1}{x_i y_i} = 4.2834',
         systemLatex:
           '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 7 & 2.5593 \\\\ 2.5593 & 1.5297 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} 8.4954 \\\\ 4.2834 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 7(1.5297) - (2.5593)^2 \\approx 4.1579, \\quad \\frac{1}{a} = \\frac{8.4954(1.5297) - 4.2834(2.5593)}{4.1579} \\approx 0.4890 \\implies a = \\frac{1}{0.4890} \\approx 2.0450, \\quad \\frac{b}{a} = \\frac{7(4.2834) - 2.5593(8.4954)}{4.1579} \\approx 1.9819 \\implies b = 1.9819 \\cdot a \\approx 4.0530',
-        formulaLatex: 'y = \\frac{2.0450x}{4.0530 + x}',
+          '\\Delta = 7(1.5297) - (2.5593)^2 = 10.7079 - 6.5500 = 4.1579 \\\\ \\frac{1}{a} = \\frac{8.4954(1.5297) - 4.2834(2.5593)}{4.1579} = \\frac{12.9954 - 10.9625}{4.1579} = \\frac{2.0329}{4.1579} \\approx 0.4890 \\implies a = \\frac{1}{0.4890} \\approx 2.0450 \\\\ \\frac{b}{a} = \\frac{7(4.2834) - 2.5593(8.4954)}{4.1579} = \\frac{29.9838 - 21.7423}{4.1579} = \\frac{8.2415}{4.1579} \\approx 1.9819 \\implies b = 1.9819 \\cdot a \\approx 4.0530',
+        formulaLatex:
+          'y = \\frac{a \\cdot x}{b + x} = \\frac{2.0450x}{4.0530 + x} \\iff \\frac{1}{y} = 0.4890 + 1.9819 \\left(\\frac{1}{x}\\right)',
+        conclusion:
+          'El modelo del cociente se ajusta de forma óptima: al ser $a = 2.0450 > 0$ y $b = 4.0530 > 0$, el denominador $(4.0530 + x)$ nunca se anula para $x \\ge 0$, y cuando $x \\to \\infty$, la función tiende al valor de saturación límite $y_{\\max} = a = 2.0450$.',
+      },
+
+      // Inciso b: Calcular la Bondad del Ajuste
+      {
+        letter: 'b',
+        title: 'Calcular la Bondad del Ajuste.',
+        modelType: 'saturation',
+        badge: 'Bondad $r^2 = 0.9974$',
+        dispersionBreakdown: {
+          meanLatex:
+            'y_{\\text{media}} = \\frac{\\sum_{i=1}^n (1/y_i)}{n} = \\frac{8.4954}{7} \\approx 1.2136',
+          stLatex:
+            'ST = \\sum_{i=1}^n ((1/y_i) - y_{\\text{media}})^2 = 1.6547 + 0.0462 + 0.0013 + 0.0456 + 0.1446 + 0.1975 + 0.2493 = 2.3394',
+          residualTable: {
+            headers: [
+              'i',
+              '$x_i$',
+              '$y_i$',
+              '$\\frac{1}{x_i}$',
+              '$\\frac{1}{y_i}$',
+              '$y_{\\text{Ajuste}}$',
+              '$((1/y_i) - y_{\\text{media}})^2$',
+              '$((1/y_i) - y_{\\text{Ajuste}})^2$',
+            ],
+            rows: [
+              [1, 1.0, 0.4, 1.0, 2.5, 2.4709, 1.6547, 0.0008],
+              [2, 2.0, 0.7, 0.5, 1.4286, 1.48, 0.0462, 0.0026],
+              [3, 2.5, 0.8, 0.4, 1.25, 1.2818, 0.0013, 0.001],
+              [4, 4.0, 1.0, 0.25, 1.0, 0.9845, 0.0456, 0.0002],
+              [5, 6.0, 1.2, 0.1667, 0.8333, 0.8193, 0.1446, 0.0002],
+              [6, 8.0, 1.3, 0.125, 0.7692, 0.7367, 0.1975, 0.0011],
+              [7, 8.5, 1.4, 0.1176, 0.7143, 0.7222, 0.2493, 0.0001],
+              ['Σ', 32.0, 6.8, 2.5593, 8.4954, 8.4954, 2.3394, 0.0061],
+            ],
+          },
+          srLatex:
+            'SR = \\sum_{i=1}^n ((1/y_i) - y_{\\text{Ajuste}})^2 = 0.0008 + 0.0026 + 0.0010 + 0.0002 + 0.0002 + 0.0011 + 0.0001 = 0.0061',
+          r2Latex:
+            'r^2 = \\frac{ST - SR}{ST} = \\frac{2.3394 - 0.0061}{2.3394} = \\frac{2.3333}{2.3394} \\approx 0.9974 \\implies r = +\\sqrt{0.9974} \\approx 0.9987',
+          scaleNote:
+            'En el espacio transformado de variables recíprocas ($1/y$ vs $1/x$), el modelo captura el $99.74\\%$ de la dispersión ($r^2 = 0.9974, r = +0.9987$). Al re-transformar a la escala física original ($y_i$), la dispersión total es $ST_{\\text{orig}} = 0.7743$ y la suma de residuos cuadráticos es $SR_{\\text{orig}} = 0.0052$, arrojando una bondad de ajuste física $r^2_{\\text{fís}} = \\frac{0.7743 - 0.0052}{0.7743} \\approx 0.9933$. Ambos valores superan holgadamente el criterio de aceptación de la cátedra ($r^2 > 0.85$).',
+        },
         metrics: {
-          r2: 0.9961,
-          r: 0.998,
+          r2: 0.9974,
+          sr: 0.0061,
+          st: 2.3394,
+          r: 0.9987,
+          extraNote: 'r² transf = 0.9974 | r² fís = 0.9933',
         },
         conclusion:
-          'El modelo reproduce fielmente el efecto de saturación con $r^2 = 0.9961$.',
+          'El ajuste por la ecuación del cociente es sobresaliente ($r^2 = 0.9974$), confirmando que los datos experimentales responden fielmente a una cinética de saturación asintótica.',
       },
     ],
   },
@@ -584,10 +753,10 @@ const EXERCISES: SolvedExerciseItem[] = [
   // ==========================================
   {
     number: 5,
-    title: 'Resistencia a la Compresión del Cemento según Días de Curado',
+    title: 'Ejercicio Nº 5: Resistencia del Cemento',
     source: 'TP Nº4 · Ejercicio 5 (Cátedra ANC)',
     context:
-      'Ensayo de probetas de hormigón para medir la resistencia a compresión (kg/cm²) en función de la maduración (1 a 32 días).',
+      'Se quiere estudiar la resistencia de unas piezas de cemento en función de su edad en días.',
     points: [
       { x: 1, y: 13.0 },
       { x: 2, y: 21.9 },
@@ -608,24 +777,31 @@ const EXERCISES: SolvedExerciseItem[] = [
     steps: [
       {
         letter: 'a',
-        title: 'Ajuste por Saturación Asintótica de Fraguado',
+        title:
+          'Realizar la nube de puntos de la resistencia en función de la edad. ¿Parece presentar una tendencia lineal? Si la respuesta es no, ¿qué tipo de función podría ajustarse a la nube de puntos?',
+        badge: 'Tendencia Asintótica',
+        conclusion:
+          'No presenta tendencia lineal: la resistencia crece rápidamente en la primera semana (endurecimiento inicial) y luego se desacelera estabilizándose hacia un límite asintótico horizontal. El modelo adecuado es una función de saturación (Ecuación del Cociente) $y = \\frac{a \\cdot x}{b + x}$.',
+      },
+      {
+        letter: 'b',
+        title:
+          'Realizar el ajuste adecuado y calcular la Bondad del Ajuste. Estimar cuál será la resistencia obtenida a los 40 días de elaborado el cemento.',
         modelType: 'saturation',
-        badge: 'Resistencia Asintótica',
-        description:
-          'Ajuste mediante ecuación del cociente $y = \\frac{a \\cdot x}{b + x}$ con transformación $\\frac{1}{y} = \\frac{1}{a} + \\left(\\frac{b}{a}\\right) \\frac{1}{x}$.',
+        badge: 'Bondad $r^2 = 0.9873$',
         sumsLatex:
           'N = 8, \\quad \\sum \\frac{1}{x_i} = 2.1765, \\quad \\sum \\frac{1}{y_i} = 0.2867, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.3932, \\quad \\sum \\frac{1}{x_i y_i} = 0.1205',
         systemLatex:
           '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 8 & 2.1765 \\\\ 2.1765 & 1.3932 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} 0.2867 \\\\ 0.1205 \\end{bmatrix}',
         solutionLatex:
-          '\\Delta = 8(1.3932) - (2.1765)^2 \\approx 6.4084, \\quad \\frac{1}{a} = \\frac{0.2867(1.3932) - 0.1205(2.1765)}{6.4084} \\approx 0.02142 \\implies a = \\frac{1}{0.02142} \\approx 46.6767, \\quad \\frac{b}{a} = \\frac{8(0.1205) - 2.1765(0.2867)}{6.4084} \\approx 0.05299 \\implies b = 0.05299 \\cdot a \\approx 2.4739',
+          '\\Delta = 8(1.3932) - (2.1765)^2 \\approx 6.4084, \\quad \\frac{1}{a} = \\frac{0.2867(1.3932) - 0.1205(2.1765)}{6.4084} \\approx 0.02142 \\implies a = \\frac{1}{0.02142} \\approx 46.6767 \\\\ \\frac{b}{a} = \\frac{8(0.1205) - 2.1765(0.2867)}{6.4084} \\approx 0.05299 \\implies b = 0.05299 \\cdot a \\approx 2.4739 \\\\ \\text{Estimación a 40 días: } y(40) = \\frac{46.6767(40)}{2.4739 + 40} = \\frac{1867.068}{42.4739} \\approx 43.9579 \\text{ kg/cm}^2',
         formulaLatex: 'y = \\frac{46.6767x}{2.4739 + x}',
         metrics: {
           r2: 0.9873,
           r: 0.9936,
         },
         conclusion:
-          'Excelente ajuste con $r^2 = 0.9873$, validando una resistencia teórica final de $46.68\\text{ kg/cm}^2$ a maduración infinita.',
+          'El modelo ajustado arroja una excelente bondad de ajuste ($r^2 = 0.9873$). A los 40 días de fraguado, la resistencia a compresión estimada es de aproximadamente $43.96\\text{ kg/cm}^2$, muy cercana al límite asintótico teórico final de $46.68\\text{ kg/cm}^2$.',
       },
     ],
   },
@@ -635,10 +811,10 @@ const EXERCISES: SolvedExerciseItem[] = [
   // ==========================================
   {
     number: 6,
-    title: 'Producción Petrolera Mundial (1880 - 1990) y Curva de Hubbert',
+    title: 'Ejercicio Nº 6: Producción de Petróleo',
     source: 'TP Nº4 · Ejercicio 6 (Cátedra ANC)',
     context:
-      'Evolución histórica de extracción petrolera mundial. Discusión de modelos polinómicos vs límites físicos de agotamiento.',
+      'La ONU tiene publicado un estudio sobre la evolución de la producción mundial de petróleo desde 1880 a 1990.',
     points: [
       { x: 1880, y: 30 },
       { x: 1900, y: 149 },
@@ -660,23 +836,37 @@ const EXERCISES: SolvedExerciseItem[] = [
     steps: [
       {
         letter: 'a',
-        title: 'Ajuste Polinómico Cúbico y Análisis del Pico Petrolero',
+        title:
+          'Utilizar el Microsoft Excel u otra herramienta de software para realizar la nube de puntos de la producción en función del año. ¿Qué tipo de función podría ajustarse a la nube de puntos?',
+        badge: 'Nube de Puntos',
+        conclusion:
+          'La nube de puntos muestra una aceleración acelerada inicial hasta ~1970, seguida de un estancamiento y posterior declive a partir de 1980 (campana de Hubbert). Un modelo exponencial puro divergiría al infinito sin respetar el carácter finito del recurso fósil, por lo que el ajuste polinómico cúbico ($y = a_1 + a_2 t + a_3 t^2 + a_4 t^3$) es el indicado para capturar el punto de inflexión y desaceleración.',
+      },
+      {
+        letter: 'b',
+        title:
+          'Realizar el ajuste adecuado y estimar cuál habrá sido la producción de petróleo en los años 1995, 2000 y 2006. ¿Qué reflexión puede realizar de acuerdo a los datos obtenidos?',
         modelType: 'polynomial',
         degree: 3,
-        badge: 'Grado $3$',
-        description:
-          'Ajuste polinómico de grado 3 con sistema de ecuaciones normales de orden $4 \\times 4$ para modelar la subida acelerada y la posterior desaceleración.',
+        badge: 'Polinomio Cúbico',
         formulaLatex:
           'y = a_1 + a_2(t) + a_3(t^2) + a_4(t^3) \\quad \\text{con } t = \\text{año} - 1880',
         metrics: {
           r2: 0.9912,
         },
         conclusion:
-          'El modelo cúbico alcanza $r^2 = 0.9912$ y permite simular fielmente el pico extractivo mundial registrado hacia fines de la década de 1970.',
+          'Reflexión física: El modelo cúbico ($r^2 = 0.9912$) reproduce fielmente el pico extractivo de Hubbert. Ningún recurso finito puede crecer exponencialmente de forma indefinida; las estimaciones modelan con fidelidad la desaceleración y agotamiento progresivo posterior a 1980.',
       },
     ],
   },
 ];
+
+const formatDisplayR2 = (val: number): string => {
+  if (val > 0.9999 && val < 1) {
+    return val.toString();
+  }
+  return val.toFixed(4);
+};
 
 export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProps> = ({
   onLoadExercise,
@@ -814,16 +1004,8 @@ export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProp
                   <span className="text-slate-500 text-[10px] font-bold flex items-center gap-1">
                     <span>BONDAD</span> <InlineMath math="r^2" />
                   </span>
-                  <span className="font-black text-slate-900 block">{ex.r2.toFixed(4)}</span>
+                  <span className="font-black text-slate-900 block">{formatDisplayR2(ex.r2)}</span>
                 </div>
-                {ex.sr !== undefined && (
-                  <div className="px-3 py-1.5 bg-white rounded-xl border border-slate-200 font-mono shadow-2xs">
-                    <span className="text-slate-500 text-[10px] font-bold flex items-center gap-1">
-                      <span>RESIDUOS</span> <InlineMath math="S_r" />
-                    </span>
-                    <span className="font-black text-slate-900 block">{ex.sr.toFixed(4)}</span>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -832,15 +1014,6 @@ export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProp
               steps={ex.steps}
               isOpenDefault={false}
               bestModelNotice={ex.bestModelNotice}
-              onLoadModel={(model, deg) =>
-                onLoadExercise({
-                  modelType: model,
-                  degree: deg,
-                  points: ex.points,
-                  title: `${ex.title} (${model})`,
-                  source: ex.source,
-                })
-              }
             />
           </div>
         ))}

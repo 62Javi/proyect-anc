@@ -6,10 +6,8 @@ services:
     ports:
       - "8003:8000"
     environment:
-      - ENV=dev
-    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - ./backend:/app
+      - ENV=production
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000
     deploy:
       resources:
         reservations:
@@ -20,12 +18,9 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - "8083:80"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     depends_on:
       - backend
     networks:

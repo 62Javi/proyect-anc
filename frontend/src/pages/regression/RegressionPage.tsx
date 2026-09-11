@@ -30,7 +30,7 @@ export const RegressionPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-full bg-slate-50/50 p-4 sm:p-8 lg:p-12 flex flex-col">
+    <div className="min-h-full bg-slate-50/50 p-3 sm:p-6 lg:p-10 flex flex-col w-full max-w-full min-w-0 overflow-x-hidden">
       {/* Header Banner */}
       <div className="max-w-5xl mx-auto w-full space-y-6 mb-8 print:hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
@@ -103,7 +103,7 @@ export const RegressionPage: React.FC = () => {
       </div>
 
       {/* Tab Contents */}
-      <div className="max-w-5xl mx-auto w-full flex-1">
+      <div className="max-w-5xl mx-auto w-full flex-1 min-w-0">
         <div ref={printRef}>
           {activeTab === 'case1' && <Case1CoolingSection onLoadIntoSolver={handleLoadFromCase1} />}
           {activeTab === 'solver' && <InteractiveRegressionSolver initialConfig={solverConfig} />}

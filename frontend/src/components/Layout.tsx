@@ -131,7 +131,7 @@ export default function Layout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto relative bg-slate-50/50">
+      <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden relative bg-slate-50/50">
         <Outlet />
       </main>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
-import { ChevronDown, CheckCircle2, Play } from 'lucide-react';
+import { ChevronDown, CheckCircle2 } from 'lucide-react';
 import type { RegressionModelType } from '../../types/regression';
 import InlineMath from '../InlineMath';
 import MathText from '../MathText';
@@ -78,7 +78,6 @@ export interface RegressionExerciseStep {
 interface RegressionStepAccordionProps {
   steps: RegressionExerciseStep[];
   isOpenDefault?: boolean;
-  onLoadModel?: (modelType: RegressionModelType, degree?: number) => void;
   bestModelNotice?: string;
 }
 
@@ -99,7 +98,6 @@ const formatMetricValue = (val: number | string | undefined): string => {
 export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = ({
   steps,
   isOpenDefault = false,
-  onLoadModel,
   bestModelNotice,
 }) => {
   const [isOpen, setIsOpen] = useState(isOpenDefault);
@@ -153,32 +151,14 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                 </h4>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                {step.badge && (
+              {step.badge && (
+                <div className="flex items-center gap-2 shrink-0">
                   <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-full">
                     <MathText text={step.badge} />
                   </span>
-                )}
-                {onLoadModel && step.modelType && (
-                  <button
-                    type="button"
-                    onClick={() => onLoadModel(step.modelType!, step.degree)}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer print:hidden"
-                    title="Simular este modelo interactivo"
-                  >
-                    <Play size={11} />
-                    <span>Simular</span>
-                  </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
-
-            {/* Descripción técnica / Planteo del inciso */}
-            {step.description && (
-              <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                <MathText text={step.description} />
-              </p>
-            )}
 
             {/* Tabla de datos / transformaciones (si aplica) */}
             {step.tableData && (
@@ -361,16 +341,6 @@ export const RegressionStepAccordion: React.FC<RegressionStepAccordionProps> = (
                     </span>
                     <span className="font-mono font-bold text-slate-900">
                       {formatMetricValue(step.metrics.st)}
-                    </span>
-                  </div>
-                )}
-                {step.metrics.r !== undefined && (
-                  <div className="p-2 bg-slate-50 border border-slate-200 rounded-lg">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
-                      <span>Correlación</span> <InlineMath math="r" />
-                    </span>
-                    <span className="font-mono font-bold text-slate-900">
-                      {formatMetricValue(step.metrics.r)}
                     </span>
                   </div>
                 )}

@@ -287,19 +287,19 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
   })();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8 w-full min-w-0 max-w-full">
       {/* Configuration Card */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-6 min-w-0 max-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-md shadow-slate-200">
-              <Calculator size={24} />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-md shadow-slate-200 shrink-0">
+              <Calculator size={22} />
             </div>
             <div>
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
                 Ajuste por Mínimos Cuadrados
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
                 Calculadora & Laboratorio de Regresión
               </h2>
             </div>
@@ -309,12 +309,12 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
         {/* Quick Presets */}
         <div className="space-y-2">
           <span className="text-xs font-bold text-slate-500 block">Ejercicios precargados del apunte:</span>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {PRESETS.map((p) => (
               <button
                 key={p.id}
                 onClick={() => handleSelectPreset(p)}
-                className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 transition-all cursor-pointer"
+                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 transition-all cursor-pointer"
               >
                 {p.title}
               </button>
@@ -325,7 +325,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
         {/* Model Selection Tabs */}
         <div className="space-y-3">
           <label className="text-xs font-bold text-slate-700 block">Tipo de Regresión / Modelo:</label>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 min-w-0">
             {[
               { id: 'linear', label: 'Lineal', latex: 'y = a_1 + a_2 x' },
               { id: 'polynomial', label: 'Polinómico', latex: 'y = a_1 + a_2 x + \\dots' },
@@ -337,7 +337,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                 key={m.id}
                 type="button"
                 onClick={() => setModelType(m.id as RegressionModelType)}
-                className={`p-3 sm:p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[76px] last:col-span-2 sm:last:col-span-1 ${
+                className={`p-2.5 sm:p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[72px] sm:min-h-[76px] last:col-span-2 sm:last:col-span-1 min-w-0 ${
                   modelType === m.id
                     ? 'bg-slate-900 text-white border-slate-900 shadow-sm ring-2 ring-slate-900/10'
                     : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
@@ -345,7 +345,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               >
                 <span className="text-xs font-black tracking-tight">{m.label}</span>
                 <div
-                  className={`mt-1.5 flex items-center overflow-hidden pointer-events-none text-xs ${
+                  className={`mt-1 flex items-center overflow-x-auto max-w-full pointer-events-none text-[11px] sm:text-xs scrollbar-none ${
                     modelType === m.id ? 'text-slate-100' : 'text-slate-600'
                   }`}
                 >
@@ -378,7 +378,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
         </div>
 
         {/* Panel Principal de Entrada de Observaciones (Carga Rápida con Previsualización) */}
-        <div className="p-4 sm:p-6 bg-slate-50/80 rounded-3xl border border-slate-200 space-y-4 shadow-2xs">
+        <div className="p-4 sm:p-6 bg-slate-50/80 rounded-2xl sm:rounded-3xl border border-slate-200 space-y-4 shadow-2xs min-w-0 max-w-full overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
             <div>
               <div className="flex items-center gap-2">
@@ -571,91 +571,105 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
 
       {/* RESULTS PRESENTATION */}
       {result && (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8 w-full min-w-0 max-w-full">
           {/* Metrics Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Coeficiente de Determinación
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 w-full min-w-0">
+            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate" title="Coeficiente de Determinación">
+                Determinación (r²)
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black font-mono text-emerald-600">
-                  {result?.metrics?.r2 != null ? result.metrics.r2.toFixed(5) : 'N/A'}
+              <div className="flex items-baseline gap-1.5 min-w-0">
+                <span className="text-lg sm:text-2xl font-black font-mono text-emerald-600 truncate">
+                  {result?.metrics?.r2 != null
+                    ? (result.metrics.r2 > 0.9999 && result.metrics.r2 < 1
+                        ? result.metrics.r2.toString()
+                        : result.metrics.r2.toFixed(5))
+                    : 'N/A'}
                 </span>
-                <span className="text-xs text-slate-400 font-bold">
+                <span className="text-xs text-slate-400 font-bold shrink-0">
                   <InlineMath math="r^2" />
                 </span>
               </div>
-              <span className="text-[10px] font-medium text-slate-500 block">
+              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
                 {result?.metrics?.r2 != null && result.metrics.r2 >= 0.85
                   ? '✅ Ajuste Válido (> 0.85)'
-                  : '⚠️ Ajuste Débil / Inestable'}
+                  : '⚠️ Ajuste Débil'}
               </span>
             </div>
 
-            <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                <span>Correlación</span> (<InlineMath math="r" />)
+            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 truncate" title="Dispersión Total (ST)">
+                <span>Dispersión Media</span> (<InlineMath math="S_T" />)
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black font-mono text-slate-900">
-                  {result?.metrics?.r != null ? result.metrics.r.toFixed(5) : 'N/A'}
+              <div className="flex items-baseline gap-1.5 min-w-0">
+                <span className="text-lg sm:text-2xl font-black font-mono text-slate-900 truncate">
+                  {result?.metrics?.st != null
+                    ? (result.metrics.st > 0 && result.metrics.st < 0.001
+                        ? result.metrics.st.toString()
+                        : result.metrics.st.toFixed(4))
+                    : 'N/A'}
                 </span>
               </div>
-              <span className="text-[10px] font-medium text-slate-500 block">
-                Asociación entre variables
+              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
+                Suma resp. a media
               </span>
             </div>
 
-            <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 truncate" title="Suma Residuos (Sr)">
                 <span>Suma Residuos</span> (<InlineMath math="S_r" />)
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black font-mono text-slate-900">
-                  {result?.metrics?.sr != null ? result.metrics.sr.toFixed(4) : 'N/A'}
+              <div className="flex items-baseline gap-1.5 min-w-0">
+                <span className="text-lg sm:text-2xl font-black font-mono text-slate-900 truncate">
+                  {result?.metrics?.sr != null
+                    ? (result.metrics.sr > 0 && result.metrics.sr < 0.001
+                        ? result.metrics.sr.toString()
+                        : result.metrics.sr.toFixed(4))
+                    : 'N/A'}
                 </span>
               </div>
-              <span className="text-[10px] font-medium text-slate-500 block">
-                Error cuadrático minimizado
+              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
+                Error cuadrático
               </span>
             </div>
 
-            <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+            <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-1 min-w-0 flex flex-col justify-between">
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 truncate" title="Error Estándar (Sy/x)">
                 <span>Error Estándar</span> (<InlineMath math="S_{y/x}" />)
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black font-mono text-slate-900">
+              <div className="flex items-baseline gap-1.5 min-w-0">
+                <span className="text-lg sm:text-2xl font-black font-mono text-slate-900 truncate">
                   {result?.metrics?.syx != null ? result.metrics.syx.toFixed(4) : 'N/A'}
                 </span>
               </div>
-              <span className="text-[10px] font-medium text-slate-500 block">
-                Dispersión de los residuos
+              <span className="text-[9px] sm:text-[10px] font-medium text-slate-500 block truncate">
+                Dispersión residual
               </span>
             </div>
           </div>
 
           {/* Model Formula Banner */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4 min-w-0 max-w-full overflow-hidden">
+            <div className="min-w-0 max-w-full space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                 Ecuación de Regresión Resultante
               </span>
-              <div className="text-lg sm:text-xl font-black text-slate-900 font-mono mt-1">
+              <div className="text-base sm:text-xl font-black text-slate-900 font-mono overflow-x-auto max-w-full pb-1 scrollbar-thin">
                 <InlineMath math={result?.formula_latex ?? '\\text{Sin ecuación}'} />
               </div>
             </div>
             {result?.transformed_latex && (
-              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs font-mono text-slate-600">
-                <span className="text-[9px] uppercase font-bold text-slate-400 block">Forma Linealizada:</span>
-                <InlineMath math={result.transformed_latex} />
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs font-mono text-slate-600 min-w-0 max-w-full overflow-hidden">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block mb-1">Forma Linealizada:</span>
+                <div className="overflow-x-auto max-w-full pb-1 scrollbar-thin">
+                  <InlineMath math={result.transformed_latex} />
+                </div>
               </div>
             )}
           </div>
 
           {/* Chart 1: Scatter + Fit Curve */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4 min-w-0 max-w-full overflow-hidden">
             <div>
               <h4 className="text-base font-bold text-slate-900">
                 Gráfico de Dispersión y Curva de Ajuste
@@ -665,7 +679,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </p>
             </div>
 
-            <div className="h-72 w-full pt-4">
+            <div className="h-64 sm:h-72 w-full pt-4 min-w-0 max-w-full overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -691,7 +705,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
           </div>
 
           {/* Chart 2: Residuals Plot */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4 min-w-0 max-w-full overflow-hidden">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-base font-bold text-slate-900">
@@ -703,7 +717,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               </div>
             </div>
 
-            <div className="h-44 w-full pt-2">
+            <div className="h-44 w-full pt-2 min-w-0 max-w-full overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={result.residuals} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -735,7 +749,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
           </div>
 
           {/* Gauss Normal Equations LaTeX Box */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4 min-w-0 max-w-full overflow-hidden">
             <h4 className="text-base font-bold text-slate-900">
               Sistema de Ecuaciones Normales Resuelto
             </h4>
@@ -743,14 +757,16 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
               Matriz con las sumatorias experimentales calculadas y despeje de los parámetros:
             </p>
 
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 overflow-x-auto space-y-3">
-              <div className="text-xs sm:text-sm font-semibold text-slate-900">
+            <div className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3 min-w-0 max-w-full overflow-hidden">
+              <div className="text-xs sm:text-sm font-semibold text-slate-900 overflow-x-auto max-w-full pb-1 scrollbar-thin">
                 <InlineMath math={result.normal_equations.matrix_latex} block />
               </div>
               <div className="h-px bg-slate-200 w-full" />
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono text-slate-700">
-                <span className="font-bold text-slate-900">Parámetros obtenidos:</span>
-                <InlineMath math={result.normal_equations.solution_latex} />
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs font-mono text-slate-700 min-w-0 max-w-full">
+                <span className="font-bold text-slate-900 shrink-0">Parámetros obtenidos:</span>
+                <div className="overflow-x-auto max-w-full pb-0.5 scrollbar-thin">
+                  <InlineMath math={result.normal_equations.solution_latex} />
+                </div>
               </div>
             </div>
           </div>
