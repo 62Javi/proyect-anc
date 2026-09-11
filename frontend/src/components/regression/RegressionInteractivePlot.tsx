@@ -94,7 +94,7 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
           Object.entries(p).forEach(([k, coeff]) => {
             const m = k.match(/a(\d+)/);
             if (m) {
-              const pwr = parseInt(m[1], 10);
+              const pwr = parseInt(m[1], 10) - 1; // a1 is x^0, a2 is x^1, a3 is x^2...
               val += coeff * Math.pow(x, pwr);
             }
           });
@@ -115,12 +115,19 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
           const val = ((p.a ?? 1) * x) / denom;
           return Number.isFinite(val) ? val : null;
         }
+        if (modelType === 'newton_cooling') {
+          const tAmb = p.t_amb ?? 20;
+          const t0 = p.t0 ?? (points[0]?.y ?? 85);
+          const k = p.k ?? 0.01;
+          const val = tAmb + (t0 - tAmb) * Math.exp(-k * x);
+          return Number.isFinite(val) ? val : null;
+        }
       } catch {
         return null;
       }
       return null;
     };
-  }, [result.parameters, modelType]);
+  }, [result.parameters, modelType, points]);
 
   // Generate continuous GeoGebra-style dataset spanning edge-to-edge from currentMinX to currentMaxX
   const { chartData, effectiveYMin, effectiveYMax } = useMemo(() => {
