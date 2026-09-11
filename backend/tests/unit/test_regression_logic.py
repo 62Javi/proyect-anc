@@ -68,3 +68,28 @@ def test_case1_full_analysis(calculator):
 
     # Check conclusions are present
     assert len(analysis.general_conclusions) >= 4
+
+
+def test_tp4_exercise_6_oil_complete_dataset(calculator):
+    # Complete 28 historical data points from ONU (1880 - 1990)
+    data = [
+        (1880, 30), (1890, 77), (1900, 149), (1905, 215), (1910, 328),
+        (1915, 432), (1920, 689), (1925, 1069), (1930, 1412), (1935, 1655),
+        (1940, 2150), (1945, 2595), (1950, 3803), (1955, 5626), (1960, 7674),
+        (1962, 8882), (1964, 10310), (1966, 12016), (1968, 14104), (1970, 16669),
+        (1972, 18584), (1974, 20389), (1976, 20188), (1978, 21922), (1980, 21732),
+        (1982, 19403), (1984, 19608), (1990, 17153),
+    ]
+    assert len(data) == 28
+
+    pts = [DataPoint(x=p[0], y=p[1]) for p in data]
+
+    # Fit cubic polynomial
+    res_cubic = calculator.fit(FitRequest(model_type="polynomial", degree=3, points=pts))
+    assert res_cubic.metrics.r2 > 0.90
+    assert len(res_cubic.residuals) == 28
+
+    # Fit degree 4 polynomial
+    res_deg4 = calculator.fit(FitRequest(model_type="polynomial", degree=4, points=pts))
+    assert res_deg4.metrics.r2 > 0.95
+

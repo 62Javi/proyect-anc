@@ -185,9 +185,14 @@ class LeastSquaresCalculator:
             sums_table[f"sum_y_x{j}"] = float(vector_b[j])
 
         try:
-            coeffs = np.linalg.solve(matrix_a, vector_b)
-        except np.linalg.LinAlgError:
-            raise ValueError("Matriz singular en el ajuste polinómico.")
+            # np.polyfit uses QR/SVD decomposition which is numerically stable even for high degrees and large coordinate values
+            poly_coeffs = np.polyfit(x, y, degree)[::-1]
+            coeffs = poly_coeffs
+        except Exception:
+            try:
+                coeffs = np.linalg.solve(matrix_a, vector_b)
+            except np.linalg.LinAlgError:
+                raise ValueError("Matriz singular en el ajuste polinómico.")
 
         # y_pred
         y_pred = np.zeros(n, dtype=float)

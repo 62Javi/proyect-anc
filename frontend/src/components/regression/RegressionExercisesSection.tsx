@@ -1,10 +1,14 @@
 import React from 'react';
-import { Printer, ArrowRight, Calculator, Award, Table } from 'lucide-react';
+import { Printer, ArrowRight, Calculator, Award, Table, Info } from 'lucide-react';
 import InlineMath from '../InlineMath';
 import MathText from '../MathText';
 import { useAppPrint } from '../../hooks/useAppPrint';
 import type { RegressionSolverConfig, RegressionModelType } from '../../types/regression';
 import RegressionStepAccordion, { type RegressionExerciseStep } from './RegressionStepAccordion';
+import {
+  Exercise5VisualResolution,
+  Exercise6VisualResolution,
+} from './SoftwareAssistedResolutions';
 
 interface RegressionExercisesSectionProps {
   onLoadExercise: (config: RegressionSolverConfig) => void;
@@ -16,6 +20,8 @@ interface SolvedExerciseItem {
   source: string;
   context: string;
   points: { x: number; y: number }[];
+  xLabel?: string;
+  yLabel?: string;
   modelType: RegressionModelType;
   degree?: number;
   bestFormula: string;
@@ -766,6 +772,8 @@ const EXERCISES: SolvedExerciseItem[] = [
       { x: 28, y: 41.8 },
       { x: 32, y: 43.6 },
     ],
+    xLabel: 'Edad en días ($x$)',
+    yLabel: 'Resistencia a compresión en kg/cm² ($y$)',
     modelType: 'saturation',
     bestFormula: 'y = \\frac{46.6767x}{2.4739 + x}',
     r2: 0.9781,
@@ -773,35 +781,7 @@ const EXERCISES: SolvedExerciseItem[] = [
       'El fraguado del cemento presenta endurecimiento rápido en la primera semana y luego estabilización asintótica hacia una resistencia límite calculada en $46.68\\text{ kg/cm}^2$.',
     bestModelNotice:
       'Resistencia límite asintótica del hormigón: $y_{\\text{asíntota}} = a = 46.68\\text{ kg/cm}^2$.',
-    steps: [
-      {
-        letter: 'a',
-        title:
-          'Realizar la nube de puntos de la resistencia en función de la edad. ¿Parece presentar una tendencia lineal? Si la respuesta es no, ¿qué tipo de función podría ajustarse a la nube de puntos?',
-        badge: 'Tendencia Asintótica',
-        conclusion:
-          'No presenta tendencia lineal: la resistencia crece rápidamente en la primera semana (endurecimiento inicial) y luego se desacelera estabilizándose hacia un límite asintótico horizontal. El modelo adecuado es una función de saturación (Ecuación del Cociente) $y = \\frac{a \\cdot x}{b + x}$.',
-      },
-      {
-        letter: 'b',
-        title:
-          'Realizar el ajuste adecuado y calcular la Bondad del Ajuste. Estimar cuál será la resistencia obtenida a los 40 días de elaborado el cemento.',
-        modelType: 'saturation',
-        badge: 'Bondad $r^2 = 0.9781$',
-        sumsLatex:
-          'N = 8, \\quad \\sum \\frac{1}{x_i} = 2.1765, \\quad \\sum \\frac{1}{y_i} = 0.2867, \\quad \\sum \\left(\\frac{1}{x_i}\\right)^2 = 1.3932, \\quad \\sum \\frac{1}{x_i y_i} = 0.1205',
-        systemLatex:
-          '\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} 8 & 2.1765 \\\\ 2.1765 & 1.3932 \\end{bmatrix} \\begin{bmatrix} \\frac{1}{a} \\\\ \\frac{b}{a} \\end{bmatrix} = \\begin{bmatrix} 0.2867 \\\\ 0.1205 \\end{bmatrix}',
-        solutionLatex:
-          '\\Delta = 8(1.3932) - (2.1765)^2 \\approx 6.4084, \\quad \\frac{1}{a} = \\frac{0.2867(1.3932) - 0.1205(2.1765)}{6.4084} \\approx 0.02142 \\implies a = \\frac{1}{0.02142} \\approx 46.6767 \\\\ \\frac{b}{a} = \\frac{8(0.1205) - 2.1765(0.2867)}{6.4084} \\approx 0.05299 \\implies b = 0.05299 \\cdot a \\approx 2.4739 \\\\ \\text{Estimación a 40 días: } y(40) = \\frac{46.6767(40)}{2.4739 + 40} = \\frac{1867.068}{42.4739} \\approx 43.9579 \\text{ kg/cm}^2',
-        formulaLatex: 'y = \\frac{46.6767x}{2.4739 + x}',
-        metrics: {
-          r2: 0.9781,
-        },
-        conclusion:
-          'El modelo ajustado arroja una excelente bondad de ajuste ($r^2 = 0.9781$). A los 40 días de fraguado, la resistencia a compresión estimada es de aproximadamente $43.96\\text{ kg/cm}^2$, muy cercana al límite asintótico teórico final de $46.68\\text{ kg/cm}^2$.',
-      },
-    ],
+    steps: [],
   },
 
   // ==========================================
@@ -815,47 +795,45 @@ const EXERCISES: SolvedExerciseItem[] = [
       'La ONU tiene publicado un estudio sobre la evolución de la producción mundial de petróleo desde 1880 a 1990.',
     points: [
       { x: 1880, y: 30 },
+      { x: 1890, y: 77 },
       { x: 1900, y: 149 },
+      { x: 1905, y: 215 },
+      { x: 1910, y: 328 },
+      { x: 1915, y: 432 },
       { x: 1920, y: 689 },
+      { x: 1925, y: 1069 },
+      { x: 1930, y: 1412 },
+      { x: 1935, y: 1655 },
       { x: 1940, y: 2150 },
+      { x: 1945, y: 2595 },
+      { x: 1950, y: 3803 },
+      { x: 1955, y: 5626 },
       { x: 1960, y: 7674 },
+      { x: 1962, y: 8882 },
+      { x: 1964, y: 10310 },
+      { x: 1966, y: 12016 },
+      { x: 1968, y: 14104 },
       { x: 1970, y: 16669 },
+      { x: 1972, y: 18584 },
+      { x: 1974, y: 20389 },
+      { x: 1976, y: 20188 },
+      { x: 1978, y: 21922 },
       { x: 1980, y: 21732 },
+      { x: 1982, y: 19403 },
+      { x: 1984, y: 19608 },
       { x: 1990, y: 17153 },
     ],
+    xLabel: 'Año ($x$)',
+    yLabel: 'Producción en billones de Barriles ($y$)',
     modelType: 'polynomial',
     degree: 3,
-    bestFormula: 'y = \\text{Polinomio Cúbico de Grado 3}',
-    r2: 0.9912,
+    bestFormula: 'y(t) = 1834.60 - 232.93t + 4.8933t^2 - 0.008539t^3',
+    r2: 0.9125,
     summaryExplanation:
-      'La producción petrolera presenta un punto de inflexión y estancamiento propio de la campana de Hubbert, haciendo que un modelo polinómico cúbico supere a una exponencial infinita.',
+      'Ajuste asistido por software (Excel) de las 28 observaciones históricas de la ONU mediante polinomio cúbico (r² = 0.9125) y grado 4 (r² = 0.9532).',
     bestModelNotice:
-      'Conclusión de cátedra: Ningún recurso finito puede crecer exponencialmente de forma indefinida; el modelo cúbico modela con fidelidad la fase de desaceleración posterior a 1980.',
-    steps: [
-      {
-        letter: 'a',
-        title:
-          'Utilizar el Microsoft Excel u otra herramienta de software para realizar la nube de puntos de la producción en función del año. ¿Qué tipo de función podría ajustarse a la nube de puntos?',
-        badge: 'Nube de Puntos',
-        conclusion:
-          'La nube de puntos muestra una aceleración acelerada inicial hasta ~1970, seguida de un estancamiento y posterior declive a partir de 1980 (campana de Hubbert). Un modelo exponencial puro divergiría al infinito sin respetar el carácter finito del recurso fósil, por lo que el ajuste polinómico cúbico ($y = a_1 + a_2 t + a_3 t^2 + a_4 t^3$) es el indicado para capturar el punto de inflexión y desaceleración.',
-      },
-      {
-        letter: 'b',
-        title:
-          'Realizar el ajuste adecuado y estimar cuál habrá sido la producción de petróleo en los años 1995, 2000 y 2006. ¿Qué reflexión puede realizar de acuerdo a los datos obtenidos?',
-        modelType: 'polynomial',
-        degree: 3,
-        badge: 'Polinomio Cúbico',
-        formulaLatex:
-          'y = a_1 + a_2(t) + a_3(t^2) + a_4(t^3) \\quad \\text{con } t = \\text{año} - 1880',
-        metrics: {
-          r2: 0.9912,
-        },
-        conclusion:
-          'Reflexión física: El modelo cúbico ($r^2 = 0.9912$) reproduce fielmente el pico extractivo de Hubbert. Ningún recurso finito puede crecer exponencialmente de forma indefinida; las estimaciones modelan con fidelidad la desaceleración y agotamiento progresivo posterior a 1980.',
-      },
-    ],
+      'Conclusión de cátedra: Dentro de la muestra histórica (1880-1990) ambos polinomios capturan la campana de Hubbert, pero la extrapolación fuera de la muestra (1995-2006) ilustra la trampa matemática de los polinomios de alto grado en recursos finitos.',
+    steps: [],
   },
 ];
 
@@ -949,36 +927,82 @@ export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProp
 
             {/* Tabla de observaciones original */}
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                <Table size={14} className="text-slate-500" />
-                <span>Tabla de datos experimentales:</span>
+              <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-bold text-slate-700">
+                <div className="flex items-center gap-1.5">
+                  <Table size={14} className="text-slate-500" />
+                  <span>Tabla de datos experimentales:</span>
+                  <span className="text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                    {ex.points.length} {ex.points.length === 1 ? 'punto' : 'puntos'}
+                  </span>
+                </div>
               </div>
-              <div className="overflow-x-auto touch-pan-x rounded-xl border border-slate-200 bg-slate-50/70 scrollbar-thin [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full">
-                <table className="w-full text-center text-xs border-collapse">
-                  <tbody>
-                    <tr className="border-b border-slate-200 bg-slate-100 font-mono font-bold text-slate-700">
-                      <td className="px-4 py-2 text-left font-black bg-slate-200/70 border-r border-slate-200 w-20">
-                        X
-                      </td>
+
+              {/* Si son muchos puntos (ej: ejercicio 6 con 28 registros de la ONU), mostrar vista de cuadrícula completa legible */}
+              {ex.points.length > 10 ? (
+                <div className="space-y-2">
+                  <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs">
+                    <div className="px-3.5 py-2 bg-slate-100/80 border-b border-slate-200 text-xs font-bold text-slate-700 flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-slate-900">
+                          <MathText text={ex.xLabel || 'Año (x)'} />
+                        </span>
+                        <span className="text-slate-400">vs.</span>
+                        <span className="font-mono text-slate-900">
+                          <MathText text={ex.yLabel || 'Producción (y)'} />
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                        1 barril = 159 litros
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y divide-slate-100 text-xs">
                       {ex.points.map((p, idx) => (
-                        <td key={idx} className="px-4 py-2 border-r border-slate-200 last:border-r-0">
-                          {p.x}
-                        </td>
+                        <div
+                          key={idx}
+                          className="p-2 sm:p-2.5 flex items-center justify-between gap-2 hover:bg-slate-50 transition-colors"
+                        >
+                          <span className="font-mono font-bold text-slate-700 text-[11px]">{p.x}</span>
+                          <span className="font-mono text-slate-900 font-semibold text-[11px]">
+                            {p.y.toLocaleString()}
+                          </span>
+                        </div>
                       ))}
-                    </tr>
-                    <tr className="font-mono text-slate-800">
-                      <td className="px-4 py-2 text-left font-black bg-slate-100/70 border-r border-slate-200 w-20">
-                        Y
-                      </td>
-                      {ex.points.map((p, idx) => (
-                        <td key={idx} className="px-4 py-2 border-r border-slate-200 last:border-r-0">
-                          {p.y}
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-slate-500 italic flex items-center gap-1.5">
+                    <Info size={13} className="text-blue-500 shrink-0" />
+                    <span>Tabla completa con los 28 años del informe oficial de la ONU (1880 a 1990).</span>
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto touch-pan-x rounded-xl border border-slate-200 bg-slate-50/70 scrollbar-thin [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full">
+                  <table className="w-full text-center text-xs border-collapse">
+                    <tbody>
+                      <tr className="border-b border-slate-200 bg-slate-100 font-mono font-bold text-slate-700">
+                        <td className="px-4 py-2 text-left font-black bg-slate-200/70 border-r border-slate-200 min-w-28 shrink-0">
+                          <MathText text={ex.xLabel || 'X'} />
                         </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                        {ex.points.map((p, idx) => (
+                          <td key={idx} className="px-4 py-2 border-r border-slate-200 last:border-r-0">
+                            {p.x}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr className="font-mono text-slate-800">
+                        <td className="px-4 py-2 text-left font-black bg-slate-100/70 border-r border-slate-200 min-w-28 shrink-0">
+                          <MathText text={ex.yLabel || 'Y'} />
+                        </td>
+                        {ex.points.map((p, idx) => (
+                          <td key={idx} className="px-4 py-2 border-r border-slate-200 last:border-r-0">
+                            {p.y}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* Tarjeta de Fórmula Recomendada y Métricas */}
@@ -1007,12 +1031,18 @@ export const RegressionExercisesSection: React.FC<RegressionExercisesSectionProp
               </div>
             </div>
 
-            {/* DESARROLLO PASO A PASO DESPLEGABLE CON INCISOS */}
-            <RegressionStepAccordion
-              steps={ex.steps}
-              isOpenDefault={false}
-              bestModelNotice={ex.bestModelNotice}
-            />
+            {/* RESOLUCIÓN: ASISTIDA POR SOFTWARE EN EJ. 5 Y 6, O PASO A PASO MANUAL EN EJ. 1-4 */}
+            {ex.number === 5 ? (
+              <Exercise5VisualResolution points={ex.points} />
+            ) : ex.number === 6 ? (
+              <Exercise6VisualResolution points={ex.points} />
+            ) : (
+              <RegressionStepAccordion
+                steps={ex.steps}
+                isOpenDefault={false}
+                bestModelNotice={ex.bestModelNotice}
+              />
+            )}
           </div>
         ))}
       </div>
