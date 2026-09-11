@@ -101,17 +101,24 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
           return val;
         }
         if (modelType === 'exponential') {
-          const val = (p.a ?? 1) * Math.exp((p.b ?? 0) * x);
+          const exponent = (p.b ?? 0) * x;
+          if (exponent > 80 || exponent < -80) return null;
+          const val = (p.a ?? 1) * Math.exp(exponent);
           return Number.isFinite(val) ? val : null;
         }
         if (modelType === 'power') {
           if (x <= 0) return null;
-          const val = (p.a ?? 1) * Math.pow(x, p.b ?? 1);
+          const exponent = p.b ?? 1;
+          if (Math.abs(x) > 1e-12) {
+            const logTerm = exponent * Math.log(x);
+            if (logTerm > 80 || logTerm < -80) return null;
+          }
+          const val = (p.a ?? 1) * Math.pow(x, exponent);
           return Number.isFinite(val) ? val : null;
         }
         if (modelType === 'saturation') {
           const denom = (p.b ?? 0) + x;
-          if (Math.abs(denom) < 1e-9) return null;
+          if (Math.abs(denom) < 1e-4) return null;
           const val = ((p.a ?? 1) * x) / denom;
           return Number.isFinite(val) ? val : null;
         }
@@ -119,7 +126,9 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
           const tAmb = p.t_amb ?? 20;
           const t0 = p.t0 ?? (points[0]?.y ?? 85);
           const k = p.k ?? 0.01;
-          const val = tAmb + (t0 - tAmb) * Math.exp(-k * x);
+          const exponent = -k * x;
+          if (exponent > 80 || exponent < -80) return null;
+          const val = tAmb + (t0 - tAmb) * Math.exp(exponent);
           return Number.isFinite(val) ? val : null;
         }
       } catch {
@@ -131,42 +140,7 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
 
   // Generate continuous GeoGebra-style dataset spanning edge-to-edge from currentMinX to currentMaxX
   const { chartData, effectiveYMin, effectiveYMax } = useMemo(() => {
-    const N_SAMPLES = 220;
-    const step = (currentMaxX - currentMinX) / (N_SAMPLES - 1);
-    const mapByX: Record<number, { x: number; y_actual?: number; y_pred?: number }> = {};
-
-    // 1. Sample continuous curve along the visible X domain
-    for (let i = 0; i < N_SAMPLES; i++) {
-      const curX = currentMinX + i * step;
-      const roundedX = Math.round(curX * 1000) / 1000;
-      const pred = evaluateFittedFunction(curX);
-      mapByX[roundedX] = {
-        x: roundedX,
-        y_pred: pred !== null && Number.isFinite(pred) ? pred : undefined,
-      };
-    }
-
-    // 2. Overlay the exact experimental observations
-    points.forEach((pt) => {
-      const roundedX = Math.round(pt.x * 1000) / 1000;
-      const pred = evaluateFittedFunction(pt.x);
-      if (mapByX[roundedX]) {
-        mapByX[roundedX].y_actual = pt.y;
-        if (pred !== null && Number.isFinite(pred)) {
-          mapByX[roundedX].y_pred = pred;
-        }
-      } else {
-        mapByX[roundedX] = {
-          x: pt.x,
-          y_actual: pt.y,
-          y_pred: pred !== null && Number.isFinite(pred) ? pred : undefined,
-        };
-      }
-    });
-
-    const sortedData = Object.values(mapByX).sort((a, b) => a.x - b.x);
-
-    // Compute effective Y boundaries
+    // 1. Compute effective Y boundaries first
     const visiblePoints = points.filter(
       (p) => p.x >= currentMinX && p.x <= currentMaxX
     );
@@ -181,10 +155,59 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
       curMaxY += span * 0.2;
     }
 
+    let yMin = Math.round((curMinY + panOffsetY) * 100) / 100;
+    let yMax = Math.round((curMaxY + panOffsetY) * 100) / 100;
+    if (yMax <= yMin) {
+      yMax = yMin + 1;
+    }
+
+    const ySpan = Math.max(1, yMax - yMin);
+    const safeClampMin = yMin - ySpan * 3;
+    const safeClampMax = yMax + ySpan * 3;
+
+    const isSafePred = (val: number | null): boolean => {
+      return val !== null && Number.isFinite(val) && val >= safeClampMin && val <= safeClampMax;
+    };
+
+    const N_SAMPLES = 220;
+    const step = Math.max(1e-6, (currentMaxX - currentMinX) / (N_SAMPLES - 1));
+    const mapByX: Record<number, { x: number; y_actual?: number; y_pred?: number }> = {};
+
+    // 2. Sample continuous curve along the visible X domain
+    for (let i = 0; i < N_SAMPLES; i++) {
+      const curX = currentMinX + i * step;
+      const roundedX = Math.round(curX * 1000) / 1000;
+      const pred = evaluateFittedFunction(curX);
+      mapByX[roundedX] = {
+        x: roundedX,
+        y_pred: isSafePred(pred) ? (pred as number) : undefined,
+      };
+    }
+
+    // 3. Overlay the exact experimental observations
+    points.forEach((pt) => {
+      const roundedX = Math.round(pt.x * 1000) / 1000;
+      const pred = evaluateFittedFunction(pt.x);
+      if (mapByX[roundedX]) {
+        mapByX[roundedX].y_actual = pt.y;
+        if (isSafePred(pred)) {
+          mapByX[roundedX].y_pred = pred as number;
+        }
+      } else {
+        mapByX[roundedX] = {
+          x: pt.x,
+          y_actual: pt.y,
+          y_pred: isSafePred(pred) ? (pred as number) : undefined,
+        };
+      }
+    });
+
+    const sortedData = Object.values(mapByX).sort((a, b) => a.x - b.x);
+
     return {
       chartData: sortedData,
-      effectiveYMin: Math.round((curMinY + panOffsetY) * 100) / 100,
-      effectiveYMax: Math.round((curMaxY + panOffsetY) * 100) / 100,
+      effectiveYMin: yMin,
+      effectiveYMax: yMax,
     };
   }, [
     currentMinX,
@@ -289,7 +312,7 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
             <XAxis
               type="number"
               dataKey="x"
-              domain={[Number(currentMinX.toFixed(2)), Number(currentMaxX.toFixed(2))]}
+              domain={[currentMinX, currentMaxX]}
               allowDataOverflow={true}
               stroke="#94a3b8"
               fontSize={11}
