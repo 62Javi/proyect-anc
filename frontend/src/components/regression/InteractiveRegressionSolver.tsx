@@ -16,7 +16,6 @@ import {
   Play,
   FileSpreadsheet,
   AlertCircle,
-  CheckCircle2,
   AlertTriangle,
   Eye,
   Thermometer,
@@ -333,12 +332,7 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
                   <span>Nube de Puntos Experimental en Vivo:</span>
                 </div>
 
-                {previewPoints.isValid ? (
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                    <CheckCircle2 size={13} />
-                    {previewPoints.matched.length} observaciones sincronizadas
-                  </span>
-                ) : (
+                {!previewPoints.isValid && (
                   <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
                     <AlertTriangle size={13} />
                     {previewPoints.countX !== previewPoints.countY
@@ -435,7 +429,6 @@ export const InteractiveRegressionSolver: React.FC<InteractiveRegressionSolverPr
           <RegressionInteractivePlot
             result={result}
             modelType={modelType}
-            degree={degree}
             points={points}
           />
 

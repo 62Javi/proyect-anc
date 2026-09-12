@@ -19,14 +19,12 @@ import InlineMath from '../InlineMath';
 interface RegressionInteractivePlotProps {
   result: FitResponse;
   modelType: RegressionModelType;
-  degree?: number;
   points: RegressionDataPoint[];
 }
 
 export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps> = ({
   result,
   modelType,
-  degree = 2,
   points,
 }) => {
   // Compute base bounds from experimental points
@@ -227,17 +225,6 @@ export const RegressionInteractivePlot: React.FC<RegressionInteractivePlotProps>
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
               Gráfico Interactivo de Regresión
-            </span>
-            <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-              {modelType === 'linear'
-                ? 'Modelo Lineal'
-                : modelType === 'polynomial'
-                ? `Polinómico (grado ${degree})`
-                : modelType === 'exponential'
-                ? 'Exponencial'
-                : modelType === 'power'
-                ? 'Potencial'
-                : 'Cociente'}
             </span>
           </div>
           <div className="text-lg sm:text-xl font-black text-slate-900 font-mono overflow-x-auto max-w-full scrollbar-none py-0.5">

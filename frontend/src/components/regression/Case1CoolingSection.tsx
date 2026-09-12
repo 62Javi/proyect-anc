@@ -18,14 +18,13 @@ import {
   Clock,
   Layers,
   FileSpreadsheet,
-  RotateCcw,
-  FastForward,
   Eye,
   EyeOff,
-  Sliders,
+  ChevronDown,
 } from 'lucide-react';
 import { getCase1Analysis, type Case1AnalysisResponse, type FitResponse } from '../../services/api';
 import InlineMath from '../InlineMath';
+import { MathText } from '../MathText';
 
 interface Case1CoolingSectionProps {
   onLoadIntoSolver?: (points: { x: number; y: number }[], title: string) => void;
@@ -39,10 +38,10 @@ const CLUSTER_COLORS: Record<string, string> = {
 };
 
 const CLUSTER_BG_COLORS: Record<string, string> = {
-  'Recipiente térmico': 'bg-blue-50/70 border-blue-200 text-blue-950',
-  'Vaso de papel con tapa': 'bg-emerald-50/70 border-emerald-200 text-emerald-950',
-  'Taza de cerámica': 'bg-amber-50/70 border-amber-200 text-amber-950',
-  'Vaso de vidrio': 'bg-rose-50/70 border-rose-200 text-rose-950',
+  'Recipiente térmico': 'bg-blue-50/50 border-blue-200',
+  'Vaso de papel con tapa': 'bg-emerald-50/50 border-emerald-200',
+  'Taza de cerámica': 'bg-amber-50/50 border-amber-200',
+  'Vaso de vidrio': 'bg-rose-50/50 border-rose-200',
 };
 
 export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoadIntoSolver }) => {
@@ -52,17 +51,18 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
 
   const [selectedTab, setSelectedTab] = useState<string>('comparative');
   const [selectedModel, setSelectedModel] = useState<string>('newton_cooling');
+  const [showConclusions, setShowConclusions] = useState<boolean>(false);
 
-  // Interactive Container Progress & Toggles
-  const [containerSettings, setContainerSettings] = useState<Record<string, { active: boolean; time: number }>>({
+  // Per-container independent controls
+  // Start with ceramic active, others OFF to prevent visual clutter
+  const [containerSettings, setContainerSettings] = useState<
+    Record<string, { active: boolean; time: number }>
+  >({
     'Recipiente térmico': { active: false, time: 0 },
     'Vaso de papel con tapa': { active: false, time: 0 },
-    'Taza de cerámica': { active: false, time: 0 },
+    'Taza de cerámica': { active: true, time: 120 },
     'Vaso de vidrio': { active: false, time: 0 },
   });
-
-  const [focusedContainer, setFocusedContainer] = useState<string>('Recipiente térmico');
-  const [showCurves, setShowCurves] = useState<boolean>(false);
 
   useEffect(() => {
     let mounted = true;
@@ -111,7 +111,6 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
         },
       };
     });
-    setFocusedContainer(name);
   };
 
   const handleSelectAll = (val: boolean, initialTime: number = 0) => {
@@ -150,14 +149,6 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
           const item = data.clusters[name]?.raw_data[i];
           if (item) {
             row[name] = item.temp_drink;
-
-            if (showCurves) {
-              const fitNewton = data.clusters[name]?.fits?.newton_cooling;
-              if (fitNewton?.parameters) {
-                const { A, k, t_amb } = fitNewton.parameters;
-                row[`${name}_fit`] = t_amb + A * Math.exp(-k * timeVal);
-              }
-            }
           }
         }
       });
@@ -165,7 +156,7 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
     }
 
     return rows;
-  }, [data, containerSettings, showCurves]);
+  }, [data, containerSettings]);
 
   if (loading) {
     return (
@@ -289,167 +280,18 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
         <div className="space-y-8">
           {/* Main Interactive Graph with Slider & Controls */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-900">
-                    Diagrama Interactivo de Muestras en Tiempo Real
-                  </h3>
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full border border-slate-200">
-                    Muestras Independientes
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Cada recipiente cuenta con su propio deslizador independiente. Revela los puntos paso a paso sin reiniciar los demás.
-                </p>
-              </div>
-
-              {/* Toggle to show continuous curves */}
-              <button
-                onClick={() => setShowCurves(!showCurves)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer self-start sm:self-auto ${
-                  showCurves
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
-                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                }`}
-              >
-                <Sliders size={14} />
-                <span>{showCurves ? 'Ocultar Curvas de Ajuste' : 'Trazar Curvas de Ajuste'}</span>
-              </button>
-            </div>
-
-            {/* Selector Tabs & Main Slider */}
-            <div className="p-4 sm:p-5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-4">
-              {/* Tab Selector for which container the main slider controls */}
-              <div className="space-y-1.5">
-                <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wide">
-                  1. Elige el recipiente a controlar con el deslizador:
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-slate-900">
+                  Diagrama Interactivo de Muestras en Tiempo Real
+                </h3>
+                <span className="text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full border border-slate-200">
+                  Muestras Independientes
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {Object.keys(clusters).map((name) => {
-                    const conf = containerSettings[name] || { active: false, time: 0 };
-                    const isFocused = focusedContainer === name;
-                    const ptsCount = conf.active && conf.time > 0 ? Math.floor(conf.time / 2) + 1 : 0;
-                    const color = CLUSTER_COLORS[name];
-
-                    return (
-                      <button
-                        key={name}
-                        type="button"
-                        onClick={() => {
-                          setFocusedContainer(name);
-                          if (!conf.active) {
-                            setContainerSettings((prev) => ({
-                              ...prev,
-                              [name]: { active: true, time: 0 },
-                            }));
-                          }
-                        }}
-                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                          isFocused
-                            ? 'ring-2 ring-slate-900 border-slate-900 bg-white shadow-sm'
-                            : 'bg-slate-100/90 hover:bg-slate-200/80 border-slate-200 text-slate-700'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full"
-                            style={{ backgroundColor: color }}
-                          />
-                          <span
-                            className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${
-                              conf.active
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : 'bg-slate-200 text-slate-500'
-                            }`}
-                          >
-                            {conf.active ? `${conf.time} min` : 'Apagado'}
-                          </span>
-                        </div>
-                        <span className="text-xs font-bold text-slate-900 truncate">{name}</span>
-                        <span className="text-[10px] text-slate-500">
-                          {conf.active ? `${ptsCount} / 61 pts` : '0 pts visibles'}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
-
-              {/* Slider for Focused Container */}
-              {(() => {
-                const focusedConf = containerSettings[focusedContainer] || { active: false, time: 0 };
-                const focusedPts = focusedConf.active && focusedConf.time > 0 ? Math.floor(focusedConf.time / 2) + 1 : 0;
-                const focusedColor = CLUSTER_COLORS[focusedContainer];
-
-                return (
-                  <div className="pt-2 border-t border-slate-200/70 space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: focusedColor }} />
-                        <span className="text-xs font-bold text-slate-900">
-                          Deslizador para:{' '}
-                          <span className="text-slate-950 font-black">{focusedContainer}</span>
-                        </span>
-                        {!focusedConf.active && (
-                          <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
-                            Inactivo (Mueve el slider para encenderlo en 0)
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setContainerTime(focusedContainer, 0)}
-                          title="Reiniciar a 0 min (0 puntos visibles)"
-                          className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 transition-all cursor-pointer"
-                        >
-                          <RotateCcw size={12} />
-                          <span>0 min (0 pts)</span>
-                        </button>
-                        <button
-                          onClick={() => setContainerTime(focusedContainer, 120)}
-                          title="Llevar a 120 min (61 puntos visibles)"
-                          className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 transition-all cursor-pointer"
-                        >
-                          <FastForward size={12} />
-                          <span>120 min (61 pts)</span>
-                        </button>
-
-                        <div className="flex items-center gap-2 font-mono text-xs ml-1">
-                          <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg font-bold text-slate-900 shadow-2xs">
-                            ⏱️ {focusedConf.time} min
-                          </span>
-                          <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 shadow-2xs">
-                            📍 {focusedPts} / 61 pts
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <input
-                        type="range"
-                        min={0}
-                        max={120}
-                        step={2}
-                        value={focusedConf.time}
-                        onChange={(e) => {
-                          setContainerTime(focusedContainer, Number(e.target.value));
-                        }}
-                        className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900 focus:outline-none"
-                      />
-                      <div className="flex justify-between text-[10px] font-bold text-slate-400 font-mono px-0.5">
-                        <span>0 min (0 pts)</span>
-                        <span>30 min</span>
-                        <span>60 min (1 h)</span>
-                        <span>90 min</span>
-                        <span>120 min (61 pts)</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
+              <p className="text-xs text-slate-500 mt-0.5">
+                Visualización de temperatura vs. tiempo. Controla cada recipiente con sus deslizadores individuales debajo del gráfico.
+              </p>
             </div>
 
             {/* The Main Chart */}
@@ -510,30 +352,16 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                   {/* Render points for active containers */}
                   {Object.keys(clusters).map((name) =>
                     containerSettings[name]?.active ? (
-                      <React.Fragment key={name}>
-                        {/* Scatter points representing measurements */}
-                        <Line
-                          type="monotone"
-                          dataKey={name}
-                          stroke={CLUSTER_COLORS[name]}
-                          strokeWidth={0}
-                          dot={{ r: 4.5, fill: CLUSTER_COLORS[name], stroke: '#ffffff', strokeWidth: 1.5 }}
-                          activeDot={{ r: 7 }}
-                          isAnimationActive={false}
-                        />
-                        {/* Optional smooth fitted line */}
-                        {showCurves && (
-                          <Line
-                            type="monotone"
-                            dataKey={`${name}_fit`}
-                            stroke={CLUSTER_COLORS[name]}
-                            strokeWidth={2}
-                            strokeDasharray="4 3"
-                            dot={false}
-                            isAnimationActive={false}
-                          />
-                        )}
-                      </React.Fragment>
+                      <Line
+                        key={name}
+                        type="monotone"
+                        dataKey={name}
+                        stroke={CLUSTER_COLORS[name]}
+                        strokeWidth={0}
+                        dot={{ r: 4.5, fill: CLUSTER_COLORS[name], stroke: '#ffffff', strokeWidth: 1.5 }}
+                        activeDot={{ r: 7 }}
+                        isAnimationActive={false}
+                      />
                     ) : null
                   )}
                 </ComposedChart>
@@ -544,7 +372,7 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
             <div className="space-y-3 pt-2 border-t border-slate-100">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span className="text-xs font-bold text-slate-700">
-                  2. Recipientes en estudio (activa, apaga o desliza individualmente):
+                  Recipientes en estudio (activa, apaga o desliza individualmente):
                 </span>
                 <div className="flex flex-wrap items-center gap-1.5">
                   <button
@@ -573,16 +401,12 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                   const conf = containerSettings[name] || { active: false, time: 0 };
                   const liveTemp = getCurrentTemp(name);
                   const color = CLUSTER_COLORS[name];
-                  const isFocused = focusedContainer === name;
                   const ptsCount = conf.active && conf.time > 0 ? Math.floor(conf.time / 2) + 1 : 0;
 
                   return (
                     <div
                       key={name}
-                      onClick={() => setFocusedContainer(name)}
-                      className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-3 relative overflow-hidden ${
-                        isFocused ? 'ring-2 ring-slate-900' : ''
-                      } ${
+                      className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between space-y-3 relative overflow-hidden ${
                         conf.active
                           ? `${CLUSTER_BG_COLORS[name]} shadow-sm scale-[1.01]`
                           : 'bg-slate-50/60 hover:bg-slate-100/70 border-slate-200 text-slate-600 opacity-80'
@@ -663,7 +487,6 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                           disabled={!conf.active}
                           onChange={(e) => {
                             setContainerTime(name, Number(e.target.value));
-                            setFocusedContainer(name);
                           }}
                           className={`w-full h-2 rounded-lg appearance-none focus:outline-none ${
                             conf.active
@@ -679,33 +502,68 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
             </div>
           </div>
 
-          {/* Academic Conclusions for Presentation */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-700 border border-emerald-200">
-                <Award size={20} />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">
-                  Conclusiones Oficiales del Caso para la Exposición
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Respuesta rigurosa a las 5 consignas solicitadas por la cátedra
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {data.general_conclusions.map((concl, idx) => (
-                <div key={idx} className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
-                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                    <span>Punto Clave #{idx + 1}</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">{concl}</p>
+          {/* Academic Conclusions for Presentation (Collapsible to prevent spoilers) */}
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden transition-all">
+            <button
+              onClick={() => setShowConclusions(!showConclusions)}
+              className="w-full p-5 sm:p-6 flex items-center justify-between gap-4 text-left hover:bg-slate-50/80 transition-colors cursor-pointer group"
+              aria-expanded={showConclusions}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-700 border border-emerald-200 shrink-0 group-hover:scale-105 transition-transform">
+                  <Award size={20} />
                 </div>
-              ))}
-            </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                      Conclusiones Oficiales del Caso para la Exposición
+                    </h3>
+                    <span className="hidden sm:inline-flex text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      6 puntos clave
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Respuesta rigurosa a las consignas solicitadas por la cátedra · Clic para {showConclusions ? 'ocultar' : 'desplegar'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 group-hover:text-slate-900 transition-colors shrink-0">
+                <span className="hidden md:inline text-[11px]">
+                  {showConclusions ? 'Ocultar conclusiones' : 'Ver conclusiones'}
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition-colors">
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 ${showConclusions ? 'rotate-180' : ''}`}
+                  />
+                </div>
+              </div>
+            </button>
+
+            {showConclusions && (
+              <div className="p-6 sm:p-8 pt-2 sm:pt-2 border-t border-slate-100 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {data.general_conclusions.map((concl, idx) => {
+                    const parts = concl.split(': ');
+                    const title = parts.length > 1 ? parts[0] : `Punto Clave #${idx + 1}`;
+                    const body = parts.length > 1 ? parts.slice(1).join(': ') : concl;
+
+                    return (
+                      <div key={idx} className="p-4 sm:p-5 bg-slate-50/90 border border-slate-200/80 rounded-2xl space-y-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                          <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                          <MathText text={title} />
+                        </div>
+                        <div className="text-xs text-slate-600 leading-relaxed">
+                          <MathText text={body} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -746,10 +604,10 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
               </label>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { id: 'newton_cooling', label: 'Ley de Enfriamiento de Newton (Físico)', badge: 'Recomendado' },
-                  { id: 'polynomial_2', label: 'Polinómico Grado 2 (Cuadrático)', badge: 'Apunte' },
+                  { id: 'newton_cooling', label: 'Exponencial del Apunte en (T - Tamb) · Ley de Newton', badge: 'Óptimo' },
+                  { id: 'polynomial_2', label: 'Polinómico Grado 2 (Cuadrático)', badge: 'Mejor Ajuste Empírico' },
                   { id: 'polynomial_3', label: 'Polinómico Grado 3 (Cúbico)', badge: 'Apunte' },
-                  { id: 'exponential', label: 'Exponencial Directo y = a·e^(bx)', badge: 'Linealizado' },
+                  { id: 'exponential', label: 'Exponencial Directo T(t) = a·e^(bx)', badge: 'Sin asíntota Tamb' },
                   { id: 'linear', label: 'Lineal y = a1 + a2·x', badge: 'Descartado' },
                 ].map((m) => (
                   <button

@@ -17,9 +17,11 @@ function fmt(val: number, decimals: number = 4): string {
   if (Math.abs(val - Math.round(val)) < 1e-9) {
     return Math.round(val).toString();
   }
-  // Si es un número muy pequeño en valor absoluto
+  // Si es un número muy pequeño en valor absoluto, formatear en notación científica KaTeX
   if (Math.abs(val) < 1e-4) {
-    return val.toExponential(3);
+    const expStr = val.toExponential(2);
+    const [mantissa, exp] = expStr.split('e');
+    return `${mantissa} \\times 10^{${parseInt(exp)}}`;
   }
   // Formatear hasta `decimals` dígitos y remover ceros sobrantes al final
   const fixed = val.toFixed(decimals);
@@ -95,8 +97,9 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
         matrixLatex: `\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\end{bmatrix} \\implies \\begin{bmatrix} ${n} & ${fmt(sumX, 2)} \\\\ ${fmt(sumX, 2)} & ${fmt(sumX2, 2)} \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} ${fmt(sumY, 2)} \\\\ ${fmt(sumXY, 2)} \\end{bmatrix}`,
         step4Title: '4. Resolución analítica de los coeficientes (Regla de Cramer):',
         cramerLatex: `\\Delta = ${n}(${fmt(sumX2, 2)}) - (${fmt(sumX, 2)})^2 ${eq(delta, 4)} \\\\[6pt] a_1 = \\frac{(${fmt(sumY, 2)})(${fmt(sumX2, 2)}) - (${fmt(sumXY, 2)})(${fmt(sumX, 2)})}{${fmt(delta, 4)}} ${eq(a1, 4)} \\\\[6pt] a_2 = \\frac{${n}(${fmt(sumXY, 2)}) - (${fmt(sumX, 2)})(${fmt(sumY, 2)})}{${fmt(delta, 4)}} ${eq(a2, 4)}`,
-        step5Title: '5. ECUACIÓN AJUSTADA OBTENIDA (MODELO LINEAL):',
+        step5Title: '5. Sustitución de coeficientes en el modelo lineal:',
         formulaLatex: `y = ${fmt(a1, 4)} ${a2 >= 0 ? '+' : '-'} ${fmt(Math.abs(a2), 4)}x`,
+        r2Val: r2,
         meanLabel: 'PROMEDIO ORIGINAL:',
         meanLatex: `y_{\\text{media}} = \\frac{\\sum y_i}{N} = \\frac{${fmt(sumY)}}{${n}} ${eq(yMean, 4)}`,
         stLatex: `ST = \\sum (y_i - y_{\\text{media}})^2 ${eq(st, 6)}`,
@@ -142,8 +145,9 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
         matrixLatex: `\\begin{bmatrix} N & \\sum x_i \\\\ \\sum x_i & \\sum x_i^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum x_i \\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} ${count} & ${fmt(sumX, 2)} \\\\ ${fmt(sumX, 2)} & ${fmt(sumX2, 2)} \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} ${fmt(sumLnY, 2)} \\\\ ${fmt(sumXLnY, 2)} \\end{bmatrix}`,
         step4Title: '4. Resolución analítica de los coeficientes (Regla de Cramer):',
         cramerLatex: `\\Delta = ${count}(${fmt(sumX2, 2)}) - (${fmt(sumX, 2)})^2 ${eq(delta, 4)} \\\\[6pt] \\ln(a) = \\frac{(${fmt(sumLnY, 2)})(${fmt(sumX2, 2)}) - (${fmt(sumXLnY, 2)})(${fmt(sumX, 2)})}{${fmt(delta, 4)}} ${eq(lnA, 4)} \\implies a = e^{${fmt(lnA, 4)}} ${eq(a, 4)} \\\\[6pt] b = \\frac{${count}(${fmt(sumXLnY, 2)}) - (${fmt(sumX, 2)})(${fmt(sumLnY, 2)})}{${fmt(delta, 4)}} ${eq(b, 5)}`,
-        step5Title: '5. ECUACIÓN AJUSTADA OBTENIDA (MODELO EXPONENCIAL):',
+        step5Title: '5. Sustitución de coeficientes en el modelo exponencial:',
         formulaLatex: `y = ${fmt(a, 4)} \\cdot e^{${fmt(b, 5)}x}`,
+        r2Val: r2,
         meanLabel: 'PROMEDIO LINEALIZADO:',
         meanLatex: `y_{\\text{media}} = \\frac{\\sum \\ln(y_i)}{N} = \\frac{${fmt(sumLnY)}}{${count}} ${eq(meanLnY, 4)}`,
         stLatex: `ST = \\sum (\\ln(y_i) - y_{\\text{media}})^2 ${eq(st, 6)}`,
@@ -189,8 +193,9 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
         matrixLatex: `\\begin{bmatrix} N & \\sum \\ln(x_i) \\\\ \\sum \\ln(x_i) & \\sum (\\ln(x_i))^2 \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} \\sum \\ln(y_i) \\\\ \\sum \\ln(x_i)\\ln(y_i) \\end{bmatrix} \\implies \\begin{bmatrix} ${count} & ${fmt(sumLnX, 2)} \\\\ ${fmt(sumLnX, 2)} & ${fmt(sumLnX2, 2)} \\end{bmatrix} \\begin{bmatrix} \\ln(a) \\\\ b \\end{bmatrix} = \\begin{bmatrix} ${fmt(sumLnY, 2)} \\\\ ${fmt(sumLnXLnY, 2)} \\end{bmatrix}`,
         step4Title: '4. Resolución analítica de los coeficientes (Regla de Cramer):',
         cramerLatex: `\\Delta = ${count}(${fmt(sumLnX2, 2)}) - (${fmt(sumLnX, 2)})^2 ${eq(delta, 4)} \\\\[6pt] \\ln(a) = \\frac{(${fmt(sumLnY, 2)})(${fmt(sumLnX2, 2)}) - (${fmt(sumLnXLnY, 2)})(${fmt(sumLnX, 2)})}{${fmt(delta, 4)}} ${eq(lnA, 4)} \\implies a = e^{${fmt(lnA, 4)}} ${eq(a, 4)} \\\\[6pt] b = \\frac{${count}(${fmt(sumLnXLnY, 2)}) - (${fmt(sumLnX, 2)})(${fmt(sumLnY, 2)})}{${fmt(delta, 4)}} ${eq(b, 5)}`,
-        step5Title: '5. ECUACIÓN AJUSTADA OBTENIDA (MODELO POTENCIAL):',
+        step5Title: '5. Sustitución de coeficientes en el modelo potencial:',
         formulaLatex: `y = ${fmt(a, 4)} \\cdot x^{${fmt(b, 5)}}`,
+        r2Val: r2,
         meanLabel: 'PROMEDIO LINEALIZADO:',
         meanLatex: `y_{\\text{media}} = \\frac{\\sum \\ln(y_i)}{N} = \\frac{${fmt(sumLnY)}}{${count}} ${eq(meanLnY, 4)}`,
         stLatex: `ST = \\sum (\\ln(y_i) - y_{\\text{media}})^2 ${eq(st, 6)}`,
@@ -238,8 +243,9 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
         matrixLatex: `\\begin{bmatrix} N & \\sum \\frac{1}{x_i} \\\\ \\sum \\frac{1}{x_i} & \\sum \\left(\\frac{1}{x_i}\\right)^2 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} \\sum \\frac{1}{y_i} \\\\ \\sum \\frac{1}{x_i y_i} \\end{bmatrix} \\implies \\begin{bmatrix} ${count} & ${fmt(sumInvX, 4)} \\\\ ${fmt(sumInvX, 4)} & ${fmt(sumInvX2, 4)} \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix} = \\begin{bmatrix} ${fmt(sumInvY, 4)} \\\\ ${fmt(sumInvXY, 4)} \\end{bmatrix}`,
         step4Title: '4. Resolución analítica de los coeficientes (Regla de Cramer):',
         cramerLatex: `\\Delta = ${count}(${fmt(sumInvX2, 4)}) - (${fmt(sumInvX, 4)})^2 ${eq(delta, 4)} \\\\[6pt] a_1 = \\frac{1}{a} = \\frac{(${fmt(sumInvY, 4)})(${fmt(sumInvX2, 4)}) - (${fmt(sumInvXY, 4)})(${fmt(sumInvX, 4)})}{${fmt(delta, 4)}} ${eq(a1, 5)} \\implies a = \\frac{1}{${fmt(a1, 5)}} ${eq(a, 4)} \\\\[6pt] a_2 = \\frac{b}{a} = \\frac{${count}(${fmt(sumInvXY, 4)}) - (${fmt(sumInvX, 4)})(${fmt(sumInvY, 4)})}{${fmt(delta, 4)}} ${eq(a2, 5)} \\implies b = ${fmt(a2, 5)} \\cdot a ${eq(b, 4)}`,
-        step5Title: '5. ECUACIÓN AJUSTADA OBTENIDA (MODELO DEL COCIENTE):',
+        step5Title: '5. Sustitución de coeficientes en el modelo del cociente:',
         formulaLatex: `y = \\frac{a \\cdot x}{b + x} = \\frac{${fmt(a, 4)} \\cdot x}{${fmt(b, 4)} + x}`,
+        r2Val: r2,
         meanLabel: 'PROMEDIO LINEALIZADO:',
         meanLatex: `y_{\\text{media}} = \\frac{\\sum (1/y_i)}{N} = \\frac{${fmt(sumInvY)}}{${count}} ${eq(meanInvY, 4)}`,
         stLatex: `ST = \\sum (Y_i - y_{\\text{media}})^2 ${eq(st, 6)}`,
@@ -311,8 +317,9 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
           matrixLatex: `\\begin{bmatrix} N & \\sum x_i & \\sum x_i^2 \\\\ \\sum x_i & \\sum x_i^2 & \\sum x_i^3 \\\\ \\sum x_i^2 & \\sum x_i^3 & \\sum x_i^4 \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} \\sum y_i \\\\ \\sum x_i y_i \\\\ \\sum x_i^2 y_i \\end{bmatrix} \\implies \\begin{bmatrix} ${n} & ${fmt(sumX, 1)} & ${fmt(sumX2, 1)} \\\\ ${fmt(sumX, 1)} & ${fmt(sumX2, 1)} & ${fmt(sumX3, 1)} \\\\ ${fmt(sumX2, 1)} & ${fmt(sumX3, 1)} & ${fmt(sumX4, 1)} \\end{bmatrix} \\begin{bmatrix} a_1 \\\\ a_2 \\\\ a_3 \\end{bmatrix} = \\begin{bmatrix} ${fmt(sumY, 1)} \\\\ ${fmt(sumXY, 1)} \\\\ ${fmt(sumX2Y, 1)} \\end{bmatrix}`,
           step4Title: '4. Resolución analítica de los coeficientes (Regla de Cramer):',
           cramerLatex: `\\Delta = \\det(\\mathbf{A}) ${eq(delta, 2)} \\\\[6pt] a_1 = \\frac{\\Delta_{a_1}}{\\Delta} ${eq(a1, 4)}, \\quad a_2 = \\frac{\\Delta_{a_2}}{\\Delta} ${eq(a2, 4)}, \\quad a_3 = \\frac{\\Delta_{a_3}}{\\Delta} ${eq(a3, 4)}`,
-          step5Title: '5. ECUACIÓN AJUSTADA OBTENIDA (PARÁBOLA CUADRÁTICA):',
+          step5Title: '5. Sustitución de coeficientes en la parábola cuadrática:',
           formulaLatex: `y = ${fmt(a1, 4)} ${a2 >= 0 ? '+' : '-'} ${fmt(Math.abs(a2), 4)}x ${a3 >= 0 ? '+' : '-'} ${fmt(Math.abs(a3), 4)}x^2`,
+          r2Val: r2,
           meanLabel: 'PROMEDIO:',
           meanLatex: `y_{\\text{media}} = \\frac{\\sum y_i}{N} = \\frac{${fmt(sumY)}}{${n}} ${eq(yMean, 4)}`,
           stLatex: `ST = \\sum (y_i - y_{\\text{media}})^2 ${eq(st, 6)}`,
@@ -332,8 +339,9 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
           matrixLatex: result?.normal_equations?.matrix_latex ?? '',
           step4Title: '4. Resolución analítica de los coeficientes:',
           cramerLatex: result?.normal_equations?.solution_latex ?? '',
-          step5Title: `5. ECUACIÓN AJUSTADA OBTENIDA (POLINOMIO DE GRADO ${degree}):`,
+          step5Title: `5. Sustitución de coeficientes en el polinomio de grado ${degree}:`,
           formulaLatex: result?.formula_latex ?? '',
+          r2Val: r2,
           meanLabel: 'PROMEDIO:',
           meanLatex: `y_{\\text{media}} = \\frac{\\sum y_i}{N} ${eq(yMean, 4)}`,
           stLatex: `ST = \\sum (y_i - y_{\\text{media}})^2 ${eq(st, 6)}`,
@@ -386,60 +394,119 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
         </div>
       </div>
 
-      {/* 5. Banner Ecuación Obtenida */}
-      <div className="p-5 sm:p-6 bg-[#0f172a] text-white rounded-2xl sm:rounded-3xl border border-slate-800 shadow-md space-y-2 text-center">
-        <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 block">
+      {/* 5. Modelo Ajustado Obtenido */}
+      <div className="space-y-2">
+        <h4 className="text-sm font-bold text-slate-800 tracking-tight">
           {stepData.step5Title}
-        </span>
-        <div className="text-base sm:text-xl font-mono font-bold text-white overflow-x-auto max-w-full py-1 scrollbar-thin">
-          <InlineMath math={stepData.formulaLatex} />
+        </h4>
+        <div className="p-4 sm:p-5 bg-slate-50/90 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs">
+          <div className="text-center text-base sm:text-lg font-mono font-bold text-slate-900 overflow-x-auto overflow-y-hidden py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <InlineMath math={stepData.formulaLatex} />
+          </div>
         </div>
       </div>
 
-      {/* 6. Dispersión y Bondad */}
-      <div className="space-y-2">
-        <h4 className="text-sm font-bold text-slate-800 tracking-tight">
-          6. Cálculo de dispersión (<InlineMath math="ST" />), residuos cuadráticos (<InlineMath math="SR" />) y bondad de ajuste (<InlineMath math="r^2" />):
-        </h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Card 1: Promedio */}
-          <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-1.5 shadow-2xs">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-              {stepData.meanLabel}
-            </span>
-            <div className="text-xs sm:text-sm font-mono text-slate-800 overflow-x-auto max-w-full scrollbar-thin">
+      {/* 6. Dispersión, Residuos y Bondad de Ajuste */}
+      <div className="space-y-3 pt-2">
+        <div className="space-y-0.5">
+          <h4 className="text-sm font-bold text-slate-900 tracking-tight">
+            6. Evaluación de la bondad de ajuste y análisis de varianza:
+          </h4>
+          <p className="text-xs text-slate-500">
+            Desglose analítico entre la dispersión total (<InlineMath math="ST" />), el error residual no explicado (<InlineMath math="SR" />) y el coeficiente de determinación (<InlineMath math="r^2" />).
+          </p>
+        </div>
+
+        {/* HERO CARD: COEFICIENTE DE DETERMINACIÓN r² */}
+        <div className="p-5 sm:p-6 bg-emerald-50/50 rounded-2xl sm:rounded-3xl border border-emerald-200 shadow-sm space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-100 pb-3">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">
+                BONDAD DE AJUSTE GLOBAL · COEFICIENTE DE DETERMINACIÓN
+              </span>
+              <span className="text-xs text-emerald-700 font-medium">
+                Proporción de varianza explicada por el modelo respecto a la media
+              </span>
+            </div>
+            <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+              <span className="text-xs font-bold text-emerald-900 bg-white px-3 py-1 rounded-full border border-emerald-200 shadow-2xs font-mono">
+                {(stepData.r2Val * 100).toFixed(2)}% varianza explicada
+              </span>
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-600 text-white shadow-2xs">
+                {stepData.r2Val >= 0.90
+                  ? 'Ajuste Muy Alto'
+                  : stepData.r2Val >= 0.80
+                  ? 'Ajuste Aceptable'
+                  : 'Ajuste Regular / Débil'}
+              </span>
+            </div>
+          </div>
+
+          <div className="text-sm sm:text-base md:text-lg font-mono font-bold text-slate-900 overflow-x-auto overflow-y-hidden py-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <InlineMath math={stepData.r2Latex} />
+          </div>
+
+          <p className="text-xs text-emerald-800/90 leading-relaxed">
+            {stepData.r2Val >= 0.90
+              ? `El modelo ajustado reproduce de manera óptima la tendencia física experimental, explicando el ${(stepData.r2Val * 100).toFixed(2)}% de la variación total observada.`
+              : `El modelo explica el ${(stepData.r2Val * 100).toFixed(2)}% de la variación muestral. Una discrepancia residual considerable puede indicar no linealidad o un comportamiento asintótico distinto.`}
+          </p>
+        </div>
+
+        {/* 3 VARIANCE METRICS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {/* Card 1: Promedio Muestral */}
+          <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
+                {stepData.meanLabel}
+              </span>
+              <span className="text-[11px] text-slate-400 font-medium block">
+                Línea base horizontal de referencia
+              </span>
+            </div>
+            <div className="text-xs sm:text-sm font-mono text-slate-900 overflow-x-auto overflow-y-hidden py-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <InlineMath math={stepData.meanLatex} />
             </div>
+            <p className="text-[11px] text-slate-500 leading-snug pt-1 border-t border-slate-100">
+              Media de las respuestas experimentales observadas.
+            </p>
           </div>
 
-          {/* Card 2: Dispersión Total */}
-          <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-1.5 shadow-2xs">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-              DISPERSIÓN TOTAL:
-            </span>
-            <div className="text-xs sm:text-sm font-mono text-slate-800 overflow-x-auto max-w-full scrollbar-thin">
+          {/* Card 2: Dispersión Total ST */}
+          <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
+                DISPERSIÓN TOTAL (<InlineMath math="ST" />)
+              </span>
+              <span className="text-[11px] text-slate-400 font-medium block">
+                Variabilidad total respecto a la media
+              </span>
+            </div>
+            <div className="text-xs sm:text-sm font-mono text-slate-900 overflow-x-auto overflow-y-hidden py-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <InlineMath math={stepData.stLatex} />
             </div>
+            <p className="text-[11px] text-slate-500 leading-snug pt-1 border-t border-slate-100">
+              Suma de cuadrados total sin considerar el efecto de <InlineMath math="x" />.
+            </p>
           </div>
 
-          {/* Card 3: Suma Residuos Cuadráticos */}
-          <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-1.5 shadow-2xs">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-              SUMA DE RESIDUOS CUADRÁTICOS:
-            </span>
-            <div className="text-xs sm:text-sm font-mono text-slate-800 overflow-x-auto max-w-full scrollbar-thin">
+          {/* Card 3: Suma de Residuos Cuadráticos SR */}
+          <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
+                SUMA DE RESIDUOS (<InlineMath math="SR" />)
+              </span>
+              <span className="text-[11px] text-slate-400 font-medium block">
+                Error residual no explicado
+              </span>
+            </div>
+            <div className="text-xs sm:text-sm font-mono text-slate-900 overflow-x-auto overflow-y-hidden py-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <InlineMath math={stepData.srLatex} />
             </div>
-          </div>
-
-          {/* Card 4: Coeficiente Determinación */}
-          <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-1.5 shadow-2xs">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-              COEFICIENTE DE DETERMINACIÓN:
-            </span>
-            <div className="text-xs sm:text-sm font-mono text-slate-800 overflow-x-auto max-w-full scrollbar-thin">
-              <InlineMath math={stepData.r2Latex} />
-            </div>
+            <p className="text-[11px] text-slate-500 leading-snug pt-1 border-t border-slate-100">
+              Discrepancia cuadrática minimizada por el ajuste.
+            </p>
           </div>
         </div>
       </div>

@@ -43,6 +43,24 @@ def format_num_clean(val: float, decimals: int = 4) -> str:
     return s
 
 
+def format_poly_coeff(c: float, precision: int = 4) -> str:
+    """Format polynomial coefficient nicely:
+    - If |c| < 1e-12: '0'
+    - If standard fixed formatting rounds to zero (e.g. 0.0000) but c != 0:
+      format in scientific notation (e.g. 1.04 \\times 10^{-6})
+    - Otherwise format with standard fixed decimal precision.
+    """
+    abs_c = abs(c)
+    if abs_c < 1e-12:
+        return "0"
+    fixed = f"{abs_c:.{precision}f}"
+    if float(fixed) == 0.0:
+        exp = int(math.floor(math.log10(abs_c)))
+        mantissa = abs_c / (10**exp)
+        return rf"{mantissa:.2f} \times 10^{{{exp}}}"
+    return fixed
+
+
 class LeastSquaresCalculator:
     def __init__(self):
         self._case1_cache: Optional[Dict[str, List[Dict[str, Any]]]] = None
@@ -222,15 +240,19 @@ class LeastSquaresCalculator:
         terms = []
         for j in range(m_size):
             c = coeffs[j]
+            abs_c = abs(c)
+            if abs_c < 1e-12 and j > 0:
+                continue
+            coeff_str = format_poly_coeff(c, 4)
             if j == 0:
-                terms.append(f"{c:.4f}")
+                terms.append(f"-{coeff_str}" if c < 0 else coeff_str)
             elif j == 1:
                 sign = "+" if c >= 0 else "-"
-                terms.append(f"{sign} {abs(c):.4f}x")
+                terms.append(f"{sign} {coeff_str}x")
             else:
                 sign = "+" if c >= 0 else "-"
-                terms.append(f"{sign} {abs(c):.4f}x^{j}")
-        formula_latex = "y = " + " ".join(terms)
+                terms.append(f"{sign} {coeff_str}x^{j}")
+        formula_latex = "y = " + (" ".join(terms) if terms else "0")
 
         matrix_rows = []
         for r in range(m_size):
@@ -239,7 +261,12 @@ class LeastSquaresCalculator:
         b_str = " \\\\ ".join([f"{val:.2f}" for val in vector_b])
         rows_str = " \\\\ ".join(matrix_rows)
         num_latex = rf"\begin{{bmatrix}} {rows_str} \end{{bmatrix}} \mathbf{{a}} = \begin{{bmatrix}} {b_str} \end{{bmatrix}}"
-        sol_latex = ", ".join([rf"a_{j + 1} = {coeffs[j]:.4f}" for j in range(m_size)])
+        sol_latex = ", ".join(
+            [
+                rf"a_{j + 1} = {'-' if coeffs[j] < 0 else ''}{format_poly_coeff(coeffs[j], 4)}"
+                for j in range(m_size)
+            ]
+        )
 
         x_min, x_max = float(np.min(x)), float(np.max(x))
         x_span = max(x_max - x_min, 1.0)
@@ -696,7 +723,7 @@ class LeastSquaresCalculator:
             curve_y=[float(v) for v in cy],
             points_x=[float(v) for v in x],
             points_y=[float(v) for v in y],
-            explanation="Ley de Enfriamiento de Newton: T(t) - Tamb = A*e^(-k*t). Modela con exactitud la termodinámica del enfriamiento del líquido.",
+            explanation="Modelo Exponencial del apunte (y = a·e^(bx)) aplicado a la diferencia térmica Y' = T - Tamb (Ley de Enfriamiento de Newton). Modela rigurosamente la termodinámica del líquido con asíntota a Tamb.",
         )
 
     def analyze_case1(self) -> Case1AnalysisResponse:
@@ -762,7 +789,7 @@ class LeastSquaresCalculator:
                     t_half=t_half,
                     temp_initial=temp_init,
                     temp_final=temp_final,
-                    best_model="Ley de Enfriamiento de Newton (Exponencial desplazada)",
+                    best_model="Modelo Exponencial del apunte en (T - Tamb) · Ley de Newton",
                     r2_best=fit_newton.metrics.r2,
                 )
             )
@@ -771,10 +798,46 @@ class LeastSquaresCalculator:
         summaries.sort(key=lambda s: s.k_cooling_rate)
 
         general_conclusions = [
-            "1. Jerarquía de Aislamiento Térmico: El Recipiente Térmico es ampliamente superior a los demás, con una constante k = 0.00681 min⁻¹ (t_medio = 101.8 min), reteniendo la bebida a 50.89°C tras 2 horas. Por el contrario, el Vaso de Vidrio disipa calor casi 4.5 veces más rápido (k = 0.03103 min⁻¹), cayendo a 23.42°C (prácticamente temperatura ambiente).",
-            "2. Descarte del Modelo Lineal: Aunque el ajuste lineal arroja r² entre 0.82 y 0.98, el gráfico de residuos revela una curvatura sistemática en 'U' (residuos no aleatorios), y físicamente predice temperaturas negativas a tiempos largos (absurdo termodinámico).",
-            "3. Superioridad del Modelo de Newton: La Ley de Enfriamiento de Newton (dT/dt = -k(T - Tamb)) linealizada con ln(T - Tamb) obtiene un coeficiente r² > 0.9996 en los 4 clústeres, con residuos completamente dispersos y una justificación física rigurosa.",
-            "4. Impacto de la Tapa y Material: El Vaso de Papel con Tapa (k = 0.01793 min⁻¹) supera notablemente a la Taza de Cerámica destapada (k = 0.02342 min⁻¹), demostrando que la evaporación superficial y la convección superior representan una vía crítica de pérdida de calor en bebidas calientes.",
+            (
+                r"1. Jerarquía de Aislamiento Térmico: El Recipiente Térmico es ampliamente superior, "
+                r"con constante de enfriamiento $k = 0.00681\text{ min}^{-1}$ ($t_{\text{medio}} = 101.8\text{ min}$), "
+                r"reteniendo la bebida a $50.89^\circ\text{C}$ tras $2\text{ h}$. Por el contrario, el Vaso de Vidrio "
+                r"disipa calor casi $4.5$ veces más rápido ($k = 0.03103\text{ min}^{-1}$), cayendo a $23.42^\circ\text{C}$ "
+                r"(prácticamente temperatura ambiente)."
+            ),
+            (
+                r"2. Evaluación No Sesgada de los 5 Modelos del Apunte: Se evaluaron individualmente los modelos "
+                r"de cátedra (Lineal, Exponencial, Polinómico de 2° grado, Potencial y Cociente) en cada clúster. "
+                r"El lineal presentó sesgo sistemático (residuos en 'U') y predicción absurda "
+                r"de temperaturas negativas; potencial y cociente no modelan el decaimiento térmico con asíntota horizontal no nula "
+                r"$T_{\text{amb}}$ desde $T_0$; el polinómico de grado 2 ofreció un ajuste empírico alto en el intervalo ($r^2 > 0.984$); "
+                r"y el exponencial sobre $(T - T_{\text{amb}})$ resultó ser el modelo óptimo global ($r^2 > 0.9996$)."
+            ),
+            (
+                r"3. Vinculación con el Modelo Exponencial del Apunte y Ley de Newton: Para respetar la teoría oficial de cátedra, "
+                r"se aplicó el Modelo Exponencial del apunte ($y = a \cdot e^{bx}$) definiendo la variable transformada $Y' = T - T_{\text{amb}}$, "
+                r"correspondiente a la Ley de Enfriamiento de Newton ($T(t) = T_{\text{amb}} + A \cdot e^{-kt}$). Este modelo alcanza "
+                r"$r^2 > 0.9996$ en todos los clústeres, con residuos completamente aleatorios y coherencia asintótica al ambiente a largo plazo."
+            ),
+            (
+                r"4. Evaluación del Modelo Polinómico de 2° Grado: Si se evalúa la temperatura directa $Y = T$ (sin restar $T_{\text{amb}}$), "
+                r"el Polinomio de Grado 2 ($y = a_1 + a_2 x + a_3 x^2$) es el modelo directo del apunte que alcanza la mayor precisión "
+                r"estadística empírica ($r^2 > 0.984$ en los 4 clústeres). No obstante, se prioriza el modelo Exponencial / Newton porque "
+                r"garantiza convergencia asintótica a $T_{\text{amb}}$, evitando que una parábola prediga un recalentamiento irreal de la bebida "
+                r"tras el vértice a tiempos mayores a $120\text{ min}$."
+            ),
+            (
+                r"5. Efecto de la Tapa y Mecanismos de Transferencia Térmica: El Vaso de Papel con Tapa ($k = 0.01793\text{ min}^{-1}$) "
+                r"retiene el calor notablemente mejor que la Taza de Cerámica destapada ($k = 0.02342\text{ min}^{-1}$), confirmando que la "
+                r"evaporación superficial y la convección superior constituyen las vías dominantes de pérdida de calor en bebidas calientes."
+            ),
+            (
+                r"6. Recomendación Operativa para la Cafetería (Decisión Comercial): Para consumo en salón/mesa se recomienda la Taza de Cerámica "
+                r"(mantiene $> 50^\circ\text{C}$ durante los primeros $35\text{--}40\text{ min}$ con óptima experiencia de degustación y vajilla reutilizable), "
+                r"reservando el Vaso de Vidrio solo para consumo inmediato ($< 15\text{ min}$) o café frío/iced. Para delivery y take-away, se debe utilizar "
+                r"el Recipiente Térmico en distancias largas ($> 45\text{ min}$, retiene $> 50^\circ\text{C}$ tras $2\text{ h}$) y el Vaso de Papel con Tapa "
+                r"para envíos urbanos rápidos de menor costo."
+            ),
         ]
 
         return Case1AnalysisResponse(

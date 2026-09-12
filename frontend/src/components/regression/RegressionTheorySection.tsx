@@ -366,31 +366,31 @@ export const RegressionTheorySection: React.FC = () => {
             La <strong>bondad del ajuste</strong> es un parámetro que permite estimar si el ajuste realizado con respecto a los datos experimentales ha sido efectivo. Si se obtiene arbitrariamente un ajuste para una nube de puntos, mediante el cálculo de <InlineMath math="r^2" /> se verifica cuantitativamente su representatividad:
           </p>
 
-          <FormulaDisplay formula="r^2 = \frac{S_t - S_r}{S_t}" />
+          <FormulaDisplay formula="r^2 = \frac{ST - SR}{ST}" />
 
           {/* Definiciones Formales en Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
               <span className="font-bold text-slate-900 block font-mono">
-                <InlineMath math="S_t" /> (Dispersión Total respecto a la Media)
+                <InlineMath math="ST" /> (Dispersión Total respecto a la Media)
               </span>
               <p className="text-slate-600 leading-relaxed">
-                Cuantifica la variabilidad global de los datos experimentales antes de aplicar cualquier modelo, tomando como referencia su promedio muestral <InlineMath math="\bar{y}" />:
+                Cuantifica la variabilidad global de los datos experimentales antes de aplicar cualquier modelo, tomando como referencia su promedio <InlineMath math="y_{media}" />:
               </p>
               <div className="pt-1">
-                <FormulaDisplay formula="S_t = \sum_{i=1}^n (y_i - \bar{y})^2 \quad \text{con} \quad \bar{y} = \frac{1}{n}\sum_{i=1}^n y_i" />
+                <FormulaDisplay formula="ST = \sum_{i=1}^n (y_i - y_{media})^2 \quad \text{con} \quad y_{media} = \left(\sum_{i=1}^n y_i\right) / n" />
               </div>
             </div>
 
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
               <span className="font-bold text-slate-900 block font-mono">
-                <InlineMath math="S_r" /> (Suma de Residuos Cuadráticos)
+                <InlineMath math="SR" /> (Suma de Residuos Cuadráticos)
               </span>
               <p className="text-slate-600 leading-relaxed">
-                Mide la variabilidad residual no explicada por el modelo de ajuste. Suma el cuadrado de las discrepancias verticales entre cada valor real y su predicción:
+                Mide la variabilidad residual no explicada por el modelo de ajuste. Suma el cuadrado de las discrepancias entre cada valor real y el valor obtenido por la curva de ajuste <InlineMath math="y_{Ajuste}" />:
               </p>
               <div className="pt-1">
-                <FormulaDisplay formula="S_r = \sum_{i=1}^n e_i^2 = \sum_{i=1}^n (y_i - \hat{y}_i)^2" />
+                <FormulaDisplay formula="SR = \sum_{i=1}^n (y_i - y_{Ajuste})^2" />
               </div>
             </div>
           </div>
@@ -406,7 +406,7 @@ export const RegressionTheorySection: React.FC = () => {
               </span>
             </div>
             <FormulaDisplay
-              formula="r^2 = \frac{S_T - S_R}{S_T}"
+              formula="r^2 = \frac{ST - SR}{ST}"
             />
             <p className="text-xs text-slate-300 leading-relaxed font-sans">
               La bondad del ajuste <InlineMath math="r^2" /> es un parámetro que nos permite estimar si el ajuste realizado con respecto a los datos experimentales ha sido efectivo o no. Es un valor numérico que varía siempre entre 0 y 1 (<InlineMath math="0 \le r^2 \le 1" />). Se considera que una bondad mayor a <strong>0.85</strong> representa un buen ajuste que describe adecuadamente los datos en el corto plazo.
@@ -418,30 +418,34 @@ export const RegressionTheorySection: React.FC = () => {
             <h4 className="font-bold text-xs uppercase tracking-wider text-slate-900">
               Fórmulas de Cálculo según el Tipo de Ajuste:
             </h4>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto touch-pan-x scrollbar-thin">
               <table className="w-full text-left text-xs border-collapse font-mono">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-100/70 text-slate-700">
                     <th className="py-2.5 px-3 font-bold font-sans">Modelo</th>
-                    <th className="py-2.5 px-3 font-bold"><InlineMath math="S_t" /> (Media)</th>
-                    <th className="py-2.5 px-3 font-bold"><InlineMath math="S_r" /> (Ajuste)</th>
+                    <th className="py-2.5 px-3 font-bold"><InlineMath math="y_{media}" /> (Media)</th>
+                    <th className="py-2.5 px-3 font-bold"><InlineMath math="ST" /> (Dispersión)</th>
+                    <th className="py-2.5 px-3 font-bold"><InlineMath math="SR" /> (Ajuste)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 text-slate-800">
                   <tr>
                     <td className="py-2.5 px-3 font-sans font-semibold">1) Lineal y Polinómicos</td>
-                    <td className="py-2.5 px-3"><InlineMath math="S_t = \sum (y_i - \bar{y})^2" /></td>
-                    <td className="py-2.5 px-3"><InlineMath math="S_r = \sum (y_i - \hat{y}_i)^2" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="y_{media} = \left(\sum_{i=1}^n y_i\right) / n" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="ST = \sum_{i=1}^n (y_i - y_{media})^2" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="SR = \sum_{i=1}^n (y_i - y_{Ajuste})^2" /></td>
                   </tr>
                   <tr>
                     <td className="py-2.5 px-3 font-sans font-semibold">2) Exponencial y Potencial</td>
-                    <td className="py-2.5 px-3"><InlineMath math="S_t = \sum (\ln y_i - \bar{Y})^2" /></td>
-                    <td className="py-2.5 px-3"><InlineMath math="S_r = \sum (\ln y_i - \ln \hat{y}_i)^2" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="y_{media} = \left(\sum_{i=1}^n \text{Ln}(y_i)\right) / n" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="ST = \sum_{i=1}^n (\text{Ln}(y_i) - y_{media})^2" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="SR = \sum_{i=1}^n (\text{Ln}(y_i) - y_{Ajuste})^2" /></td>
                   </tr>
                   <tr>
                     <td className="py-2.5 px-3 font-sans font-semibold">3) Ecuación del Cociente</td>
-                    <td className="py-2.5 px-3"><InlineMath math="S_t = \sum (1/y_i - \bar{Y})^2" /></td>
-                    <td className="py-2.5 px-3"><InlineMath math="S_r = \sum (1/y_i - 1/\hat{y}_i)^2" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="y_{media} = \left(\sum_{i=1}^n (1 / y_i)\right) / n" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="ST = \sum_{i=1}^n ((1/y_i) - y_{media})^2" /></td>
+                    <td className="py-2.5 px-3"><InlineMath math="SR = \sum_{i=1}^n ((1/y_i) - y_{Ajuste})^2" /></td>
                   </tr>
                 </tbody>
               </table>
@@ -454,10 +458,10 @@ export const RegressionTheorySection: React.FC = () => {
               </span>
               <ul className="list-disc list-inside space-y-1 text-slate-600">
                 <li>
-                  <strong>Ajustes Lineales / Polinómicos:</strong> Minimizan las distancias geométricas directas <InlineMath math="e_i = y_i - \hat{y}_i" />. El cálculo de <InlineMath math="S_t" /> y <InlineMath math="S_r" /> opera enteramente en la escala física de las observaciones.
+                  <strong>Ajustes Lineales / Polinómicos:</strong> Minimizan las distancias geométricas directas <InlineMath math="e_i = y_i - y_{Ajuste}" />. El cálculo de <InlineMath math="ST" /> y <InlineMath math="SR" /> opera enteramente en la escala física de las observaciones.
                 </li>
                 <li>
-                  <strong>Modelos Transformados (Linealización):</strong> Al resolver el sistema de Gauss sobre variables transformadas (<InlineMath math="Y = \ln(y)" /> o <InlineMath math="Y = 1/y" />), los mínimos cuadrados minimizan los residuos en el espacio transformado (<InlineMath math="S_{r,\text{transf}}" />). El <InlineMath math="r^2" /> obtenido mide la calidad del ajuste de la recta transformada. Para comparar dicho modelo de forma imparcial con polinomios en escala física, deben re-transformarse los valores predichos (<InlineMath math="\hat{y}_i = e^{\hat{Y}_i}" /> o <InlineMath math="\hat{y}_i = 1/\hat{Y}_i" />) y calcular los residuos reales <InlineMath math="S_r = \sum (y_i - \hat{y}_i)^2" />.
+                  <strong>Modelos Transformados (Linealización):</strong> Al resolver el sistema de Gauss sobre variables transformadas (<InlineMath math="\text{Ln}(y)" /> o <InlineMath math="1/y" />), los mínimos cuadrados minimizan los residuos en el espacio transformado, calculando <InlineMath math="y_{media}" />, <InlineMath math="ST" /> y <InlineMath math="SR" /> directamente con los valores transformados (<InlineMath math="\text{Ln}(y_i)" /> o <InlineMath math="1/y_i" />) y sus valores de ajuste <InlineMath math="y_{Ajuste}" />.
                 </li>
                 <li>
                   <strong>Efecto de Ponderación Implícita:</strong> La derivada de la transformación deforma el peso de los errores: el logaritmo (<InlineMath math="\frac{d}{dy}\ln y = 1/y" />) penaliza con fuerza los valores pequeños de <InlineMath math="y" />, mientras que la transformación recíproca (<InlineMath math="\frac{d}{dy}(1/y) = -1/y^2" />) sobrerrepresenta drásticamente los puntos cercanos a cero.
