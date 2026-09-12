@@ -418,21 +418,21 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
         </div>
 
         {/* HERO CARD: COEFICIENTE DE DETERMINACIÓN r² */}
-        <div className="p-5 sm:p-6 bg-emerald-50/50 rounded-2xl sm:rounded-3xl border border-emerald-200 shadow-sm space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-100 pb-3">
+        <div className="p-5 sm:p-6 bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
                 BONDAD DE AJUSTE GLOBAL · COEFICIENTE DE DETERMINACIÓN
               </span>
-              <span className="text-xs text-emerald-700 font-medium">
+              <span className="text-xs text-slate-400 font-medium">
                 Proporción de varianza explicada por el modelo respecto a la media
               </span>
             </div>
             <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
-              <span className="text-xs font-bold text-emerald-900 bg-white px-3 py-1 rounded-full border border-emerald-200 shadow-2xs font-mono">
+              <span className="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 font-mono">
                 {(stepData.r2Val * 100).toFixed(2)}% varianza explicada
               </span>
-              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-600 text-white shadow-2xs">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-900 text-white">
                 {stepData.r2Val >= 0.90
                   ? 'Ajuste Muy Alto'
                   : stepData.r2Val >= 0.80
@@ -446,7 +446,7 @@ export const DynamicRegressionStepByStep: React.FC<DynamicRegressionStepByStepPr
             <InlineMath math={stepData.r2Latex} />
           </div>
 
-          <p className="text-xs text-emerald-800/90 leading-relaxed">
+          <p className="text-xs text-slate-600 leading-relaxed">
             {stepData.r2Val >= 0.90
               ? `El modelo ajustado reproduce de manera óptima la tendencia física experimental, explicando el ${(stepData.r2Val * 100).toFixed(2)}% de la variación total observada.`
               : `El modelo explica el ${(stepData.r2Val * 100).toFixed(2)}% de la variación muestral. Una discrepancia residual considerable puede indicar no linealidad o un comportamiento asintótico distinto.`}

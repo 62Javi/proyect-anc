@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import {
   Thermometer,
-  Award,
+  BookOpen,
   AlertTriangle,
   CheckCircle2,
   Clock,
@@ -213,13 +213,10 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-700 border border-amber-200/60 shadow-sm">
+            <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-700 border border-slate-200 shadow-sm">
               <Thermometer size={24} />
             </div>
             <div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-800 bg-amber-100/70 px-2.5 py-0.5 rounded-full border border-amber-200">
-                Caso Asignado · Exposición ANC
-              </span>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                 Caso 1: Enfriamiento de Bebidas
               </h2>
@@ -510,27 +507,24 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
               aria-expanded={showConclusions}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-700 border border-emerald-200 shrink-0 group-hover:scale-105 transition-transform">
-                  <Award size={20} />
+                <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-700 border border-slate-200 shrink-0 group-hover:scale-105 transition-transform">
+                  <BookOpen size={18} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                      Conclusiones Oficiales del Caso para la Exposición
+                      Análisis y Observaciones del Estudio
                     </h3>
-                    <span className="hidden sm:inline-flex text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                      6 puntos clave
-                    </span>
                   </div>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Respuesta rigurosa a las consignas solicitadas por la cátedra · Clic para {showConclusions ? 'ocultar' : 'desplegar'}
+                    Interpretación física y conclusiones deducidas a partir de los modelos ajustados · Clic para {showConclusions ? 'ocultar' : 'desplegar'}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 group-hover:text-slate-900 transition-colors shrink-0">
                 <span className="hidden md:inline text-[11px]">
-                  {showConclusions ? 'Ocultar conclusiones' : 'Ver conclusiones'}
+                  {showConclusions ? 'Ocultar observaciones' : 'Ver observaciones'}
                 </span>
                 <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition-colors">
                   <ChevronDown
@@ -656,7 +650,7 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                     </span>
                   </div>
                   <span className="text-[10px] font-medium text-slate-500 block">
-                    {currentFit.metrics.r2 >= 0.85 ? '✅ Ajuste Muy Alto (> 0.85)' : '⚠️ Ajuste Insuficiente'}
+                    {currentFit.metrics.r2 >= 0.85 ? 'Ajuste Muy Alto (> 0.85)' : 'Ajuste Insuficiente'}
                   </span>
                 </div>
 
@@ -768,34 +762,15 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
                 </div>
               </div>
 
-              {/* Chart 2: Residuals Plot (CRITICAL CONSIGNMENT REQUIREMENT) */}
+              {/* Chart 2: Residuals Plot */}
               <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-base font-bold text-slate-900">
-                        Gráfico de Residuos <InlineMath math="e_i = y_i - \hat{y}_i" />
-                      </h4>
-                      <span className="text-[10px] font-black uppercase bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full border border-slate-200">
-                        Consigna Obligatoria
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-500">
-                      Un modelo adecuado debe mostrar residuos distribuidos aleatoriamente alrededor de cero, sin patrones curvos sistemáticos.
-                    </p>
-                  </div>
-
-                  {selectedModel === 'linear' ? (
-                    <div className="flex items-center gap-1.5 text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl text-xs font-bold">
-                      <AlertTriangle size={15} />
-                      <span>Patrón en 'U': Sesgo sistemático (Inadecuado)</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold">
-                      <CheckCircle2 size={15} />
-                      <span>Residuos aleatorios sin sesgo (Válido)</span>
-                    </div>
-                  )}
+                <div>
+                  <h4 className="text-base font-bold text-slate-900">
+                    Gráfico de Residuos <InlineMath math="e_i = y_i - \hat{y}_i" />
+                  </h4>
+                  <p className="text-xs text-slate-500">
+                    Un modelo adecuado debe mostrar residuos distribuidos aleatoriamente alrededor de cero, sin patrones curvos sistemáticos.
+                  </p>
                 </div>
 
                 <div className="h-48 w-full pt-2">

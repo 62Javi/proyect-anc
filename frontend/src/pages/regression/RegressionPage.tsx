@@ -65,7 +65,7 @@ export const RegressionPage: React.FC = () => {
               activeTab === 'case1' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Thermometer size={18} className="shrink-0 text-amber-600" />
+            <Thermometer size={18} className="shrink-0" />
             <span>Caso 1: Enfriamiento</span>
           </button>
 

@@ -275,7 +275,7 @@ class LeastSquaresCalculator:
         for j in range(m_size):
             cy += coeffs[j] * (cx**j)
 
-        params_dict = {f"a{j + 1}": round(float(coeffs[j]), 6) for j in range(m_size)}
+        params_dict = {f"a{j + 1}": float(coeffs[j]) for j in range(m_size)}
 
         return FitResponse(
             model_type=f"polynomial_deg_{degree}",
