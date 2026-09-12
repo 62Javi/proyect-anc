@@ -369,8 +369,8 @@ export const RegressionTheorySection: React.FC = () => {
           <FormulaDisplay formula="r^2 = \frac{ST - SR}{ST}" />
 
           {/* Definiciones Formales en Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm min-w-0">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 min-w-0 overflow-hidden">
               <span className="font-bold text-slate-900 block font-mono">
                 <InlineMath math="ST" /> (Dispersión Total respecto a la Media)
               </span>
@@ -382,7 +382,7 @@ export const RegressionTheorySection: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 min-w-0 overflow-hidden">
               <span className="font-bold text-slate-900 block font-mono">
                 <InlineMath math="SR" /> (Suma de Residuos Cuadráticos)
               </span>
@@ -451,23 +451,7 @@ export const RegressionTheorySection: React.FC = () => {
               </table>
             </div>
 
-            {/* Análisis Metodológico: Escala Original vs Escala Transformada */}
-            <div className="p-4 bg-white rounded-xl border border-slate-200 space-y-2 text-xs text-slate-700 font-sans leading-relaxed">
-              <span className="font-bold text-slate-900 block text-[11px] uppercase tracking-wider">
-                Distinción Metodológica: Escala Original vs. Escala Transformada
-              </span>
-              <ul className="list-disc list-inside space-y-1 text-slate-600">
-                <li>
-                  <strong>Ajustes Lineales / Polinómicos:</strong> Minimizan las distancias geométricas directas <InlineMath math="e_i = y_i - y_{Ajuste}" />. El cálculo de <InlineMath math="ST" /> y <InlineMath math="SR" /> opera enteramente en la escala física de las observaciones.
-                </li>
-                <li>
-                  <strong>Modelos Transformados (Linealización):</strong> Al resolver el sistema de Gauss sobre variables transformadas (<InlineMath math="\text{Ln}(y)" /> o <InlineMath math="1/y" />), los mínimos cuadrados minimizan los residuos en el espacio transformado, calculando <InlineMath math="y_{media}" />, <InlineMath math="ST" /> y <InlineMath math="SR" /> directamente con los valores transformados (<InlineMath math="\text{Ln}(y_i)" /> o <InlineMath math="1/y_i" />) y sus valores de ajuste <InlineMath math="y_{Ajuste}" />.
-                </li>
-                <li>
-                  <strong>Efecto de Ponderación Implícita:</strong> La derivada de la transformación deforma el peso de los errores: el logaritmo (<InlineMath math="\frac{d}{dy}\ln y = 1/y" />) penaliza con fuerza los valores pequeños de <InlineMath math="y" />, mientras que la transformación recíproca (<InlineMath math="\frac{d}{dy}(1/y) = -1/y^2" />) sobrerrepresenta drásticamente los puntos cercanos a cero.
-                </li>
-              </ul>
-            </div>
+
 
             <div className="pt-2 text-xs text-slate-700 space-y-1 font-sans">
               <p>

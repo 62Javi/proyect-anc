@@ -67,7 +67,7 @@ const FormulaDisplay = ({ label, formula, className = '' }: FormulaDisplayProps)
   const isFourierCoeff = ['a_0', 'a_n', 'b_n', 'c_n', 'A_0', 'A_n', 'B_n'].includes(trimmedLabel);
 
   return (
-    <div className={`p-4 sm:p-5 bg-slate-50/80 rounded-2xl overflow-x-auto touch-pan-x w-full border border-slate-200 flex flex-col items-center justify-center relative scrollbar-thin [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full ${className}`}>
+    <div className={`p-3 sm:p-4 bg-slate-50/80 rounded-2xl w-full border border-slate-200 flex flex-col relative overflow-hidden ${className}`}>
       {trimmedLabel && !isFunctionLabel && (
         <div className="self-start mb-2 flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
           {isFourierCoeff && (
@@ -78,7 +78,11 @@ const FormulaDisplay = ({ label, formula, className = '' }: FormulaDisplayProps)
           <span ref={labelRef} className="text-xs font-bold text-slate-800"></span>
         </div>
       )}
-      <span ref={containerRef} className="text-base sm:text-lg text-slate-900 font-medium whitespace-nowrap py-1"></span>
+      <div className="w-full overflow-x-auto touch-pan-x py-1 scrollbar-thin [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full">
+        <div className="min-w-full w-max flex justify-center [justify-content:safe_center] px-1">
+          <span ref={containerRef} className="text-base sm:text-lg text-slate-900 font-medium whitespace-nowrap [&_.katex-display]:my-0 [&_.katex-display]:inline-block [&_.katex]:inline-block"></span>
+        </div>
+      </div>
     </div>
   );
 };
