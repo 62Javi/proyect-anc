@@ -43,7 +43,7 @@ El sistema implementa una arquitectura desacoplada de alto rendimiento basada en
 +---------------+            +---------------+                             +---------------+            +---------------+
 | • SymPy Exacto|            | • Mic / Audio |                             | • Newton-Raph.|            | • Caso 1 Real |
 | • Trozos / PW |            | • FFT en vivo |                             | • Punto Fijo  |            | • Modelos Cát.|
-| • Gibbs Dinám.|            | • Espectro f0 |                             | • Pasos LaTeX |            | • Pasos Gauss |
+| • Gibbs Dinám.|            | • Espectro f0 |                             | • Pasos LaTeX |            | • Pasos       |
 | • Paridad Sim.|            | • Plotly Inter|                             | • Reporte PDF |            | • Residuos/r² |
 +---------------+            +---------------+                             +---------------+            +---------------+
 ```
@@ -61,7 +61,7 @@ El sistema implementa una arquitectura desacoplada de alto rendimiento basada en
 * **Identificación Espectral:** Determinación precisa de la frecuencia fundamental ($f_0$), armónicos superiores y visualización interactiva con Plotly.js.
 
 ### 3. Cálculo de Raíces de Ecuaciones No Lineales (`/roots`)
-* **Métodos Iterativos Implementados:** Métodos numéricos de **Newton-Raphson** y **Punto Fijo** ($x_{n+1} = g(x_n)$).
+* **Métodos Iterativos Implementados:** Métodos numéricos de **Newton-Raphson** y **Punto Fijo** mediante la relación iterativa $x_{n+1} = g(x_n)$.
 * **Análisis de Convergencia:** Comparación simultánea de velocidad de convergencia, órdenes de aproximación, número de iteraciones y evolución del error relativo porcentual.
 * **Visualización Gráfica Interactiva:**
   * *Método de Newton:* Trazado geométrico interactivo de rectas tangentes iteración a iteración sobre la curva $f(x)$.
@@ -82,7 +82,7 @@ El sistema implementa una arquitectura desacoplada de alto rendimiento basada en
     * **Potencial:** $y = a x^b$ (linealizado mediante $\ln y, \ln x$)
     * **Ecuación del Cociente / Razón de Crecimiento:** $y = \frac{x}{a x + b}$ (linealizado mediante $1/y, 1/x$)
   * **Carga Rápida de Datos:** Entrada matricial y pegado masivo directo desde portapapeles o planillas de cálculo (Excel / CSV).
-  * **Resolución Paso a Paso de Ecuaciones Normales:** Visualización explícita de sumatorias, armado de la matriz de coeficientes de Gauss, resolución del sistema y cálculo canónico de la dispersión total ($ST$), varianza residual no explicada ($SR$) y bondad de ajuste ($r^2$).
+  * **Resolución Paso a Paso:** Visualización explícita de sumatorias, armado de la matriz de coeficientes, resolución del sistema y cálculo canónico de la dispersión total ($ST$), varianza residual no explicada ($SR$) y bondad de ajuste ($r^2$).
   * **Gráfico Interactivo de Alta Fidelidad:** Gráfico dinámico continuo (estilo GeoGebra) con controles táctiles de paneo horizontal/vertical, zoom bidireccional y evaluación matemática en tiempo real del modelo obtenido.
 * **Resolución Completa de Trabajos Prácticos (TP N° 4):**
   * Guía oficial resuelta de manera interactiva con enunciados textuales, tablas de datos precargadas en un clic y resoluciones asistidas por software.
