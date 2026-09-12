@@ -826,18 +826,6 @@ class LeastSquaresCalculator:
                 r"garantiza convergencia asintótica a $T_{\text{amb}}$, evitando que una parábola prediga un recalentamiento irreal de la bebida "
                 r"tras el vértice a tiempos mayores a $120\text{ min}$."
             ),
-            (
-                r"5. Efecto de la Tapa y Mecanismos de Transferencia Térmica: El Vaso de Papel con Tapa ($k = 0.01793\text{ min}^{-1}$) "
-                r"retiene el calor notablemente mejor que la Taza de Cerámica destapada ($k = 0.02342\text{ min}^{-1}$), confirmando que la "
-                r"evaporación superficial y la convección superior constituyen las vías dominantes de pérdida de calor en bebidas calientes."
-            ),
-            (
-                r"6. Recomendación Operativa para la Cafetería (Decisión Comercial): Para consumo en salón/mesa se recomienda la Taza de Cerámica "
-                r"(mantiene $> 50^\circ\text{C}$ durante los primeros $35\text{--}40\text{ min}$ con óptima experiencia de degustación y vajilla reutilizable), "
-                r"reservando el Vaso de Vidrio solo para consumo inmediato ($< 15\text{ min}$) o café frío/iced. Para delivery y take-away, se debe utilizar "
-                r"el Recipiente Térmico en distancias largas ($> 45\text{ min}$, retiene $> 50^\circ\text{C}$ tras $2\text{ h}$) y el Vaso de Papel con Tapa "
-                r"para envíos urbanos rápidos de menor costo."
-            ),
         ]
 
         return Case1AnalysisResponse(
