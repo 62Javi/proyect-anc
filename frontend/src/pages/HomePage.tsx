@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Activity, Beaker, Calculator, Music } from 'lucide-react';
+import { Activity, Calculator, Music, LineChart } from 'lucide-react';
 
 const GithubIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -20,12 +20,28 @@ const GithubIcon = ({ size = 20 }: { size?: number }) => (
 export default function HomePage() {
   const tools = [
     {
+      title: 'Ajuste por Mínimos Cuadrados',
+      description: 'Estudio térmico del Caso 1 (Enfriamiento de Bebidas), cálculo de residuos, bondad de ajuste r² y simulador interactivo para modelos lineales y no lineales.',
+      icon: <LineChart size={24} />,
+      path: '/regression',
+      ready: true,
+      tag: 'Regresión & Ajuste',
+    },
+    {
+      title: 'Cálculo de Raíces',
+      description: 'Métodos de Newton y Punto Fijo para ecuaciones no lineales continuas con duelo en vivo, diagramas de tangentes y telaraña.',
+      icon: <Calculator size={24} />,
+      path: '/roots',
+      ready: true,
+      tag: 'Ecuaciones No Lineales',
+    },
+    {
       title: 'Analizador de Fourier',
       description: 'Calcula y visualiza series de Fourier para funciones periódicas y a trozos.',
       icon: <Activity size={24} />,
       path: '/fourier',
       ready: true,
-      tag: 'Análisis Numérico'
+      tag: 'Series & Frecuencias',
     },
     {
       title: 'Análisis de Armónicos',
@@ -33,55 +49,63 @@ export default function HomePage() {
       icon: <Music size={24} />,
       path: '/harmonics',
       ready: true,
-      tag: 'Procesamiento de Señales'
-    },
-    {
-      title: 'Cálculo de Raíces',
-      description: 'Métodos de Newton y Punto Fijo para ecuaciones no lineales continuas con duelo en vivo, diagramas de tangentes y telaraña.',
-      icon: <Beaker size={24} />,
-      path: '/roots',
-      ready: true,
-      tag: 'Análisis Numérico'
+      tag: 'Procesamiento de Señales',
     },
   ];
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-50/50 p-8 lg:p-24 flex flex-col">
-      <div className="max-w-5xl mx-auto space-y-16 flex-1">
+    <div className="h-full overflow-y-auto bg-slate-50/50 p-4 sm:p-8 lg:p-16 flex flex-col">
+      <div className="max-w-5xl mx-auto space-y-10 sm:space-y-14 flex-1 w-full">
         
-        <header className="flex flex-col items-center text-center space-y-4">
-          <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-200 mb-4">
+        <header className="flex flex-col items-center text-center space-y-4 pt-4 sm:pt-0">
+          <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-200 mb-2">
             <Calculator size={32} />
           </div>
-          <h1 className="text-4xl lg:text-6xl font-black text-slate-900 tracking-tight">Proyecto ANC</h1>
-          <p className="text-lg text-slate-500 max-w-xl font-medium">Plataforma interactiva para Análisis, Métodos Numéricos y Cálculo.</p>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight">Proyecto ANC</h1>
+          <p className="text-sm sm:text-base lg:text-lg text-slate-500 max-w-xl font-medium px-4">
+            Plataforma interactiva para Análisis, Métodos Numéricos y Cálculo.
+          </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 pb-12">
           {tools.map((tool, idx) => (
             <Link
               key={idx}
               to={tool.path}
-              className={`p-8 rounded-[32px] border transition-all duration-300 ${
+              className={`flex flex-col justify-between h-full p-6 sm:p-8 rounded-3xl border transition-all duration-300 group ${
                 tool.ready
-                  ? 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xl hover:shadow-slate-100 hover:-translate-y-1'
+                  ? 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-xl hover:shadow-slate-100 hover:-translate-y-1'
                   : 'bg-slate-50 border-slate-100 opacity-60 cursor-not-allowed'
               }`}
               onClick={(e) => !tool.ready && e.preventDefault()}
             >
-              <div className={`p-4 rounded-xl w-fit mb-6 ${tool.ready ? 'bg-slate-100 text-slate-900' : 'bg-slate-200 text-slate-400'}`}>
-                {tool.icon}
+              <div className="space-y-4">
+                {/* Card Top: Icon + Category Badge */}
+                <div className="flex items-center justify-between gap-3">
+                  <div className={`p-3.5 rounded-2xl w-fit ${tool.ready ? 'bg-slate-100 text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-colors duration-200' : 'bg-slate-200 text-slate-400'}`}>
+                    {tool.icon}
+                  </div>
+                  <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shrink-0 ${tool.ready ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-200 text-slate-500'}`}>
+                    {tool.tag}
+                  </span>
+                </div>
+
+                {/* Card Title */}
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+                  {tool.title}
+                </h2>
+
+                {/* Description */}
+                <p className="text-slate-500 text-xs sm:text-sm leading-relaxed font-medium">
+                  {tool.description}
+                </p>
               </div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-slate-900">{tool.title}</h2>
-                <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${tool.ready ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                  {tool.tag}
-                </span>
-              </div>
-              <p className="text-slate-500 text-sm leading-relaxed mb-8">{tool.description}</p>
+
+              {/* Card Footer */}
               {tool.ready && (
-                <div className="text-slate-900 font-bold text-xs uppercase tracking-widest flex items-center gap-2">
-                  Abrir Herramienta <span>→</span>
+                <div className="pt-5 mt-6 border-t border-slate-100 text-slate-900 font-bold text-xs uppercase tracking-widest flex items-center justify-between group-hover:text-slate-600 transition-colors">
+                  <span>Abrir Herramienta</span>
+                  <span className="text-sm transition-transform duration-200 group-hover:translate-x-1">→</span>
                 </div>
               )}
             </Link>

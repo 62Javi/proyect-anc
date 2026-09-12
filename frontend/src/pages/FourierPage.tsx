@@ -3,6 +3,7 @@ import { calculateFourier } from '../services/api';
 import type { FourierResponse, FunctionInterval } from '../services/api';
 import FourierChart from '../components/FourierChart';
 import FormulaDisplay from '../components/FormulaDisplay';
+import InlineMath from '../components/InlineMath';
 import UnifiedMathInput from '../components/UnifiedMathInput';
 import { Calculator, Trash2, Sigma, Sliders, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 
@@ -469,8 +470,8 @@ function FourierPage() {
                   <thead>
                     <tr className="border-b border-slate-200">
                       <th className="text-left px-4 py-3 text-[10px] font-black text-slate-400 uppercase">n</th>
-                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">a<sub className="text-[8px] lowercase">n</sub></th>
-                      <th className="text-right px-4 py-3 text-[10px] font-black text-slate-400 uppercase">b<sub className="text-[8px] lowercase">n</sub></th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-slate-500"><InlineMath math="a_n" /></th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-slate-500"><InlineMath math="b_n" /></th>
                     </tr>
                   </thead>
                   <tbody>

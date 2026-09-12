@@ -1,9 +1,9 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.endpoints import router
-
-import os
 
 app = FastAPI(title="Fourier Series API")
 

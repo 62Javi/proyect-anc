@@ -14,8 +14,8 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 - **Universal Verify (Global)**: Use the `verify` command in any project to auto-validate code. It supports Rust, Python, and Node.js. It helps me auto-correct my own errors before delivery.
 
 ## Docker-First Mandate (CRITICAL)
-- **Primary Workflow**: All local development and testing should prioritize `docker compose up`. 
-- **Production vs Dev**: On Raspberry Pi, the frontend MUST use the production build (Nginx). DO NOT use `npm run dev` in production as it fails over Cloudflare tunnels.
+- **Primary Workflow (Local Development)**: Use `docker compose up -d` (or `docker compose -f docker-compose.dev.yml up -d`). It uses `docker-compose.yml` configured for instant Hot-Reload (Vite HMR on frontend and Uvicorn `--reload` on backend with mapped volumes).
+- **Production (Raspberry Pi)**: In production, the frontend MUST use the production build (Nginx) via `docker-compose.prod.yml`. DO NOT use dev mode in production as it fails over Cloudflare tunnels. Command on Pi: `docker compose -f docker-compose.prod.yml up -d --build`.
 - **Recommendation**: Discourage developers from running `uvicorn` or `npm dev` manually on their host machine. 
 - **Support**: If a user lacks Docker, prioritize guiding them through Docker Desktop (Windows) or Docker Engine (Linux) installation instead of manual setup.
 
@@ -65,7 +65,8 @@ frontend/
 - Build: `cd frontend && npm run build`
 
 ### Deployment
-- Deploy on Pi: `cd ~/proyect-anc && docker compose up -d --build`
+- Deploy on Pi: `cd ~/proyect-anc && docker compose -f docker-compose.prod.yml up -d --build`
+- Run local Dev: `docker compose up -d` (Hot-Reload instantáneo)
 
 ## Recent Changes
 - `001-fourier-visualization`: Implemented end-to-end Fourier series analyzer.
@@ -73,6 +74,7 @@ frontend/
 - `003-multi-tool-restructuring`: Refactored frontend with React Router and established a multi-page architecture for future tools.
 - `004-roots-step-by-step-latex`: Implemented clean collapsible step-by-step resolution with LaTeX formula substitutions for Newton iterations.
 - `005-dev-hot-reload`: Enabled instant Hot-Reload (Vite HMR on frontend and Uvicorn --reload on backend) via Docker volumes and override configuration, eliminating image rebuilds during local development.
+- `006-least-squares-regression-case1`: Implemented end-to-end Least Squares Regression module with complete study for Caso 1 (Drink Cooling analysis with 4 clusters, Newton cooling law, thermal insulation hierarchy, residuals plots), interactive generic regression solver with TP4 presets, theoretical proofs from cátedra, and solved practical exercises.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

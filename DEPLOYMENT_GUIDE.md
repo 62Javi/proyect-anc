@@ -43,7 +43,7 @@ Para actualizar el servidor en la Raspberry Pi tras cambios en Git:
 ```bash
 cd ~/proyectos/proyect-anc
 git pull origin testeosjavi   # o main
-docker compose up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 El flag `--build` es vital para que Vite re-compile los archivos estáticos de producción y Nginx los sirva actualizados.
 

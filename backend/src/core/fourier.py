@@ -8,7 +8,11 @@ from sympy.parsing.sympy_parser import (
     standard_transformations,
 )
 
-from src.core.exceptions import InvalidExpressionError, InvalidIntervalError, NonIntegrableError
+from src.core.exceptions import (
+    InvalidExpressionError,
+    InvalidIntervalError,
+    NonIntegrableError,
+)
 from src.models.fourier import FunctionInterval
 
 

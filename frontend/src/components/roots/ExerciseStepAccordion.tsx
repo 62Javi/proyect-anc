@@ -28,7 +28,7 @@ export const MathBlock: React.FC<MathBlockProps> = ({ math, className = '' }) =>
   return (
     <div 
       ref={containerRef} 
-      className={`text-slate-900 font-sans print:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`} 
+      className={`text-slate-900 font-sans w-max min-w-full text-left [&_.katex-display]:text-left [&_.katex-display]:my-0.5 [&_.katex]:inline-block print:overflow-visible ${className}`} 
     />
   );
 };
@@ -80,7 +80,7 @@ export const ExerciseStepAccordion: React.FC<ExerciseStepAccordionProps> = ({
       {/* Contenido desplegable con las iteraciones en LaTeX */}
       <div className={`${isOpen ? 'block' : 'hidden'} print:!block space-y-3 pt-2 border-t border-slate-200 print:border-none print:pt-0`}>
         {preliminarySteps && (
-          <div className="space-y-3 pb-1">
+          <div className="space-y-3 pb-1 overflow-x-auto touch-pan-x scrollbar-thin [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full">
             {preliminarySteps}
           </div>
         )}
@@ -94,11 +94,11 @@ export const ExerciseStepAccordion: React.FC<ExerciseStepAccordionProps> = ({
               <span className="text-xs font-bold text-slate-800 block">
                 Iteración {idx + 1}:
               </span>
-              <div className="p-2.5 sm:p-3 bg-white rounded-xl border border-slate-200 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shadow-2xs print:overflow-visible print:shadow-none print:border-slate-200/60 print:p-2 space-y-2">
-                <MathBlock math={formula} className="text-xs sm:text-sm print:text-xs print:overflow-visible" />
+              <div className="p-2.5 sm:p-3 bg-white rounded-xl border border-slate-200 overflow-x-auto touch-pan-x shadow-2xs print:overflow-visible print:shadow-none print:border-slate-200/60 print:p-2 space-y-2 scrollbar-thin [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full">
+                <MathBlock math={formula} className="text-xs sm:text-sm print:text-xs" />
                 {error && (
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-center print:pt-1">
-                    <MathBlock math={error} className="text-xs sm:text-sm text-slate-700 print:text-xs print:overflow-visible" />
+                  <div className="pt-2 border-t border-slate-100 print:pt-1">
+                    <MathBlock math={error} className="text-xs sm:text-sm text-slate-700 print:text-xs" />
                   </div>
                 )}
               </div>
