@@ -33,22 +33,50 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
   - Developers may change external ports in `docker-compose.yml` (e.g., `8000:8000`) for local testing if needed.
   - **MANDATORY**: All changes must be reverted to `8003/8083` before pushing or deploying to the Raspberry Pi to maintain Cloudflare Tunnel compatibility.
 
+## Active Modules
+1. **Ajuste por Mínimos Cuadrados (`/regression`)**:
+   - Estudio térmico del Caso 1 (Enfriamiento de Bebidas con 4 clusters de bebidas, Ley de Newton, jerarquía de aislación térmica, cálculo de residuos y $R^2$).
+   - Solucionador interactivo genérico de regresión (lineal, polinómica, exponencial, potencial, homográfica) con presets de TP4.
+   - Demostraciones analíticas de cátedra y ejercicios prácticos resueltos.
+2. **Cálculo de Raíces (`/roots`)**:
+   - Métodos numéricos para ecuaciones no lineales continuas (Newton-Raphson y Punto Fijo).
+   - Duelo interactivo en vivo, visualizaciones gráficas interactivas (tangentes y telaraña/cobweb).
+   - Resolución paso a paso colapsable con sustitución analítica en LaTeX.
+3. **Analizador de Series de Fourier (`/fourier`)**:
+   - Cálculo analítico (SymPy) y numérico de coeficientes $a_0, a_n, b_n$.
+   - Detección automática de paridad/simetría, espectro de armónicos y reconstrucción de ondas periódicas y funciones por tramos.
+4. **Análisis de Armónicos (`/harmonics`)**:
+   - Procesamiento de audio/señales en tiempo real vía Web Audio API / FFT.
+   - Detección de armónicos y frecuencias fundamentales sobre archivos de audio (.wav).
+
+## Documentation Maintenance Rule (MANDATORY)
+- **Actualización Obligatoria ante Cambios Grandes**: Al implementar **nuevos módulos**, refactorizaciones arquitecturales, adición de endpoints/dependencias clave o cambios en flujos principales, es **mandatorio actualizar este archivo `GEMINI.md`**:
+  1. Registrar el módulo o capacidad en la sección `Active Modules`.
+  2. Actualizar el árbol de `Project Structure` si hubo nuevas carpetas o servicios.
+  3. Registrar la entrada secuencial en `Recent Changes` (ej. `007-...`).
+- **Ajustes Menores**: Cambios cosméticos, de diseño puntual (paddings, colores, textos) o correcciones menores de bugs **NO** deben disparar modificaciones a `GEMINI.md` para evitar ruido documental.
+
 ## Project Structure
 ```text
 backend/
 ├── src/
-│   ├── api/         # FastAPI routers by tool
-│   ├── core/        # Mathematical logic by tool (SymPy)
-│   ├── models/      # Pydantic schemas
-│   └── main.py      # Entry point
+│   ├── api/         # Endpoints FastAPI centralizados (endpoints.py)
+│   ├── core/        # Lógica matemática (fourier.py, roots.py, regression.py, harmonics.py, case1_data.json)
+│   ├── models/      # Esquemas Pydantic para I/O
+│   └── main.py      # Entry point Uvicorn
 └── tests/           # Pytest suite
 
 frontend/
 ├── src/
-│   ├── components/  # Shared and tool-specific React components
-│   ├── pages/       # Page-level components (Home, Fourier, etc.)
-│   ├── services/    # API client
-│   └── App.tsx      # Main application with Routing
+│   ├── components/  # Componentes compartidos (Layout, UI, Navbar)
+│   ├── pages/       # Vistas principales por módulo
+│   │   ├── HomePage.tsx
+│   │   ├── FourierPage.tsx
+│   │   ├── HarmonicAnalysisPage.tsx
+│   │   ├── regression/       # Módulo de regresión (RegressionPage.tsx)
+│   │   └── roots/            # Módulo de raíces (RootsPage, InteractiveSolver, TheorySection, ExercisesSection)
+│   ├── services/    # Clientes de API REST
+│   └── App.tsx      # Configuración de React Router
 └── tests/           # Vitest suite
 ```
 
@@ -75,6 +103,8 @@ frontend/
 - `004-roots-step-by-step-latex`: Implemented clean collapsible step-by-step resolution with LaTeX formula substitutions for Newton iterations.
 - `005-dev-hot-reload`: Enabled instant Hot-Reload (Vite HMR on frontend and Uvicorn --reload on backend) via Docker volumes and override configuration, eliminating image rebuilds during local development.
 - `006-least-squares-regression-case1`: Implemented end-to-end Least Squares Regression module with complete study for Caso 1 (Drink Cooling analysis with 4 clusters, Newton cooling law, thermal insulation hierarchy, residuals plots), interactive generic regression solver with TP4 presets, theoretical proofs from cátedra, and solved practical exercises.
+- `007-doc-sync-and-module-expansion-rule`: Synchronized GEMINI.md with all active modules, refined project structure, and codified mandatory rule for documentation updates upon major/structural changes.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
+
