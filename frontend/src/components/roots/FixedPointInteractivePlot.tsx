@@ -191,11 +191,16 @@ export const FixedPointInteractivePlot: React.FC<FixedPointInteractivePlotProps>
         {activeStep && (
           <>
             <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-bold">Punto actual xₙ</span>
+              <span className="text-slate-500 block text-[10px] uppercase font-bold flex items-center gap-1">
+                <span>Punto actual</span>
+                <InlineMath math="x_n" />
+              </span>
               <span className="font-mono font-bold text-slate-900 text-sm">{activeStep.xn.toFixed(4)}</span>
             </div>
             <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-bold">g(xₙ) = xₙ₊₁</span>
+              <span className="text-slate-500 block text-[10px] uppercase font-bold flex items-center gap-1">
+                <InlineMath math="g(x_n) = x_{n+1}" />
+              </span>
               <span className="font-mono font-bold text-slate-900 text-sm">{activeStep.gxn.toFixed(4)}</span>
             </div>
           </>

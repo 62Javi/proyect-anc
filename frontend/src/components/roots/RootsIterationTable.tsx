@@ -69,18 +69,18 @@ export const RootsIterationTable: React.FC<RootsIterationTableProps> = ({
         <table className="w-full text-left text-xs text-slate-700">
           <thead className="bg-slate-100/70 text-slate-600 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
             <tr>
-              <th className="py-3 px-4 text-center">n</th>
-              <th className="py-3 px-4">xₙ</th>
+              <th className="py-3 px-4 text-center"><InlineMath math="n" /></th>
+              <th className="py-3 px-4"><InlineMath math="x_n" /></th>
               {type === 'newton' ? (
                 <>
-                  <th className="py-3 px-4">f(xₙ)</th>
-                  <th className="py-3 px-4">f'(xₙ)</th>
+                  <th className="py-3 px-4"><InlineMath math="f(x_n)" /></th>
+                  <th className="py-3 px-4"><InlineMath math="f'(x_n)" /></th>
                 </>
               ) : (
-                <th className="py-3 px-4">g(xₙ)</th>
+                <th className="py-3 px-4"><InlineMath math="g(x_n)" /></th>
               )}
-              <th className="py-3 px-4 font-semibold text-slate-900">xₙ₊₁</th>
-              <th className="py-3 px-4">|xₙ₊₁ - xₙ|</th>
+              <th className="py-3 px-4 font-semibold text-slate-900"><InlineMath math="x_{n+1}" /></th>
+              <th className="py-3 px-4"><InlineMath math="|x_{n+1} - x_n|" /></th>
               <th className="py-3 px-4">Error Rel.</th>
             </tr>
           </thead>

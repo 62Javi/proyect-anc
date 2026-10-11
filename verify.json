@@ -1,0 +1,4 @@
+{
+  "check": "docker compose exec -T frontend npm run build && docker compose exec -T backend python -m pytest",
+  "lint": "docker compose exec -T frontend npm run check-math"
+}

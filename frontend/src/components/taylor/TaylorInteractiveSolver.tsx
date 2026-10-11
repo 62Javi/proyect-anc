@@ -12,6 +12,7 @@ import type { TaylorPreset, TaylorRequest, TaylorResponse } from '../../types/ta
 import { OFFICIAL_TAYLOR_EXERCISES } from './TaylorExercisesSection';
 import TaylorStepAccordion from './TaylorStepAccordion';
 import InlineMath from '../InlineMath';
+import MathText from '../MathText';
 
 interface TaylorInteractiveSolverProps {
   initialConfig?: TaylorPreset;
@@ -90,17 +91,17 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
     const numH = parseFloat(h);
 
     if (isNaN(numX0) || isNaN(numY0) || isNaN(numXf) || isNaN(numH)) {
-      setError('Por favor ingresa valores numéricos válidos para x₀, y₀, xf y el paso h.');
+      setError('Por favor ingresa valores numéricos válidos para $x_0$, $y_0$, $x_f$ y el paso $h$.');
       return;
     }
 
     if (numXf <= numX0) {
-      setError('El punto final xf debe ser estrictamente mayor que el punto inicial x₀.');
+      setError('El punto final $x_f$ debe ser estrictamente mayor que el punto inicial $x_0$.');
       return;
     }
 
     if (numH <= 0) {
-      setError('El paso de integración h debe ser mayor que cero.');
+      setError('El paso de integración $h$ debe ser mayor que cero.');
       return;
     }
 
@@ -194,8 +195,16 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
           {/* Ecuación y' = f(x, y) */}
           <div className="sm:col-span-2 space-y-1.5">
             <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>Ecuación Diferencial {yVar}' = f({xVar}, {yVar})</span>
-              <span className="text-[10px] text-slate-400 font-normal">ej. 2*x*y, -3*x^2*y</span>
+              <span className="flex items-center gap-1.5">
+                <span>Ecuación Diferencial</span>
+                <InlineMath math={`${yVar}' = f(${xVar}, ${yVar})`} />
+              </span>
+              <span className="text-[10px] text-slate-400 font-normal flex items-center gap-1">
+                <span>ej.</span>
+                <InlineMath math="2xy" />
+                <span>,</span>
+                <InlineMath math="-3x^2y" />
+              </span>
             </label>
             <input
               type="text"
@@ -209,8 +218,14 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
           {/* Orden de Taylor */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>Orden de Taylor (p)</span>
-              <span className="text-[10px] text-blue-600 font-bold">Grupo 1 = Orden 2</span>
+              <span className="flex items-center gap-1">
+                <span>Orden de Taylor</span>
+                <InlineMath math="(p)" />
+              </span>
+              <span className="text-[10px] text-blue-600 font-bold flex items-center gap-1">
+                <span>Grupo 1: Orden</span>
+                <InlineMath math="p = 2" />
+              </span>
             </label>
             <div className="grid grid-cols-4 gap-1 p-1 bg-slate-100 rounded-xl">
               {[1, 2, 3, 4].map((ord) => (
@@ -218,13 +233,13 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                   key={ord}
                   type="button"
                   onClick={() => setOrder(ord)}
-                  className={`py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                  className={`py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center ${
                     order === ord
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  {ord}º
+                  <InlineMath math={`p=${ord}`} />
                 </button>
               ))}
             </div>
@@ -233,8 +248,13 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
           {/* Paso h */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>Paso h</span>
-              <span className="text-[10px] text-slate-400">Δx</span>
+              <span className="flex items-center gap-1">
+                <span>Paso</span>
+                <InlineMath math="h" />
+              </span>
+              <span className="text-[10px] text-slate-400">
+                <InlineMath math={`\\Delta ${xVar}`} />
+              </span>
             </label>
             <input
               type="number"
@@ -248,8 +268,9 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
 
           {/* x0 */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700">
-              Valor Inicial {xVar}₀
+            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+              <span>Valor Inicial</span>
+              <InlineMath math={`${xVar}_0`} />
             </label>
             <input
               type="number"
@@ -263,8 +284,9 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
 
           {/* y0 */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700">
-              Condición {yVar}({xVar}₀) = {yVar}₀
+            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+              <span>Condición Inicial</span>
+              <InlineMath math={`${yVar}(${xVar}_0) = ${yVar}_0`} />
             </label>
             <input
               type="number"
@@ -278,8 +300,9 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
 
           {/* xf */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700">
-              Punto Final {xVar}f
+            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+              <span>Punto Final</span>
+              <InlineMath math={`${xVar}_f`} />
             </label>
             <input
               type="number"
@@ -293,27 +316,29 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
 
           {/* Variables (x o t) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700">
-              Variable Indep.
+            <label className="text-xs font-bold text-slate-700 block">
+              Variable Independiente
             </label>
             <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-xl">
               <button
                 type="button"
                 onClick={() => setXVar('x')}
-                className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${
                   xVar === 'x' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600'
                 }`}
               >
-                x (espacial)
+                <InlineMath math="x" />
+                <span>(espacial)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setXVar('t')}
-                className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${
                   xVar === 't' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600'
                 }`}
               >
-                t (temporal)
+                <InlineMath math="t" />
+                <span>(temporal)</span>
               </button>
             </div>
           </div>
@@ -321,12 +346,14 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
-          <div className="text-xs text-slate-500 font-medium">
-            Iteraciones estimadas:{' '}
-            <strong className="text-slate-900">
-              N = ({xf} - {x0}) / {h} ={' '}
-              {Math.max(0, Math.round((parseFloat(xf) - parseFloat(x0)) / (parseFloat(h) || 1)))}
-            </strong>
+          <div className="text-xs text-slate-500 font-medium flex items-center gap-1.5 flex-wrap">
+            <span>Iteraciones estimadas:</span>
+            <InlineMath
+              math={`N = \\frac{${xVar}_f - ${xVar}_0}{h} = \\frac{${xf} - ${x0}}{${h}} = ${Math.max(
+                0,
+                Math.round((parseFloat(xf) - parseFloat(x0)) / (parseFloat(h) || 1))
+              )}`}
+            />
           </div>
 
           <div className="flex items-center gap-2">
@@ -361,7 +388,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
         {error && (
           <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium flex items-center gap-2.5">
             <AlertCircle size={18} className="shrink-0 text-rose-600" />
-            <span>{error}</span>
+            <MathText text={error} />
           </div>
         )}
       </div>
@@ -372,19 +399,21 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
           {/* Key Metrics Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Resultado Taylor {order}º
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                <span>Resultado Taylor</span>
+                <InlineMath math={`p = ${order}`} />
               </span>
               <div className="text-xl font-black text-slate-900 font-mono">
                 {result.final_approx_value}
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">
-                {yVar}({result.xf}) aproximado
+              <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                <InlineMath math={`\\hat{${yVar}}(${result.xf})`} />
+                <span>aproximado</span>
               </p>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                 Solución Analítica
               </span>
               <div className="text-xl font-black text-emerald-800 font-mono">
@@ -392,13 +421,14 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                   ? result.final_exact_value
                   : 'No cerrada'}
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">
-                {yVar}({result.xf}) exacto (SymPy)
+              <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                <InlineMath math={`${yVar}(${result.xf})`} />
+                <span>exacto (SymPy)</span>
               </p>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                 Error Relativo Final
               </span>
               <div className="text-xl font-black text-slate-900 font-mono">
@@ -408,22 +438,28 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                   '-'
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">
-                {result.final_error_abs !== null && result.final_error_abs !== undefined
-                  ? `Error Abs: ${result.final_error_abs.toFixed(5)}`
-                  : 'N/A'}
+              <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                {result.final_error_abs !== null && result.final_error_abs !== undefined ? (
+                  <>
+                    <span>Error Abs:</span>
+                    <InlineMath math={`E = ${result.final_error_abs.toFixed(5)}`} />
+                  </>
+                ) : (
+                  'N/A'
+                )}
               </p>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                 Iteraciones Totales
               </span>
               <div className="text-xl font-black text-slate-900 font-mono">
                 {result.n_steps} pasos
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">
-                Paso h = {result.h}
+              <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                <span>Paso</span>
+                <InlineMath math={`h = ${result.h}`} />
               </p>
             </div>
           </div>
@@ -446,8 +482,11 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                 <div className="space-y-2 text-xs">
                   {result.derivatives.map((d) => (
                     <div key={d.order} className="flex items-center justify-between p-2 bg-white rounded-xl border border-slate-200">
-                      <span className="font-bold text-slate-700 mr-2">
-                        {d.order_label} ({d.order}º orden):
+                      <span className="font-bold text-slate-700 mr-2 flex items-center gap-1">
+                        <InlineMath math={d.order_label} />
+                        <span>(orden</span>
+                        <InlineMath math={`p = ${d.order}`} />
+                        <span>):</span>
                       </span>
                       <div className="font-mono text-slate-900 font-bold overflow-x-auto">
                         <InlineMath math={`${d.order_label} = ${d.latex}`} />
@@ -460,15 +499,16 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               {/* Ordenada Genérica */}
               <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200/80 space-y-2 flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-900 block">
-                    Fórmula de la Ordenada Genérica para {yVar}_&#123;n+1&#125;
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1">
+                    <span>Fórmula de la Ordenada Genérica para</span>
+                    <InlineMath math={`${yVar}_{n+1}`} />
                   </span>
                   <div className="py-3 overflow-x-auto text-blue-950 font-bold">
                     <InlineMath math={result.generic_formula_latex} block />
                   </div>
                 </div>
                 <p className="text-[11px] text-blue-800/80 leading-relaxed font-medium">
-                  Esta es la fórmula clave de cátedra. Recorre el dominio sustituyendo iterativamente en cada paso los valores de ({xVar}_n, {yVar}_n).
+                  Esta es la fórmula clave de cátedra. Recorre el dominio sustituyendo iterativamente en cada paso los valores de <InlineMath math={`(${xVar}_n, ${yVar}_n)`} />.
                 </p>
               </div>
             </div>
@@ -487,17 +527,17 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               <table className="w-full text-xs text-left border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50 text-slate-700 font-black">
-                    <th className="p-3">n</th>
-                    <th className="p-3">{xVar}_n</th>
-                    <th className="p-3">{yVar}_n</th>
+                    <th className="p-3"><InlineMath math="n" /></th>
+                    <th className="p-3"><InlineMath math={`${xVar}_n`} /></th>
+                    <th className="p-3"><InlineMath math={`${yVar}_n`} /></th>
                     {result.derivatives.map((d) => (
-                      <th key={d.order} className="p-3">{d.order_label}_n</th>
+                      <th key={d.order} className="p-3"><InlineMath math={`${d.order_label}_n`} /></th>
                     ))}
-                    <th className="p-3">{yVar}_&#123;n+1&#125;</th>
+                    <th className="p-3"><InlineMath math={`${yVar}_{n+1}`} /></th>
                     {result.has_exact_solution && (
                       <>
-                        <th className="p-3">{yVar}_exacta</th>
-                        <th className="p-3">Error Abs.</th>
+                        <th className="p-3"><InlineMath math={`${yVar}_{\\text{exacta}}`} /></th>
+                        <th className="p-3"><InlineMath math="E_{\\text{abs}}" /></th>
                       </>
                     )}
                   </tr>

@@ -4,6 +4,7 @@ import { Play, Award, Printer } from 'lucide-react';
 import { useAppPrint } from '../../hooks/useAppPrint';
 import type { SolverConfig, RootMethod } from '../../types/roots';
 import InlineMath from '../../components/InlineMath';
+import MathText from '../../components/MathText';
 import ExerciseStepAccordion, { type StepIteration } from '../../components/roots/ExerciseStepAccordion';
 
 export interface ExerciseItem {
@@ -34,8 +35,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     // --- PROBLEMA 7 ---
     {
       id: 'ej-7a1',
-      title: 'Problema 7 - Inciso a1: f(x) = x² - 4x - 45 (x₀ = 0.5)',
-      description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de x₀ = 0.5.',
+      title: 'Problema 7 - Inciso a1: $f(x) = x^2 - 4x - 45$ ($x_0 = 0.5$)',
+      description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de $x_0 = 0.5$.',
       method: 'newton',
       expression: 'x^2 - 4x - 45',
       latexExpr: 'f(x) = x^2 - 4x - 45',
@@ -53,8 +54,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     },
     {
       id: 'ej-7a2',
-      title: 'Problema 7 - Inciso a2: f(x) = x² - 4x - 45 (x₀ = 4)',
-      description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de x₀ = 4.',
+      title: 'Problema 7 - Inciso a2: $f(x) = x^2 - 4x - 45$ ($x_0 = 4$)',
+      description: 'Estimar el valor aproximado de la raíz que se obtiene al aplicar el método de Newton con 4 iteraciones partiendo de $x_0 = 4$.',
       method: 'newton',
       expression: 'x^2 - 4x - 45',
       latexExpr: 'f(x) = x^2 - 4x - 45',
@@ -72,8 +73,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     },
     {
       id: 'ej-7b',
-      title: 'Problema 7 - Inciso b: f(x) = x - 0.8 - 0.2·sen(x) (x₀ = π/4)',
-      description: 'Estimar el valor aproximado de la raíz con 4 iteraciones partiendo de x₀ = π/4 (0.7854 rad).',
+      title: 'Problema 7 - Inciso b: $f(x) = x - 0.8 - 0.2\\sin(x)$ ($x_0 = \\pi/4$)',
+      description: 'Estimar el valor aproximado de la raíz con 4 iteraciones partiendo de $x_0 = \\pi/4$ (0.7854 rad).',
       method: 'newton',
       expression: 'x - 0.8 - 0.2sin(x)',
       latexExpr: 'f(x) = x - 0.8 - 0.2\\sin(x)',
@@ -93,8 +94,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     // --- PROBLEMA 8 ---
     {
       id: 'ej-8a',
-      title: 'Problema 8 - Inciso a: f(x) = x - cos(x) (x₀ = π/4)',
-      description: 'Estimar mediante Newton con error < 10⁻³ partiendo de x₀ = π/4 (0.7854 rad).',
+      title: 'Problema 8 - Inciso a: $f(x) = x - \\cos(x)$ ($x_0 = \\pi/4$)',
+      description: 'Estimar mediante Newton con error $< 10^{-3}$ partiendo de $x_0 = \\pi/4$ (0.7854 rad).',
       method: 'newton',
       expression: 'x - cos(x)',
       latexExpr: 'f(x) = x - \\cos(x)',
@@ -116,8 +117,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     },
     {
       id: 'ej-8b',
-      title: 'Problema 8 - Inciso b: f(x) = eˣ + 2x + 2·cos(x) - 6 (x₀ = π/4)',
-      description: 'Resolver mediante Newton con un error < 10⁻³ partiendo de x₀ = π/4 (0.7854 rad).',
+      title: 'Problema 8 - Inciso b: $f(x) = e^x + 2x + 2\\cos(x) - 6$ ($x_0 = \\pi/4$)',
+      description: 'Resolver mediante Newton con un error $< 10^{-3}$ partiendo de $x_0 = \\pi/4$ (0.7854 rad).',
       method: 'newton',
       expression: 'exp(x) + 2x + 2cos(x) - 6',
       latexExpr: 'f(x) = e^x + 2x + 2\\cos(x) - 6',
@@ -143,8 +144,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     },
     {
       id: 'ej-8c1',
-      title: 'Problema 8 - Inciso c1: f(x) = x³ - 2x² - 3x + 10 (x₀ = 1.9)',
-      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x + 10 con error < 10⁻³ usando x₀ = 1.9.',
+      title: 'Problema 8 - Inciso c1: $f(x) = x^3 - 2x^2 - 3x + 10$ ($x_0 = 1.9$)',
+      description: 'Estimar la raíz de $f(x) = x^3 - 2x^2 - 3x + 10$ con error $< 10^{-3}$ usando $x_0 = 1.9$.',
       method: 'newton',
       expression: 'x^3 - 2x^2 - 3x + 10',
       latexExpr: 'f(x) = x^3 - 2x^2 - 3x + 10',
@@ -194,8 +195,8 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
     },
     {
       id: 'ej-8c2',
-      title: 'Problema 8 - Inciso c2: f(x) = x³ - 2x² - 3x + 10 (x₀ = -3.0)',
-      description: 'Estimar la raíz de f(x) = x³ - 2x² - 3x + 10 con error < 10⁻³ usando x₀ = -3.0.',
+      title: 'Problema 8 - Inciso c2: $f(x) = x^3 - 2x^2 - 3x + 10$ ($x_0 = -3.0$)',
+      description: 'Estimar la raíz de $f(x) = x^3 - 2x^2 - 3x + 10$ con error $< 10^{-3}$ usando $x_0 = -3.0$.',
       method: 'newton',
       expression: 'x^3 - 2x^2 - 3x + 10',
       latexExpr: 'f(x) = x^3 - 2x^2 - 3x + 10',
@@ -363,7 +364,9 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
                     </span>
                   )}
                 </div>
-                <h3 className="text-lg font-black text-slate-900 mt-2">{ex.title}</h3>
+                <h3 className="text-lg font-black text-slate-900 mt-2">
+                  {typeof ex.title === 'string' ? <MathText text={ex.title} /> : ex.title}
+                </h3>
               </div>
 
               <button
@@ -387,7 +390,9 @@ export const ExercisesSection: React.FC<ExercisesSectionProps> = ({ onLoadExerci
               </button>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{ex.description}</p>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              {typeof ex.description === 'string' ? <MathText text={ex.description} /> : ex.description}
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormulaDisplay label="f(x)" formula={ex.latexExpr} />

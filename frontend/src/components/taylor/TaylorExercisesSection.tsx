@@ -2,6 +2,7 @@ import React from 'react';
 import { FileCheck2, ArrowUpRight, CheckCircle2, Calculator } from 'lucide-react';
 import type { TaylorPreset } from '../../types/taylor';
 import InlineMath from '../InlineMath';
+import MathText from '../MathText';
 
 interface TaylorExercisesSectionProps {
   onLoadExercise: (preset: TaylorPreset) => void;
@@ -26,7 +27,7 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
   {
     id: 'tp5-1a',
     title: 'Ejercicio Nº 1 - Inciso a) (Práctica 05 EDO)',
-    subtitle: 'Decaimiento cúbico con condición inicial en x=0. Hallar y(0.5) con paso h=0.1.',
+    subtitle: 'Decaimiento cúbico con condición inicial en $x=0$. Hallar $y(0.5)$ con paso $h=0.1$.',
     expression: '-3*x^2*y',
     x_var: 'x',
     y_var: 'y',
@@ -41,7 +42,7 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
   {
     id: 'tp5-1b',
     title: 'Ejercicio Nº 1 - Inciso b) (Práctica 05 EDO)',
-    subtitle: 'Ecuación no lineal separable con derivada cuadrática en y. Hallar y(0.5).',
+    subtitle: 'Ecuación no lineal separable con derivada cuadrática en $y$. Hallar $y(0.5)$.',
     expression: '(1/4)*(1 + y^2)',
     x_var: 'x',
     y_var: 'y',
@@ -56,7 +57,7 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
   {
     id: 'tp5-1c',
     title: 'Ejercicio Nº 1 - Inciso c) (Práctica 05 EDO)',
-    subtitle: 'Misma ecuación que Amiconi: y\' = 2xy, y(1)=1, hallar y(1.3) con h=0.1.',
+    subtitle: 'Misma ecuación que Amiconi: $y\' = 2xy$, $y(1)=1$, hallar $y(1.3)$ con $h=0.1$.',
     expression: '2*x*y',
     x_var: 'x',
     y_var: 'y',
@@ -71,7 +72,7 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
   {
     id: 'tp5-1d',
     title: 'Ejercicio Nº 1 - Inciso d) (Práctica 05 EDO)',
-    subtitle: 'Variable independiente temporal t. 1 <= t <= 3 con h=0.5. ¿Cuántas iteraciones son necesarias?',
+    subtitle: 'Variable independiente temporal $t$. $1 \\le t \\le 3$ con $h=0.5$. ¿Cuántas iteraciones son necesarias?',
     expression: '(1/t)*(y^2 + y)',
     x_var: 't',
     y_var: 'y',
@@ -135,7 +136,9 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                 <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
                   {ex.title}
                 </h3>
-                <p className="text-xs text-slate-500 font-medium">{ex.subtitle}</p>
+                <p className="text-xs text-slate-500 font-medium">
+                  <MathText text={ex.subtitle} />
+                </p>
               </div>
 
               <button
@@ -185,12 +188,12 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
             </div>
 
             {/* Note on number of iterations */}
-            <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium px-1">
-              <span>
-                Iteraciones requeridas:{' '}
-                <strong className="text-slate-900">
-                  N = ({ex.xf} - {ex.x0}) / {ex.h} = {Math.round((ex.xf - ex.x0) / ex.h)}
-                </strong>
+            <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium px-1 flex-wrap gap-2">
+              <span className="flex items-center gap-1.5 flex-wrap">
+                <span>Iteraciones requeridas:</span>
+                <InlineMath
+                  math={`N = \\frac{${ex.xf} - ${ex.x0}}{${ex.h}} = ${Math.round((ex.xf - ex.x0) / ex.h)}`}
+                />
               </span>
               <span className="text-emerald-700 font-bold flex items-center gap-1">
                 <CheckCircle2 size={13} />

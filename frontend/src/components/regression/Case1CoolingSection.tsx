@@ -225,7 +225,11 @@ export const Case1CoolingSection: React.FC<Case1CoolingSectionProps> = ({ onLoad
 
           <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
             <Clock size={16} />
-            <span>120 min de ensayo · Δt = 2 min (244 mediciones)</span>
+            <span className="flex items-center gap-1">
+              <span>120 min de ensayo ·</span>
+              <InlineMath math="\Delta t = 2\text{ min}" />
+              <span>(244 mediciones)</span>
+            </span>
           </div>
         </div>
 

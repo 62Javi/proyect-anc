@@ -366,18 +366,18 @@ class TaylorODECalculator:
 
             remaining = n_steps - (n + 1)
             rem_text = (
-                f"Llegamos al final del intervalo ({xn_next:.4g}), el cálculo concluye aquí."
+                f"Llegamos al final del intervalo (${x_name}_f = {xn_next:.4g}$), el cálculo concluye aquí."
                 if remaining == 0
-                else f"Aún faltan {remaining} iteración{'es' if remaining > 1 else ''} para alcanzar {xf}."
+                else f"Aún faltan {remaining} iteración{'es' if remaining > 1 else ''} para alcanzar ${x_name}_f = {xf}$."
             )
 
             explanation_text = (
-                f"• {step_word} iteración: n = {n}\n"
-                f"Parados en {x_name}_{n} = {xn_val:.4g}, {y_name}_{n} = {yn_val:.6g}.\n"
-                + "\n".join([f"  {derivatives_info[k].order_label}_{n} = {deriv_vals[k]:.6g}" for k in range(order)])
+                f"• {step_word} iteración: $n = {n}$\n"
+                f"Parados en ${x_name}_{n} = {xn_val:.4g}$, ${y_name}_{n} = {yn_val:.6g}$.\n"
+                + "\n".join([f"  ${derivatives_info[k].order_label}_{n} = {deriv_vals[k]:.6g}$" for k in range(order)])
                 + f"\nReemplazando en la Ordenada Genérica:\n"
-                f"  {y_name}_{n+1} = " + " + ".join(terms_text_eval) + f" = {yn_next:.6g}\n"
-                f"Esto se lee así: el valor aproximado es {y_name}({xn_next:.4g}) ≈ {yn_next:.6g}.\n"
+                f"  ${y_name}_{{{n+1}}} = " + " + ".join(terms_text_eval) + f" = {yn_next:.6g}$\n"
+                f"Esto se lee así: el valor aproximado es ${y_name}({xn_next:.4g}) \\approx {yn_next:.6g}$.\n"
                 f"{rem_text}"
             )
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BookOpen, HelpCircle, Sparkles, AlertCircle } from 'lucide-react';
 import InlineMath from '../InlineMath';
+import MathText from '../MathText';
 
 export const TaylorTheorySection: React.FC = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -8,19 +9,19 @@ export const TaylorTheorySection: React.FC = () => {
   const faqs = [
     {
       q: '¿Por qué Euler es en realidad un caso particular del método de Taylor?',
-      a: 'El método de Euler es exactamente el método de Taylor de orden 1 (p = 1). Al truncar la serie de Taylor en el término lineal h · y\'(x_n), se obtiene y_{n+1} = y_n + h · f(x_n, y_n). Su error local de truncamiento es O(h²) y su error global es O(h). Por eso, Taylor es el marco teórico unificador del que nacen los demás métodos.',
+      a: 'El método de Euler es exactamente el método de Taylor de orden 1 ($p = 1$). Al truncar la serie de Taylor en el término lineal $h \\cdot y\'(x_n)$, se obtiene $y_{n+1} = y_n + h \\cdot f(x_n, y_n)$. Su error local de truncamiento es $O(h^2)$ y su error global es $O(h)$. Por eso, Taylor es el marco teórico unificador del que nacen los demás métodos.',
     },
     {
       q: '¿Por qué históricamente se preferían los métodos de Runge-Kutta sobre Taylor de orden superior?',
-      a: 'Porque para órdenes mayores a 2, calcular analíticamente a mano las derivadas sucesivas y\'\', y\'\'\', y^(4) mediante la regla de la cadena multivariada resulta extremadamente tedioso y propenso a error humano. Runge-Kutta aproxima la precisión de Taylor evaluando f(x, y) en puntos intermedios sin requerir derivación analítica. Sin embargo, con herramientas simbólicas modernas como SymPy (integrada en esta plataforma), la desventaja de Taylor desaparece por completo.',
+      a: 'Porque para órdenes mayores a 2, calcular analíticamente a mano las derivadas sucesivas $y\'\'$, $y\'\'\'$, $y^{(4)}$ mediante la regla de la cadena multivariada resulta extremadamente tedioso y propenso a error humano. Runge-Kutta aproxima la precisión de Taylor evaluando $f(x, y)$ en puntos intermedios sin requerir derivación analítica. Sin embargo, con herramientas simbólicas modernas como SymPy (integrada en esta plataforma), la desventaja de Taylor desaparece por completo.',
     },
     {
       q: '¿Cuál es la diferencia entre el error local de truncamiento y el error global acumulado?',
-      a: 'El error local de truncamiento es el error cometido en un único paso suponiendo que el punto de partida es exacto. Para Taylor de orden p, el residuo de Lagrange es R_p = [h^(p+1) / (p+1)!] · y^(p+1)(ξ), es decir, O(h^(p+1)). El error global es la acumulación de estos errores a lo largo de los N = (x_f - x_0)/h pasos, por lo que se reduce en una potencia de h: Error Global = N · O(h^(p+1)) = O(h^p).',
+      a: 'El error local de truncamiento es el error cometido en un único paso suponiendo que el punto de partida es exacto. Para Taylor de orden $p$, el residuo de Lagrange es $R_p = \\frac{h^{p+1}}{(p+1)!} y^{(p+1)}(\\xi)$, es decir, $O(h^{p+1})$. El error global es la acumulación de estos errores a lo largo de los $N = \\frac{x_f - x_0}{h}$ pasos, por lo que se reduce en una potencia de $h$: $\\text{Error Global} = N \\cdot O(h^{p+1}) = O(h^p)$.',
     },
     {
       q: '¿Qué es una "Ordenada Genérica" según la cátedra de Amiconi?',
-      a: 'Es la expresión algebraica general que relaciona y_{n+1} en función de las variables discretas (x_n, y_n) para cualquier iteración n. Una vez obtenida la Ordenada Genérica para el problema particular, sólo resta sustituir iterativamente los valores numéricos recorriendo el dominio de trabajo desde x_0 hasta x_f con paso h.',
+      a: 'Es la expresión algebraica general que relaciona $y_{n+1}$ en función de las variables discretas $(x_n, y_n)$ para cualquier iteración $n$. Una vez obtenida la Ordenada Genérica para el problema particular, sólo resta sustituir iterativamente los valores numéricos recorriendo el dominio de trabajo desde $x_0$ hasta $x_f$ con paso $h$.',
     },
   ];
 
@@ -69,7 +70,9 @@ export const TaylorTheorySection: React.FC = () => {
             <div className="py-1">
               <InlineMath math="y' = \frac{dy}{dx} = f(x, y(x))" block />
             </div>
-            <p className="text-slate-500">Varía respecto de x y de y (la cual depende de x).</p>
+            <p className="text-slate-500">
+              Varía respecto de <InlineMath math="x" /> y de <InlineMath math="y" /> (la cual depende de <InlineMath math="x" />).
+            </p>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
@@ -89,11 +92,16 @@ export const TaylorTheorySection: React.FC = () => {
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-            <span className="font-bold text-slate-900 block">4. Paso de integración h:</span>
+            <span className="font-bold text-slate-900 block flex items-center gap-1">
+              <span>4. Paso de integración</span>
+              <InlineMath math="h" />:
+            </span>
             <div className="py-1">
               <InlineMath math="x_{n+1} = x_n + h \implies N = \frac{x_f - x_0}{h}" block />
             </div>
-            <p className="text-slate-500">Determina la cantidad N de iteraciones a realizar.</p>
+            <p className="text-slate-500">
+              Determina la cantidad <InlineMath math="N" /> de iteraciones a realizar.
+            </p>
           </div>
         </div>
       </div>
@@ -273,7 +281,7 @@ export const TaylorTheorySection: React.FC = () => {
                 </button>
                 {isOpen && (
                   <div className="p-4 pt-1 text-xs text-slate-600 leading-relaxed border-t border-slate-200/60 bg-white">
-                    {faq.a}
+                    <MathText text={faq.a} />
                   </div>
                 )}
               </div>

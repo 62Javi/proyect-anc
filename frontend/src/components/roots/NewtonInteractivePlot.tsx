@@ -193,19 +193,32 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
       {activeTangent && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs">
           <div>
-            <span className="text-slate-500 block text-[10px] uppercase font-bold">Punto actual xₙ</span>
+            <span className="text-slate-500 block text-[10px] uppercase font-bold flex items-center gap-1">
+              <span>Punto actual</span>
+              <InlineMath math="x_n" />
+            </span>
             <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.x_point.toFixed(4)}</span>
           </div>
           <div>
-            <span className="text-slate-500 block text-[10px] uppercase font-bold">Altura f(xₙ)</span>
+            <span className="text-slate-500 block text-[10px] uppercase font-bold flex items-center gap-1">
+              <span>Altura</span>
+              <InlineMath math="f(x_n)" />
+            </span>
             <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.y_point.toFixed(4)}</span>
           </div>
           <div>
-            <span className="text-slate-500 block text-[10px] uppercase font-bold">Pendiente f'(xₙ)</span>
+            <span className="text-slate-500 block text-[10px] uppercase font-bold flex items-center gap-1">
+              <span>Pendiente</span>
+              <InlineMath math="f'(x_n)" />
+            </span>
             <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.slope.toFixed(4)}</span>
           </div>
           <div>
-            <span className="text-slate-500 block text-[10px] uppercase font-bold">Próximo xₙ₊₁ (corte y=0)</span>
+            <span className="text-slate-500 block text-[10px] uppercase font-bold flex items-center gap-1">
+              <span>Próximo</span>
+              <InlineMath math="x_{n+1}" />
+              <span>(corte y=0)</span>
+            </span>
             <span className="font-mono font-bold text-slate-900 text-sm">{activeTangent.x_intercept.toFixed(4)}</span>
           </div>
         </div>
@@ -359,16 +372,27 @@ export const NewtonInteractivePlot: React.FC<NewtonInteractivePlotProps> = ({
       <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-slate-700 pt-3 border-t border-slate-100">
         <div className="flex items-center gap-2">
           <span className="w-3.5 h-1 bg-slate-900 rounded-full" />
-          <span>Curva de la función f(x)</span>
+          <span className="flex items-center gap-1">
+            <span>Curva de la función</span>
+            <InlineMath math="f(x)" />
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-3.5 h-1 bg-rose-500 rounded-full border-b border-dashed" />
-          <span>Recta Tangente Actual Lₙ(x) (Rojo)</span>
+          <span className="flex items-center gap-1">
+            <span>Recta Tangente Actual</span>
+            <InlineMath math="L_n(x)" />
+            <span>(Rojo)</span>
+          </span>
         </div>
         {prevTangent && (
           <div className="flex items-center gap-2">
             <span className="w-3.5 h-1 bg-blue-500 rounded-full border-b border-dashed" />
-            <span>Recta Tangente Anterior Lₙ₋₁(x) (Azul)</span>
+            <span className="flex items-center gap-1">
+              <span>Recta Tangente Anterior</span>
+              <InlineMath math="L_{n-1}(x)" />
+              <span>(Azul)</span>
+            </span>
           </div>
         )}
       </div>

@@ -51,13 +51,15 @@ export const TaylorComparisonSection: React.FC<TaylorComparisonSectionProps> = (
 
       {/* Comparison Table */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-black text-slate-900 tracking-tight">
-            Tabla Comparativa de Resultados en {x_var} = {xf}
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h3 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-1.5">
+            <span>Tabla Comparativa de Resultados en</span>
+            <InlineMath math={`${x_var} = ${xf}`} />
           </h3>
           {has_exact_solution && final_exact_value !== null && final_exact_value !== undefined && (
-            <div className="text-xs bg-emerald-50 text-emerald-900 font-bold px-3 py-1 rounded-full border border-emerald-200">
-              Valor Exacto: <span className="font-mono">{final_exact_value.toFixed(5)}</span>
+            <div className="text-xs bg-emerald-50 text-emerald-900 font-bold px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
+              <span>Valor Exacto:</span>
+              <InlineMath math={`${y_var}(${xf}) = ${final_exact_value.toFixed(5)}`} />
             </div>
           )}
         </div>
@@ -68,7 +70,12 @@ export const TaylorComparisonSection: React.FC<TaylorComparisonSectionProps> = (
               <tr className="border-b border-slate-200 bg-slate-50 text-slate-700 font-black">
                 <th className="p-3">Método</th>
                 <th className="p-3">Orden Teórico</th>
-                <th className="p-3">Aproximación {y_var}({xf})</th>
+                <th className="p-3">
+                  <span className="flex items-center gap-1">
+                    <span>Aproximación</span>
+                    <InlineMath math={`\\hat{${y_var}}(${xf})`} />
+                  </span>
+                </th>
                 {has_exact_solution && (
                   <>
                     <th className="p-3">Error Absoluto</th>
@@ -98,7 +105,9 @@ export const TaylorComparisonSection: React.FC<TaylorComparisonSectionProps> = (
                         </span>
                       )}
                     </td>
-                    <td className="p-3 font-mono">O(h^{method.order})</td>
+                    <td className="p-3">
+                      <InlineMath math={`O(h^{${method.order}})`} />
+                    </td>
                     <td className="p-3 font-mono font-bold">{method.final_value.toFixed(5)}</td>
                     {has_exact_solution && (
                       <>

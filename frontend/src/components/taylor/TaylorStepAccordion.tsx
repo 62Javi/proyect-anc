@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, BookOpen, CheckCircle2 } from 'lucide-react';
 import type { TaylorResponse, TaylorStep } from '../../types/taylor';
 import InlineMath from '../InlineMath';
+import MathText from '../MathText';
 
 interface TaylorStepAccordionProps {
   result: TaylorResponse;
@@ -63,23 +64,30 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
+                    className={`px-2 py-1 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
                       isOpen
                         ? 'bg-slate-900 text-white'
                         : 'bg-slate-100 text-slate-700'
                     }`}
                   >
-                    n={idx}
+                    <InlineMath math={`n=${idx}`} />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-black text-slate-900 block truncate">
-                      Iteración n = {idx}: de {x_var}_{idx} = {step.xn} a {x_var}_{idx + 1} = {(step.xn + h).toFixed(4)}
+                    <span className="text-xs sm:text-sm font-black text-slate-900 block truncate flex items-center gap-1.5 flex-wrap">
+                      <span>Iteración</span>
+                      <InlineMath math={`n = ${idx}`} />
+                      <span>: de</span>
+                      <InlineMath math={`${x_var}_{${idx}} = ${step.xn}`} />
+                      <span>a</span>
+                      <InlineMath math={`${x_var}_{${idx + 1}} = ${(step.xn + h).toFixed(4)}`} />
                     </span>
-                    <span className="text-[11px] font-semibold text-slate-500 block truncate">
-                      {y_var}_{idx + 1} ≈ <span className="text-slate-900 font-bold">{step.yn_plus_1}</span>
+                    <span className="text-[11px] font-semibold text-slate-500 block truncate flex items-center gap-1.5 flex-wrap">
+                      <InlineMath math={`${y_var}_{${idx + 1}} \\approx ${step.yn_plus_1}`} />
                       {step.error_abs !== undefined && step.error_abs !== null && (
-                        <span className="ml-2 text-emerald-600 font-medium">
-                          (Error: {step.error_abs.toFixed(5)})
+                        <span className="ml-2 text-emerald-600 font-medium flex items-center gap-1">
+                          <span>(Error:</span>
+                          <InlineMath math={`E = ${step.error_abs.toFixed(5)}`} />
+                          <span>)</span>
                         </span>
                       )}
                     </span>
@@ -110,20 +118,22 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
                       </span>
                       <div className="font-mono text-slate-800 font-medium space-y-1">
                         <div>
-                          {x_var}_{idx} = <span className="font-bold">{step.xn}</span>
+                          <InlineMath math={`${x_var}_{${idx}} = ${step.xn}`} />
                         </div>
                         <div>
-                          {y_var}_{idx} = <span className="font-bold">{step.yn}</span>
+                          <InlineMath math={`${y_var}_{${idx}} = ${step.yn}`} />
                         </div>
-                        <div>
-                          Paso h = <span className="font-bold">{h}</span>
+                        <div className="flex items-center gap-1">
+                          <span>Paso</span>
+                          <InlineMath math={`h = ${h}`} />
                         </div>
                       </div>
                     </div>
 
                     <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                        Derivadas Evaluadas en ({x_var}_{idx}, {y_var}_{idx})
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block flex items-center gap-1">
+                        <span>Derivadas Evaluadas en</span>
+                        <InlineMath math={`(${x_var}_{${idx}}, ${y_var}_{${idx}})`} />
                       </span>
                       <div className="space-y-1 font-mono text-slate-800">
                         {step.derivatives_values.map((val, dIdx) => (
@@ -153,20 +163,23 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
                     <div className="flex items-center gap-2 font-bold text-blue-900 text-[11px] uppercase tracking-wider">
                       <span>Interpretación Cátedra UTN FRLP</span>
                     </div>
-                    <p className="leading-relaxed whitespace-pre-line text-blue-900/90 text-[11px] sm:text-xs">
-                      {step.explanation_text}
-                    </p>
+                    <div className="leading-relaxed whitespace-pre-line text-blue-900/90 text-[11px] sm:text-xs">
+                      <MathText text={step.explanation_text} />
+                    </div>
                   </div>
 
                   {/* Comparación con Exacta si existe */}
                   {step.y_exact !== undefined && step.y_exact !== null && (
-                    <div className="flex items-center justify-between p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl text-emerald-950">
-                      <div>
-                        <span className="font-bold text-emerald-900">Solución Exacta en {x_var} = {(step.xn + h).toFixed(4)}:</span>{' '}
+                    <div className="flex items-center justify-between p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl text-emerald-950 flex-wrap gap-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-bold text-emerald-900">
+                          Solución Exacta en <InlineMath math={`${x_var} = ${(step.xn + h).toFixed(4)}`} />:
+                        </span>{' '}
                         <span className="font-mono font-bold">{step.y_exact}</span>
                       </div>
-                      <div className="text-right font-medium text-emerald-800">
-                        Error Abs: <span className="font-mono font-bold">{step.error_abs}</span>
+                      <div className="text-right font-medium text-emerald-800 flex items-center gap-1.5">
+                        <span>Error Abs:</span>
+                        <InlineMath math={`E = ${step.error_abs}`} />
                         {step.error_rel !== undefined && step.error_rel !== null && (
                           <span className="ml-1.5">({step.error_rel.toFixed(3)}%)</span>
                         )}

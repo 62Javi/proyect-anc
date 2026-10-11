@@ -56,6 +56,17 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
    - Desglose paso a paso colapsable con sustitución en LaTeX y redacción pedagógica de cátedra.
    - Comparativa multimétodo en vivo: Taylor vs Euler (orden 1) vs Euler Mejorado (Heun) vs Runge-Kutta 2 (Amiconi).
 
+## Mandatory Mathematical Typography Rule (LaTeX / KaTeX) (CRITICAL)
+- **Zero Raw Unicode Math Policy**: PROHIBIDO terminantemente usar caracteres Unicode para subíndices o superíndices en texto plano (como `x₀`, `y₀`, `x₁`, `y₁`, `xᵢ`, `yᵢ`, `xₙ`, `yₙ`, `xf`, `y'`, `y''`, `Δx`, `Δt`, `r²`, `O(h²)`).
+- **Zero Plain-Text Formulas Policy**: PROHIBIDO mostrar expresiones matemáticas o código crudo (ej: `y' = f(x, y)`, `y_{n+1}`, `N = (xf - x0)/h`, `Paso h`, `(xn, yn)`) como texto plano sin renderizar.
+- **Mandatory KaTeX Components**:
+  - Para cualquier variable, parámetro o fórmula en labels, headers de tablas, métricas o descripciones, usar SIEMPRE `<InlineMath math="..." />` (ej. `<InlineMath math="x_0" />`, `<InlineMath math="y(x_0) = y_0" />`, `<InlineMath math="x_f" />`, `<InlineMath math="h" />`, `<InlineMath math="\Delta x" />`, `<InlineMath math="y' = f(x, y)" />`, `<InlineMath math="y_{n+1}" />`).
+  - Para párrafos con explicaciones pedagógicas o textos mixtos, usar `<MathText text="..." />` delimitando las fórmulas con `$ ... $` o `$$ ... $$`.
+  - Para bloques destacados con etiqueta o paso principal, usar `FormulaDisplay`.
+- **Automated Verification**:
+  - El script `frontend/scripts/check-math-formatting.mjs` (ejecutable vía `npm run check-math` o `verify`) inspecciona estáticamente el árbol de componentes para detectar y bloquear cualquier fuga de caracteres Unicode o sintaxis LaTeX cruda.
+  - Es obligatorio ejecutar `verify` (o `docker compose exec frontend npm run check-math`) antes de dar por terminada cualquier tarea.
+
 ## Documentation Maintenance Rule (MANDATORY)
 - **Actualización Obligatoria ante Cambios Grandes**: Al implementar **nuevos módulos**, refactorizaciones arquitecturales, adición de endpoints/dependencias clave o cambios en flujos principales, es **mandatorio actualizar este archivo `GEMINI.md`**:
   1. Registrar el módulo o capacidad en la sección `Active Modules`.
@@ -113,6 +124,7 @@ frontend/
 - `006-least-squares-regression-case1`: Implemented end-to-end Least Squares Regression module with complete study for Caso 1 (Drink Cooling analysis with 4 clusters, Newton cooling law, thermal insulation hierarchy, residuals plots), interactive generic regression solver with TP4 presets, theoretical proofs from cátedra, and solved practical exercises.
 - `007-doc-sync-and-module-expansion-rule`: Synchronized GEMINI.md with all active modules, refined project structure, and codified mandatory rule for documentation updates upon major/structural changes.
 - `008-taylor-ode-module`: Implemented end-to-end Initial Value Problem (IVP/PVI) ODE Solver using Taylor's method (Group 1 topic), featuring automated symbolic derivative derivation via SymPy, exact analytic solution contrast, Amiconi pedagogical step-by-step substitution, official UTN FRLP TP5 presets, and live multi-method benchmark (Taylor vs Euler vs Heun vs RK2).
+- `009-latex-typography-rule-and-taylor-math-formatting`: Codified mandatory Zero Raw Unicode Math policy in GEMINI.md, integrated automated verification script (`npm run check-math` & Universal `verify`), and comprehensively overhauled all Taylor module components (solver inputs, metrics cards, accordion steps, theoretical proofs, and exercises) with KaTeX typography (`<InlineMath>` and `<MathText>`).
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

@@ -4,6 +4,7 @@ import TaylorInteractiveSolver from '../../components/taylor/TaylorInteractiveSo
 import TaylorTheorySection from '../../components/taylor/TaylorTheorySection';
 import TaylorExercisesSection from '../../components/taylor/TaylorExercisesSection';
 import TaylorComparisonSection from '../../components/taylor/TaylorComparisonSection';
+import InlineMath from '../../components/InlineMath';
 import { useAppPrint } from '../../hooks/useAppPrint';
 import type { TaylorPreset, TaylorResponse } from '../../types/taylor';
 
@@ -38,7 +39,7 @@ export const TaylorPage: React.FC = () => {
               Método de Taylor para E.D.O. (P.V.I.)
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm max-w-2xl font-medium">
-              Resolución numérica de Problemas de Valor Inicial mediante series de Taylor de órdenes 1 a 4,
+              Resolución numérica de Problemas de Valor Inicial mediante series de Taylor de órdenes <InlineMath math="p=1" /> a <InlineMath math="4" />,
               derivación analítica con SymPy, ordenada genérica y ejercicios de cátedra UTN FRLP.
             </p>
           </div>
