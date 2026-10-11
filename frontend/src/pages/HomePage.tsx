@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Activity, Calculator, Music, LineChart } from 'lucide-react';
+import { Activity, Calculator, Music, LineChart, Sigma } from 'lucide-react';
 
 const GithubIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -19,6 +19,14 @@ const GithubIcon = ({ size = 20 }: { size?: number }) => (
 
 export default function HomePage() {
   const tools = [
+    {
+      title: 'Método de Taylor (E.D.O.)',
+      description: 'Resolución de Problemas de Valor Inicial (PVI) mediante series de Taylor de órdenes 1 a 4, derivación analítica simbólica con SymPy, ordenada genérica y contrastación de error con cátedra UTN FRLP.',
+      icon: <Sigma size={24} />,
+      path: '/taylor',
+      ready: true,
+      tag: 'P.V.I. · Grupo 1',
+    },
     {
       title: 'Ajuste por Mínimos Cuadrados',
       description: 'Estudio térmico del Caso 1 (Enfriamiento de Bebidas), cálculo de residuos, bondad de ajuste r² y simulador interactivo para modelos lineales y no lineales.',

@@ -310,5 +310,21 @@ export const getCase1Analysis = async (): Promise<Case1AnalysisResponse> => {
   }
 };
 
+// ==================== TAYLOR ODE SOLVER ====================
+import type { TaylorRequest, TaylorResponse } from '../types/taylor';
+
+export const solveTaylorODE = async (request: TaylorRequest): Promise<TaylorResponse> => {
+  try {
+    const response = await api.post<TaylorResponse>('/taylor/solve', request);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.detail || 'Error al resolver por el método de Taylor');
+    }
+    throw new Error('Error de conexión con el servidor');
+  }
+};
+
 export default api;
+
 

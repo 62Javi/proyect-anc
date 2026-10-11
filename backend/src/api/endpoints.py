@@ -4,6 +4,7 @@ from src.core.fourier import FourierSeriesCalculator
 from src.core.harmonics import HarmonicAnalyzer
 from src.core.regression import LeastSquaresCalculator
 from src.core.roots import RootFindingCalculator
+from src.core.taylor import TaylorODECalculator
 from src.models.fourier import FourierRequest, FourierResponse
 from src.models.harmonics import AudioAnalysisResponse
 from src.models.regression import Case1AnalysisResponse, FitRequest, FitResponse
@@ -13,11 +14,13 @@ from src.models.roots import (
     NewtonRequest,
     NewtonResponse,
 )
+from src.models.taylor import TaylorRequest, TaylorResponse
 
 router = APIRouter()
 harmonics_analyzer = HarmonicAnalyzer()
 root_calculator = RootFindingCalculator()
 regression_calculator = LeastSquaresCalculator()
+taylor_calculator = TaylorODECalculator()
 
 def get_calculator():
     return FourierSeriesCalculator()
@@ -27,6 +30,9 @@ def get_root_calculator():
 
 def get_regression_calculator():
     return regression_calculator
+
+def get_taylor_calculator():
+    return taylor_calculator
 
 @router.post("/calculate", response_model=FourierResponse)
 def calculate(
@@ -110,4 +116,14 @@ def get_case1_analysis(
         return calc.analyze_case1()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/taylor/solve", response_model=TaylorResponse)
+def solve_taylor_ode(
+    request: TaylorRequest, calc: TaylorODECalculator = Depends(get_taylor_calculator)
+):
+    try:
+        return calc.solve(request)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 

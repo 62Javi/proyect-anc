@@ -48,6 +48,13 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 4. **Análisis de Armónicos (`/harmonics`)**:
    - Procesamiento de audio/señales en tiempo real vía Web Audio API / FFT.
    - Detección de armónicos y frecuencias fundamentales sobre archivos de audio (.wav).
+5. **Método de Taylor para EDO (`/taylor`)**:
+   - Tema 1 asignado al Grupo 1 (Problemas de Valor Inicial en EDOs de 1º orden).
+   - Deducción analítica de la Ordenada Genérica para órdenes 1 a 4 con cálculo simbólico de derivadas de orden superior mediante SymPy (regla de la cadena multivariada).
+   - Simulador interactivo con presets oficiales de cátedra (Práctica 05 y apunte de Ing. Amiconi).
+   - Solución analítica exacta automática (`sp.dsolve`) para contrastar error absoluto y relativo.
+   - Desglose paso a paso colapsable con sustitución en LaTeX y redacción pedagógica de cátedra.
+   - Comparativa multimétodo en vivo: Taylor vs Euler (orden 1) vs Euler Mejorado (Heun) vs Runge-Kutta 2 (Amiconi).
 
 ## Documentation Maintenance Rule (MANDATORY)
 - **Actualización Obligatoria ante Cambios Grandes**: Al implementar **nuevos módulos**, refactorizaciones arquitecturales, adición de endpoints/dependencias clave o cambios en flujos principales, es **mandatorio actualizar este archivo `GEMINI.md`**:
@@ -61,21 +68,22 @@ Interactive web platform for Mathematical Analysis, Numerical Methods, and Calcu
 backend/
 ├── src/
 │   ├── api/         # Endpoints FastAPI centralizados (endpoints.py)
-│   ├── core/        # Lógica matemática (fourier.py, roots.py, regression.py, harmonics.py, case1_data.json)
-│   ├── models/      # Esquemas Pydantic para I/O
+│   ├── core/        # Lógica matemática (taylor.py, fourier.py, roots.py, regression.py, harmonics.py)
+│   ├── models/      # Esquemas Pydantic para I/O (taylor.py, fourier.py, roots.py, ...)
 │   └── main.py      # Entry point Uvicorn
-└── tests/           # Pytest suite
+└── tests/           # Pytest suite (test_taylor_logic.py, test_api_taylor.py, ...)
 
 frontend/
 ├── src/
-│   ├── components/  # Componentes compartidos (Layout, UI, Navbar)
+│   ├── components/  # Componentes compartidos y por módulo (taylor/, roots/, regression/)
 │   ├── pages/       # Vistas principales por módulo
 │   │   ├── HomePage.tsx
-│   │   ├── FourierPage.tsx
-│   │   ├── HarmonicAnalysisPage.tsx
+│   │   ├── taylor/           # Módulo de Taylor (TaylorPage.tsx)
 │   │   ├── regression/       # Módulo de regresión (RegressionPage.tsx)
-│   │   └── roots/            # Módulo de raíces (RootsPage, InteractiveSolver, TheorySection, ExercisesSection)
-│   ├── services/    # Clientes de API REST
+│   │   ├── roots/            # Módulo de raíces (RootsPage)
+│   │   ├── FourierPage.tsx
+│   │   └── HarmonicAnalysisPage.tsx
+│   ├── services/    # Clientes de API REST (api.ts)
 │   └── App.tsx      # Configuración de React Router
 └── tests/           # Vitest suite
 ```
@@ -104,6 +112,7 @@ frontend/
 - `005-dev-hot-reload`: Enabled instant Hot-Reload (Vite HMR on frontend and Uvicorn --reload on backend) via Docker volumes and override configuration, eliminating image rebuilds during local development.
 - `006-least-squares-regression-case1`: Implemented end-to-end Least Squares Regression module with complete study for Caso 1 (Drink Cooling analysis with 4 clusters, Newton cooling law, thermal insulation hierarchy, residuals plots), interactive generic regression solver with TP4 presets, theoretical proofs from cátedra, and solved practical exercises.
 - `007-doc-sync-and-module-expansion-rule`: Synchronized GEMINI.md with all active modules, refined project structure, and codified mandatory rule for documentation updates upon major/structural changes.
+- `008-taylor-ode-module`: Implemented end-to-end Initial Value Problem (IVP/PVI) ODE Solver using Taylor's method (Group 1 topic), featuring automated symbolic derivative derivation via SymPy, exact analytic solution contrast, Amiconi pedagogical step-by-step substitution, official UTN FRLP TP5 presets, and live multi-method benchmark (Taylor vs Euler vs Heun vs RK2).
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

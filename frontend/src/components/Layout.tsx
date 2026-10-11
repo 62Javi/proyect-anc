@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Home, Activity, Calculator, Music, LineChart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, Activity, Calculator, Music, LineChart, ChevronLeft, ChevronRight, Sigma } from 'lucide-react';
 
 const GithubIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -24,6 +24,7 @@ export default function Layout() {
 
   const navItems = [
     { path: '/', icon: <Home size={20} />, label: 'Inicio' },
+    { path: '/taylor', icon: <Sigma size={20} />, label: 'Método de Taylor' },
     { path: '/regression', icon: <LineChart size={20} />, label: 'Mínimos Cuadrados' },
     { path: '/roots', icon: <Calculator size={20} />, label: 'Método de Newton' },
     { path: '/fourier', icon: <Activity size={20} />, label: 'Fourier' },
