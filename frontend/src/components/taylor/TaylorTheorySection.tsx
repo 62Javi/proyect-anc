@@ -1,10 +1,85 @@
 import React, { useState } from 'react';
-import { BookOpen, HelpCircle, Sparkles, AlertCircle } from 'lucide-react';
+import {
+  BookOpen,
+  HelpCircle,
+  Sparkles,
+  AlertCircle,
+  Printer,
+  BookMarked,
+  Download,
+  ExternalLink,
+  FileText,
+} from 'lucide-react';
 import InlineMath from '../InlineMath';
 import MathText from '../MathText';
+import { useAppPrint } from '../../hooks/useAppPrint';
+
+interface BibliographyDoc {
+  id: string;
+  title: string;
+  originalName: string;
+  author: string;
+  category: string;
+  description: string;
+  fileSize: string;
+  url: string;
+  downloadFilename: string;
+}
+
+const BIBLIOGRAPHY_DOCS: BibliographyDoc[] = [
+  {
+    id: 'tp5-edo',
+    title: 'Trabajo Práctico Nº 5: Ecuaciones Diferenciales Ordinarias',
+    originalName: '05 - Práctica de Ecuaciones Diferenciales Ordinarias.pdf',
+    author: 'Cátedra de Análisis Numérico • UTN FRLP',
+    category: 'Trabajo Práctico',
+    description:
+      'Guía oficial con enunciados prácticos sobre Problemas de Valor Inicial (P.V.I.), Método de Taylor, Euler, Heun y Runge-Kutta.',
+    fileSize: '54 KB',
+    url: '/docs/05-tp5-edo.pdf',
+    downloadFilename: '05 - Práctica de Ecuaciones Diferenciales Ordinarias.pdf',
+  },
+  {
+    id: 'edo-amiconi',
+    title: 'Ejemplos Resueltos de EDO (Método de Taylor y P.V.I.)',
+    originalName: '06 - Ejemplos resueltos (Ecuaciones diferenciales ordinarias) - Amiconi.pdf',
+    author: 'Cátedra ANC • Prof. Ing. Amiconi',
+    category: 'Apunte de Cátedra',
+    description:
+      'Apunte oficial con deducción paso a paso de la Ordenada Genérica para Taylor de orden 2 a 4, regla de la cadena multivariada, tabulaciones y comparativa de métodos numéricos.',
+    fileSize: '362 KB',
+    url: '/docs/06-edo-amiconi-ejemplos.pdf',
+    downloadFilename: '06 - Ejemplos resueltos (Ecuaciones diferenciales ordinarias) - Amiconi.pdf',
+  },
+  {
+    id: 'tp6-contorno',
+    title: 'Trabajo Práctico Nº 6: EDO y Problemas de Contorno',
+    originalName: '06 - Práctica de EDO y Contorno.pdf',
+    author: 'Cátedra de Análisis Numérico • UTN FRLP',
+    category: 'Trabajo Práctico',
+    description:
+      'Guía de ejercitación complementaria para problemas de valores en la frontera y ecuaciones diferenciales de orden superior.',
+    fileSize: '39 KB',
+    url: '/docs/06-tp6-edo-contorno.pdf',
+    downloadFilename: '06 - Práctica de EDO y Contorno.pdf',
+  },
+  {
+    id: 'contorno-amiconi',
+    title: 'Ejemplos Resueltos: Problemas de Contorno',
+    originalName: '07 - Ejemplos resueltos (Problemas de Contorno) - Amiconi.pdf',
+    author: 'Cátedra ANC • Prof. Ing. Amiconi',
+    category: 'Apunte de Cátedra',
+    description:
+      'Resolución práctica y analítica desarrollada por el Ing. Amiconi para condiciones de contorno y diferencias finitas.',
+    fileSize: '307 KB',
+    url: '/docs/07-contorno-amiconi-ejemplos.pdf',
+    downloadFilename: '07 - Ejemplos resueltos (Problemas de Contorno) - Amiconi.pdf',
+  },
+];
 
 export const TaylorTheorySection: React.FC = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const { printRef, handlePrint } = useAppPrint('Guia-Teorica-Taylor-EDO');
 
   const faqs = [
     {
@@ -26,8 +101,34 @@ export const TaylorTheorySection: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto text-slate-800">
-      {/* Intro Card */}
+    <div className="space-y-8 max-w-4xl mx-auto text-slate-800 pb-16">
+      {/* Top Banner con botón de acción */}
+      <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-slate-200 print:hidden">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-800 px-3 py-1 rounded-full">
+            Material de Estudio • Cátedra de Modelos Numéricos (UTN FRLP)
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black">
+            Guía Teórica de Taylor para E.D.O.
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-300">
+            Descargá o imprimí este documento en PDF con el desarrollo analítico del método de Taylor, deducción de la Ordenada Genérica, regla de la cadena multivariada y análisis de cotas de error.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => handlePrint()}
+          className="flex items-center justify-center gap-2.5 px-6 py-3.5 bg-white text-slate-900 hover:bg-slate-100 rounded-2xl text-xs font-black uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+        >
+          <Printer size={16} />
+          <span>Descargar / Imprimir PDF</span>
+        </button>
+      </div>
+
+      {/* CONTENEDOR A IMPRIMIR (Vinculado a la ref del hook) */}
+      <div ref={printRef} className="space-y-8 print-container">
+        {/* Intro Card */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center gap-2.5">
           <span className="p-2 bg-slate-100 text-slate-900 rounded-xl">
@@ -288,6 +389,89 @@ export const TaylorTheorySection: React.FC = () => {
             );
           })}
         </div>
+      </div>
+
+      {/* 6. Bibliografía y Material de la Cátedra */}
+      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6 print:border-none print:shadow-none print:p-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 print:hidden">
+              <BookMarked size={20} />
+            </div>
+            <div>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900">
+                6. Bibliografía y Material de Cátedra
+              </h3>
+              <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                Documentos Oficiales en PDF
+              </p>
+            </div>
+          </div>
+          <span className="self-start sm:self-auto text-[11px] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full print:hidden">
+            {BIBLIOGRAPHY_DOCS.length} documentos oficiales
+          </span>
+        </div>
+
+        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+          Podés consultar los apuntes teóricos y las guías de trabajos prácticos provistos por la cátedra para la unidad de <strong>Ecuaciones Diferenciales Ordinarias (E.D.O.)</strong>. Hacé clic para visualizarlos directamente en el navegador o descargarlos en tu dispositivo.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+          {BIBLIOGRAPHY_DOCS.map((doc) => (
+            <div
+              key={doc.id}
+              className="bg-slate-50/80 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-2xl p-5 flex flex-col justify-between space-y-4 transition-all duration-200 group shadow-xs hover:shadow-sm"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200/70 rounded-lg">
+                    <FileText size={12} />
+                    <span>PDF • {doc.category}</span>
+                  </span>
+                  <span className="text-[11px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200 print:hidden">
+                    {doc.fileSize}
+                  </span>
+                </div>
+
+                <div>
+                  <h4 className="text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                    {doc.title}
+                  </h4>
+                  <p className="text-xs font-bold text-slate-500 mt-0.5">{doc.author}</p>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {doc.description}
+                </p>
+              </div>
+
+              {/* Acciones de visualización y descarga */}
+              <div className="pt-3 border-t border-slate-200 flex items-center gap-2 print:hidden">
+                <a
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xs cursor-pointer"
+                  title={`Abrir ${doc.title} en una pestaña nueva`}
+                >
+                  <ExternalLink size={14} />
+                  <span>Ver PDF</span>
+                </a>
+
+                <a
+                  href={doc.url}
+                  download={doc.downloadFilename}
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xs cursor-pointer"
+                  title={`Descargar ${doc.downloadFilename}`}
+                >
+                  <Download size={14} />
+                  <span>Descargar</span>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
       </div>
     </div>
   );

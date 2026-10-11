@@ -397,7 +397,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
       {result && (
         <div className="space-y-6">
           {/* Key Metrics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
                 <span>Resultado Taylor</span>
@@ -414,38 +414,26 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Solución Analítica
+                Solución Analítica Exacta
               </span>
               <div className="text-xl font-black text-emerald-800 font-mono">
                 {result.final_exact_value !== null && result.final_exact_value !== undefined
                   ? result.final_exact_value
-                  : 'No cerrada'}
+                  : 'No elemental'}
               </div>
               <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
-                <InlineMath math={`${yVar}(${result.xf})`} />
-                <span>exacto (SymPy)</span>
-              </p>
-            </div>
-
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Error Relativo Final
-              </span>
-              <div className="text-xl font-black text-slate-900 font-mono">
-                {result.final_error_rel !== null && result.final_error_rel !== undefined ? (
-                  `${result.final_error_rel.toFixed(3)}%`
-                ) : (
-                  '-'
-                )}
-              </div>
-              <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
-                {result.final_error_abs !== null && result.final_error_abs !== undefined ? (
+                {result.final_exact_value !== null && result.final_exact_value !== undefined ? (
                   <>
-                    <span>Error Abs:</span>
-                    <InlineMath math={`E = ${result.final_error_abs.toFixed(5)}`} />
+                    <InlineMath math={`${yVar}(${result.xf})`} />
+                    <span>exacto</span>
+                    {typeof result.final_error_abs === 'number' && (
+                      <span className="text-slate-400 ml-1">
+                        (<InlineMath math={`|E| = ${result.final_error_abs.toFixed(5)}`} />)
+                      </span>
+                    )}
                   </>
                 ) : (
-                  'N/A'
+                  <span>Sin solución cerrada elemental</span>
                 )}
               </p>
             </div>
@@ -460,6 +448,9 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
                 <span>Paso</span>
                 <InlineMath math={`h = ${result.h}`} />
+                <span className="text-slate-400 mx-1">•</span>
+                <span>Error local</span>
+                <InlineMath math={`O(h^{${order + 1}})`} />
               </p>
             </div>
           </div>
