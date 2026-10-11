@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { Sigma, BookOpen, FileCheck2, GitCompare, Printer } from 'lucide-react';
+import { Sigma, BookOpen, FileCheck2, Printer } from 'lucide-react';
 import TaylorInteractiveSolver from '../../components/taylor/TaylorInteractiveSolver';
 import TaylorTheorySection from '../../components/taylor/TaylorTheorySection';
 import TaylorExercisesSection from '../../components/taylor/TaylorExercisesSection';
-import TaylorComparisonSection from '../../components/taylor/TaylorComparisonSection';
 import InlineMath from '../../components/InlineMath';
 import { useAppPrint } from '../../hooks/useAppPrint';
-import type { TaylorPreset, TaylorResponse } from '../../types/taylor';
+import type { TaylorPreset } from '../../types/taylor';
 
 export const TaylorPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'solver' | 'theory' | 'exercises' | 'comparison'>('solver');
+  const [activeTab, setActiveTab] = useState<'solver' | 'theory' | 'exercises'>('solver');
   const [selectedPreset, setSelectedPreset] = useState<TaylorPreset | undefined>(undefined);
-  const [latestResult, setLatestResult] = useState<TaylorResponse | undefined>(undefined);
 
   const { printRef, handlePrint } = useAppPrint('Simulacion-Taylor-EDO-ANC');
 
@@ -55,8 +53,8 @@ export const TaylorPage: React.FC = () => {
           )}
         </div>
 
-        {/* 4-Tab Navigation */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1.5 bg-slate-200/70 rounded-2xl border border-slate-200">
+        {/* 3-Tab Navigation */}
+        <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-slate-200/70 rounded-2xl border border-slate-200">
           <button
             onClick={() => setActiveTab('solver')}
             className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center ${
@@ -64,7 +62,8 @@ export const TaylorPage: React.FC = () => {
             }`}
           >
             <Sigma size={18} className="shrink-0" />
-            <span>Simulador Interactivo</span>
+            <span className="hidden sm:inline">Simulador Interactivo</span>
+            <span className="sm:hidden">Simulador</span>
           </button>
 
           <button
@@ -74,7 +73,8 @@ export const TaylorPage: React.FC = () => {
             }`}
           >
             <BookOpen size={18} className="shrink-0" />
-            <span>Teoría & Cátedra</span>
+            <span className="hidden sm:inline">Teoría & Cátedra</span>
+            <span className="sm:hidden">Teoría</span>
           </button>
 
           <button
@@ -87,16 +87,6 @@ export const TaylorPage: React.FC = () => {
             <span className="hidden sm:inline">Ejercicios Resueltos</span>
             <span className="sm:hidden">Ejercicios</span>
           </button>
-
-          <button
-            onClick={() => setActiveTab('comparison')}
-            className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center ${
-              activeTab === 'comparison' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <GitCompare size={18} className="shrink-0" />
-            <span>Comparativa Métodos</span>
-          </button>
         </div>
       </div>
 
@@ -104,17 +94,11 @@ export const TaylorPage: React.FC = () => {
       <div className="max-w-5xl mx-auto w-full flex-1 min-w-0">
         <div ref={printRef}>
           {activeTab === 'solver' && (
-            <TaylorInteractiveSolver
-              initialConfig={selectedPreset}
-              onResultChange={setLatestResult}
-            />
+            <TaylorInteractiveSolver initialConfig={selectedPreset} />
           )}
           {activeTab === 'theory' && <TaylorTheorySection />}
           {activeTab === 'exercises' && (
             <TaylorExercisesSection onLoadExercise={handleLoadExercise} />
-          )}
-          {activeTab === 'comparison' && (
-            <TaylorComparisonSection result={latestResult} />
           )}
         </div>
       </div>

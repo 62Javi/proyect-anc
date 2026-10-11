@@ -63,7 +63,7 @@ export interface TaylorResponse {
   final_error_abs?: number | null;
   final_error_rel?: number | null;
   steps: TaylorStep[];
-  comparison_methods: ComparisonMethodResult[];
+  comparison_methods?: ComparisonMethodResult[];
   plot_data: TaylorPlotData;
   amiconi_summary: string[];
 }
