@@ -10,7 +10,6 @@ import {
 import { solveTaylorODE } from '../../services/api';
 import type { TaylorPreset, TaylorRequest, TaylorResponse } from '../../types/taylor';
 import { OFFICIAL_TAYLOR_EXERCISES } from './TaylorExercisesSection';
-import TaylorPlot from './TaylorPlot';
 import TaylorStepAccordion from './TaylorStepAccordion';
 import InlineMath from '../InlineMath';
 
@@ -474,9 +473,6 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               </div>
             </div>
           </div>
-
-          {/* Gráfico Interactivo Recharts */}
-          <TaylorPlot result={result} />
 
           {/* Tabla de Iteraciones */}
           <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm space-y-4">
