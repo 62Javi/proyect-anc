@@ -82,14 +82,8 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
                       <InlineMath math={`${x_var}_{${idx + 1}} = ${(step.xn + h).toFixed(4)}`} />
                     </span>
                     <span className="text-[11px] font-semibold text-slate-500 block truncate flex items-center gap-1.5 flex-wrap">
+                      <span>Resultado aproximado:</span>
                       <InlineMath math={`${y_var}_{${idx + 1}} \\approx ${step.yn_plus_1}`} />
-                      {step.error_abs !== undefined && step.error_abs !== null && (
-                        <span className="ml-2 text-emerald-600 font-medium flex items-center gap-1">
-                          <span>(Error:</span>
-                          <InlineMath math={`E = ${step.error_abs.toFixed(5)}`} />
-                          <span>)</span>
-                        </span>
-                      )}
                     </span>
                   </div>
                 </div>

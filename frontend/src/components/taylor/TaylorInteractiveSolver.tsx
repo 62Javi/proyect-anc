@@ -37,6 +37,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
   const [result, setResult] = useState<TaylorResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [showTheoreticalExact, setShowTheoreticalExact] = useState<boolean>(false);
 
   // Sync initialConfig when provided
   useEffect(() => {
@@ -380,63 +381,84 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
       {result && (
         <div className="space-y-6">
           {/* Key Metrics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
                 <span>Resultado Taylor de Grado 2</span>
                 <InlineMath math="p = 2" />
               </span>
-              <div className="text-xl font-black text-slate-900 font-mono">
+              <div className="text-2xl font-black text-slate-900 font-mono">
                 {result.final_approx_value}
               </div>
               <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
                 <InlineMath math={`\\hat{${yVar}}(${result.xf})`} />
-                <span>aproximado</span>
+                <span>aproximación final calculada en</span>
+                <InlineMath math={`${xVar}_f = ${result.xf}`} />
               </p>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Solución Analítica Exacta
-              </span>
-              <div className="text-xl font-black text-emerald-800 font-mono">
-                {result.final_exact_value !== null && result.final_exact_value !== undefined
-                  ? result.final_exact_value
-                  : 'No elemental'}
-              </div>
-              <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
-                {result.final_exact_value !== null && result.final_exact_value !== undefined ? (
-                  <>
-                    <InlineMath math={`${yVar}(${result.xf})`} />
-                    <span>exacto</span>
-                    {typeof result.final_error_abs === 'number' && (
-                      <span className="text-slate-400 ml-1">
-                        (<InlineMath math={`|E| = ${result.final_error_abs.toFixed(5)}`} />)
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span>Sin solución cerrada elemental</span>
-                )}
-              </p>
-            </div>
-
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                 Iteraciones Totales
               </span>
-              <div className="text-xl font-black text-slate-900 font-mono">
+              <div className="text-2xl font-black text-slate-900 font-mono">
                 {result.n_steps} pasos
               </div>
               <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
                 <span>Paso</span>
                 <InlineMath math={`h = ${result.h}`} />
                 <span className="text-slate-400 mx-1">•</span>
-                <span>Error local</span>
-                <InlineMath math="O(h^3)" />
+                <span>Subintervalos calculados con la ordenada genérica</span>
               </p>
             </div>
           </div>
+
+          {/* Verificación Teórica Opcional (Toggle) */}
+          {result.has_exact_solution && result.final_exact_value !== null && result.final_exact_value !== undefined && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setShowTheoreticalExact(!showTheoreticalExact)}
+                className="w-full flex items-center justify-between text-left cursor-pointer transition-colors group"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="text-xs font-black text-slate-700 group-hover:text-slate-900">
+                    Contraste Teórico Adicional (Solución Analítica por separación de variables)
+                  </span>
+                  <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                    Opcional
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-800">
+                  {showTheoreticalExact ? 'Ocultar' : 'Ver comparación teórica'}
+                </span>
+              </button>
+
+              {showTheoreticalExact && (
+                <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
+                      Solución Analítica Exacta en <InlineMath math={`${xVar}_f = ${result.xf}`} />
+                    </span>
+                    <span className="text-base font-black text-emerald-950 font-mono">
+                      {result.final_exact_value}
+                    </span>
+                  </div>
+                  {typeof result.final_error_abs === 'number' && (
+                    <div className="sm:text-right">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
+                        Diferencia Numérica
+                      </span>
+                      <span className="text-xs font-mono font-bold text-emerald-900">
+                        <InlineMath math={`|\\text{Error}| = ${result.final_error_abs.toFixed(5)}`} />
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Derivadas Simbólicas y Ordenada Genérica */}
           <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm space-y-4">
@@ -508,7 +530,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                       <th key={d.order} className="p-3"><InlineMath math={`${d.order_label}_n`} /></th>
                     ))}
                     <th className="p-3"><InlineMath math={`${yVar}_{n+1}`} /></th>
-                    {result.has_exact_solution && (
+                    {showTheoreticalExact && result.has_exact_solution && (
                       <>
                         <th className="p-3"><InlineMath math={`${yVar}_{\\text{exacta}}`} /></th>
                         <th className="p-3"><InlineMath math="E_{\\text{abs}}" /></th>
@@ -526,7 +548,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                         <td key={dIdx} className="p-3 font-mono text-slate-600">{dv}</td>
                       ))}
                       <td className="p-3 font-mono font-bold text-blue-900">{s.yn_plus_1}</td>
-                      {result.has_exact_solution && (
+                      {showTheoreticalExact && result.has_exact_solution && (
                         <>
                           <td className="p-3 font-mono text-emerald-800">{s.y_exact ?? '-'}</td>
                           <td className="p-3 font-mono text-rose-700">{s.error_abs ?? '-'}</td>

@@ -208,17 +208,17 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
       boxUPrime: {
         label: "Derivada Exterior g'(y)",
         math: "g'(y) = \\frac{d}{dy}\\left[\\frac{1 + y^2}{4}\\right] = \\frac{2y}{4} = \\frac{y}{2}",
-        note: 'Derivada directa de g respecto a y.',
+        note: 'Derivada directa de g respecto a y (la derivada de 1 es 0 y de y^2 es 2y).',
       },
       boxV: {
         label: 'Función Interior (y)',
         math: 'y = y(x)',
-        note: 'Variable dependiente de x.',
+        note: 'Variable dependiente incógnita.',
       },
       boxVPrime: {
         label: "Derivada Interior (y')",
-        math: "v' = \\frac{dy}{dx} = y'",
-        note: 'Derivada interna de y respecto de x.',
+        math: "y' = \\frac{dy}{dx}",
+        note: "Derivada de la función interior respecto a x.",
       },
       appliedRuleFormulaMath:
         "y'' = \\frac{d}{dx}[g(y)] = g'(y) \\cdot y' = \\frac{y}{2} \\cdot y'",
@@ -489,12 +489,12 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
 
               {/* Special Question Box if present (Inciso d) */}
               {detail.specialQuestion && detail.specialAnswer && (
-                <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs sm:text-sm space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-amber-950 font-bold">
-                    <HelpCircle size={16} className="shrink-0 text-amber-600" />
+                <div className="p-4 bg-slate-100/80 border border-slate-200 rounded-2xl text-xs sm:text-sm space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-slate-900 font-bold">
+                    <HelpCircle size={16} className="shrink-0 text-slate-600" />
                     <span>Pregunta de la Guía: <MathText text={detail.specialQuestion} /></span>
                   </div>
-                  <div className="text-amber-900 pl-5 font-medium leading-relaxed">
+                  <div className="text-slate-700 pl-5 font-medium leading-relaxed">
                     <MathText text={detail.specialAnswer} />
                   </div>
                 </div>
@@ -502,17 +502,17 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
 
               {/* Pedagogical reference if present (Inciso c) */}
               {detail.pedagogicalNote && (
-                <div className="p-3.5 bg-blue-50/80 border border-blue-200 rounded-2xl text-xs sm:text-sm text-blue-950 flex items-start gap-2">
-                  <Sparkles size={16} className="shrink-0 mt-0.5 text-blue-600" />
+                <div className="p-3.5 bg-slate-100/80 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 flex items-start gap-2">
+                  <Sparkles size={16} className="shrink-0 mt-0.5 text-slate-600" />
                   <div>
                     <span className="font-bold block">Referencia Oficial de Cátedra:</span>
-                    <span>{detail.pedagogicalNote}</span>
+                    <span className="text-slate-600">{detail.pedagogicalNote}</span>
                   </div>
                 </div>
               )}
 
               {/* Parameters Summary Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50/70 border border-slate-200/80 rounded-2xl text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-slate-50/70 border border-slate-200/80 rounded-2xl text-xs">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                     Ecuación Diferencial
@@ -524,25 +524,12 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
 
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Condición Inicial & Paso
+                    Condición Inicial & Paso de Integración
                   </span>
                   <div className="font-mono text-slate-800 mt-1 text-sm">
                     <InlineMath
-                      math={`${ex.y_var}(${ex.x0}) = ${ex.y0}, \\; h=${ex.h}`}
+                      math={`${ex.y_var}(${ex.x0}) = ${ex.y0}, \\quad h=${ex.h}`}
                     />
-                  </div>
-                </div>
-
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Solución Analítica Exacta
-                  </span>
-                  <div className="font-mono text-emerald-800 font-bold mt-1 text-sm">
-                    {ex.exactFormula ? (
-                      <InlineMath math={ex.exactFormula} />
-                    ) : (
-                      <span className="text-slate-400 italic">No elemental</span>
-                    )}
                   </div>
                 </div>
               </div>
@@ -583,7 +570,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                         <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                           Método de Derivación: {detail.deduction.ruleName}
                         </span>
-                        <span className="px-3 py-1 rounded-lg bg-blue-50 text-blue-900 border border-blue-200 font-mono text-xs sm:text-sm font-bold">
+                        <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200 font-mono text-xs sm:text-sm font-bold">
                           <InlineMath math={detail.deduction.ruleFormula} />
                         </span>
                       </div>
@@ -592,7 +579,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       </div>
                     </div>
 
-                    {/* LOS 4 CUADROS CLAROS PARA u, u', v, v' */}
+                    {/* LOS 4 CUADROS CLAROS PARA u, u', v, v' EN GRIS/NEGRO */}
                     <div className="space-y-2">
                       <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                         Identificación de factores y derivadas:
@@ -600,10 +587,10 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         {/* Factor u */}
                         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
-                          <span className="text-[11px] font-bold text-blue-700 block uppercase tracking-wide">
+                          <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxU.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
                             <InlineMath math={detail.deduction.boxU.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -613,10 +600,10 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
 
                         {/* Derivada u' */}
                         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
-                          <span className="text-[11px] font-bold text-indigo-700 block uppercase tracking-wide">
+                          <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxUPrime.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
                             <InlineMath math={detail.deduction.boxUPrime.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -626,10 +613,10 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
 
                         {/* Factor v */}
                         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
-                          <span className="text-[11px] font-bold text-purple-700 block uppercase tracking-wide">
+                          <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxV.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
                             <InlineMath math={detail.deduction.boxV.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -639,10 +626,10 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
 
                         {/* Derivada v' */}
                         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
-                          <span className="text-[11px] font-bold text-violet-700 block uppercase tracking-wide">
+                          <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxVPrime.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
                             <InlineMath math={detail.deduction.boxVPrime.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -683,7 +670,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       </div>
                     </div>
 
-                    {/* FÓRMULA FINAL DE LA SEGUNDA DERIVADA EN EL NODO n (FONDO BLANCO / CLARO TOTALMENTE VISIBLE) */}
+                    {/* FÓRMULA FINAL DE LA SEGUNDA DERIVADA EN EL NODO n */}
                     <div className="bg-white border-2 border-slate-300 rounded-xl p-4 sm:p-5 shadow-xs space-y-1">
                       <span className="text-[11px] font-black uppercase tracking-wider text-slate-700 block">
                         Fórmula Final de la Segunda Derivada en el Nodo <InlineMath math="n" />:
@@ -695,7 +682,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                   </div>
                 </div>
 
-                {/* 2. ORDENADA GENÉRICA PARA TAYLOR DE GRADO 2 (BIEN GRANDE) */}
+                {/* 2. ORDENADA GENÉRICA PARA TAYLOR DE GRADO 2 */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <span className="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-black flex items-center justify-center">
@@ -707,7 +694,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                   </div>
 
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4">
-                    {/* Fórmula Canónica Destacada y Grande */}
+                    {/* Fórmula Canónica Destacada */}
                     <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-1.5">
                       <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
                         Fórmula Canónica de Taylor (Grado 2):
@@ -722,14 +709,14 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
                         Sustitución Particular para este P.V.I.:
                       </span>
-                      <div className="text-sm sm:text-lg font-bold text-blue-900 font-mono py-1 overflow-x-auto">
+                      <div className="text-sm sm:text-lg font-bold text-slate-900 font-mono py-1 overflow-x-auto">
                         <InlineMath math={detail.particularFormulaMath} />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 3. TABLA DE ITERACIONES NUMÉRICAS (SIN ERROR ABS.) */}
+                {/* 3. TABLA DE ITERACIONES NUMÉRICAS */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -740,7 +727,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                         Tabla de Iteraciones Numéricas
                       </h4>
                     </div>
-                    <span className="text-xs text-slate-500 font-bold bg-slate-100 px-3 py-1 rounded-full">
+                    <span className="text-xs text-slate-600 font-bold bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                       Paso <InlineMath math={`h = ${ex.h}`} />
                     </span>
                   </div>
@@ -764,11 +751,8 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                           <th className="p-3">
                             <InlineMath math={`${ex.y_var}''_n`} />
                           </th>
-                          <th className="p-3 font-black text-blue-900 bg-blue-50/50">
+                          <th className="p-3 font-black text-slate-900 bg-slate-200/50">
                             <InlineMath math={`${ex.y_var}_{n+1}`} />
-                          </th>
-                          <th className="p-3 text-emerald-800 bg-emerald-50/40">
-                            <InlineMath math={`${ex.y_var}(${ex.x_var}_{n+1})`} />
                           </th>
                         </tr>
                       </thead>
@@ -778,8 +762,8 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                             key={s.n}
                             className={
                               s.n % 2 === 0
-                                ? 'bg-white hover:bg-slate-50/80 transition-colors'
-                                : 'bg-slate-50/40 hover:bg-slate-50/80 transition-colors'
+                                ? 'bg-white hover:bg-slate-50 transition-colors'
+                                : 'bg-slate-50/50 hover:bg-slate-50 transition-colors'
                             }
                           >
                             <td className="p-3 text-center font-bold text-slate-500 font-sans">
@@ -791,11 +775,8 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                             </td>
                             <td className="p-3 text-slate-600">{s.yp.toFixed(6)}</td>
                             <td className="p-3 text-slate-600">{s.ypp.toFixed(6)}</td>
-                            <td className="p-3 text-blue-900 font-bold bg-blue-50/40">
+                            <td className="p-3 text-slate-900 font-bold bg-slate-100/60">
                               {s.yNext.toFixed(6)}
-                            </td>
-                            <td className="p-3 text-emerald-800 font-bold bg-emerald-50/30">
-                              {s.yExact.toFixed(6)}
                             </td>
                           </tr>
                         ))}
@@ -804,8 +785,8 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                   </div>
                 </div>
 
-                {/* 4. RESULTADO APROXIMADO FINAL (TOTALMENTE VISIBLE Y CLARO) */}
-                <div className="bg-slate-50 border-2 border-slate-300/80 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                {/* 4. RESULTADO APROXIMADO FINAL */}
+                <div className="bg-slate-50 border-2 border-slate-300 rounded-2xl p-6 sm:p-7 shadow-xs">
                   <div className="space-y-1.5">
                     <span className="text-xs uppercase tracking-widest text-slate-500 font-bold block">
                       Resultado Numérico Aproximado Final por Taylor Orden 2:
@@ -813,15 +794,9 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                     <div className="text-2xl sm:text-4xl font-black text-slate-900 font-mono tracking-tight">
                       <InlineMath math={`${detail.finalTargetLabel} \\approx ${detail.finalApproxValue}`} />
                     </div>
-                  </div>
-
-                  <div className="md:border-l md:border-slate-200 md:pl-8 space-y-1">
-                    <span className="text-xs uppercase tracking-wider text-slate-500 block font-bold">
-                      Valor Analítico Exacto:
-                    </span>
-                    <div className="text-base sm:text-xl font-bold text-slate-700 font-mono">
-                      <InlineMath math={`${detail.finalExactFormula} \\approx ${detail.finalExactValue}`} />
-                    </div>
+                    <p className="text-xs text-slate-500 font-medium pt-1">
+                      Valor calculado iterando la ordenada genérica en el intervalo del problema.
+                    </p>
                   </div>
                 </div>
 
