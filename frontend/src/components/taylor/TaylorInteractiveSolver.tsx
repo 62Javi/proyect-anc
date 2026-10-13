@@ -31,7 +31,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
   const [y0, setY0] = useState<string>('1');
   const [xf, setXf] = useState<string>('1.3');
   const [h, setH] = useState<string>('0.1');
-  const [order, setOrder] = useState<number>(2);
+  const order = 2;
 
   // Results State
   const [result, setResult] = useState<TaylorResponse | null>(null);
@@ -48,7 +48,6 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
       setY0(String(initialConfig.y0));
       setXf(String(initialConfig.xf));
       setH(String(initialConfig.h));
-      setOrder(initialConfig.order);
       // Execute automatically
       handleSolveWithParams({
         expression: initialConfig.expression,
@@ -58,7 +57,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
         y0: initialConfig.y0,
         xf: initialConfig.xf,
         h: initialConfig.h,
-        order: initialConfig.order,
+        order: 2,
       });
     }
   }, [initialConfig]);
@@ -127,7 +126,6 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
       setY0(String(selected.y0));
       setXf(String(selected.xf));
       setH(String(selected.h));
-      setOrder(selected.order);
       handleSolveWithParams({
         expression: selected.expression,
         x_var: selected.x_var,
@@ -136,7 +134,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
         y0: selected.y0,
         xf: selected.xf,
         h: selected.h,
-        order: selected.order,
+        order: 2,
       });
     }
   };
@@ -149,7 +147,6 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
     setY0('1');
     setXf('1.3');
     setH('0.1');
-    setOrder(2);
     setError(null);
   };
 
@@ -177,7 +174,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
             </span>
             <select
               onChange={handleSelectPreset}
-              defaultValue="amiconi-1"
+              defaultValue="tp5-1c"
               className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900 w-full sm:w-auto cursor-pointer"
             >
               <option value="" disabled>Seleccionar ejercicio...</option>
@@ -215,33 +212,19 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
             />
           </div>
 
-          {/* Orden de Taylor */}
+          {/* Método: Taylor de Grado 2 (Tema Exclusivo Grupo 1) */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span className="flex items-center gap-1">
-                <span>Orden de Taylor</span>
-                <InlineMath math="(p)" />
-              </span>
-              <span className="text-[10px] text-blue-600 font-bold flex items-center gap-1">
-                <span>Grupo 1: Orden</span>
-                <InlineMath math="p = 2" />
+              <span>Método Numérico</span>
+              <span className="text-[10px] text-blue-700 font-bold uppercase tracking-wider">
+                Tema Grupo 1
               </span>
             </label>
-            <div className="grid grid-cols-4 gap-1 p-1 bg-slate-100 rounded-xl">
-              {[1, 2, 3, 4].map((ord) => (
-                <button
-                  key={ord}
-                  type="button"
-                  onClick={() => setOrder(ord)}
-                  className={`py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center ${
-                    order === ord
-                      ? 'bg-slate-900 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  <InlineMath math={`p=${ord}`} />
-                </button>
-              ))}
+            <div className="px-3.5 py-2.5 rounded-xl border border-blue-200 bg-blue-50/70 text-blue-950 flex items-center justify-between">
+              <span className="text-xs font-black">Taylor de Grado 2</span>
+              <span className="text-xs font-mono font-bold bg-white px-2 py-0.5 rounded-md border border-blue-200/80">
+                <InlineMath math="p = 2" />
+              </span>
             </div>
           </div>
 
@@ -400,8 +383,8 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                <span>Resultado Taylor</span>
-                <InlineMath math={`p = ${order}`} />
+                <span>Resultado Taylor de Grado 2</span>
+                <InlineMath math="p = 2" />
               </span>
               <div className="text-xl font-black text-slate-900 font-mono">
                 {result.final_approx_value}
@@ -450,7 +433,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                 <InlineMath math={`h = ${result.h}`} />
                 <span className="text-slate-400 mx-1">•</span>
                 <span>Error local</span>
-                <InlineMath math={`O(h^{${order + 1}})`} />
+                <InlineMath math="O(h^3)" />
               </p>
             </div>
           </div>
@@ -468,7 +451,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               {/* Derivadas calculadas */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                  Derivadas Analíticas Sucesivas (Regla de la Cadena)
+                  Derivadas Analíticas Sucesivas
                 </span>
                 <div className="space-y-2 text-xs">
                   {result.derivatives.map((d) => (

@@ -37,7 +37,7 @@ export const TaylorPage: React.FC = () => {
               Método de Taylor para E.D.O. (P.V.I.)
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm max-w-2xl font-medium">
-              Resolución numérica de Problemas de Valor Inicial mediante series de Taylor de órdenes <InlineMath math="p=1" /> a <InlineMath math="4" />,
+              Resolución numérica de Problemas de Valor Inicial mediante el Método de Taylor de Grado 2 (<InlineMath math="p=2" />),
               derivación analítica con SymPy, ordenada genérica y ejercicios de cátedra UTN FRLP.
             </p>
           </div>
