@@ -14,7 +14,7 @@ export const TaylorPage: React.FC = () => {
   const { printRef, handlePrint } = useAppPrint('Simulacion-Taylor-EDO-ANC');
 
   const handleLoadExercise = (preset: TaylorPreset) => {
-    setSelectedPreset(preset);
+    setSelectedPreset({ ...preset });
     setActiveTab('solver');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

@@ -9,10 +9,11 @@ import {
 } from 'lucide-react';
 import { solveTaylorODE } from '../../services/api';
 import type { TaylorPreset, TaylorRequest, TaylorResponse } from '../../types/taylor';
-import { OFFICIAL_TAYLOR_EXERCISES } from './TaylorExercisesSection';
+
 import TaylorStepAccordion from './TaylorStepAccordion';
 import InlineMath from '../InlineMath';
 import MathText from '../MathText';
+import UnifiedMathInput from '../UnifiedMathInput';
 
 interface TaylorInteractiveSolverProps {
   initialConfig?: TaylorPreset;
@@ -39,7 +40,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
   const [error, setError] = useState<string | null>(null);
   const [showTheoreticalExact, setShowTheoreticalExact] = useState<boolean>(false);
 
-  // Sync initialConfig when provided
+  // Sync initialConfig when provided (e.g. from "Cargar en Simulador" in Ejercicios Resueltos)
   useEffect(() => {
     if (initialConfig) {
       setExpression(initialConfig.expression);
@@ -49,17 +50,8 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
       setY0(String(initialConfig.y0));
       setXf(String(initialConfig.xf));
       setH(String(initialConfig.h));
-      // Execute automatically
-      handleSolveWithParams({
-        expression: initialConfig.expression,
-        x_var: initialConfig.x_var,
-        y_var: initialConfig.y_var,
-        x0: initialConfig.x0,
-        y0: initialConfig.y0,
-        xf: initialConfig.xf,
-        h: initialConfig.h,
-        order: 2,
-      });
+      setResult(null);
+      setError(null);
     }
   }, [initialConfig]);
 
@@ -117,29 +109,6 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
     });
   };
 
-  const handleSelectPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = OFFICIAL_TAYLOR_EXERCISES.find((ex) => ex.id === e.target.value);
-    if (selected) {
-      setExpression(selected.expression);
-      setXVar(selected.x_var);
-      setYVar(selected.y_var);
-      setX0(String(selected.x0));
-      setY0(String(selected.y0));
-      setXf(String(selected.xf));
-      setH(String(selected.h));
-      handleSolveWithParams({
-        expression: selected.expression,
-        x_var: selected.x_var,
-        y_var: selected.y_var,
-        x0: selected.x0,
-        y0: selected.y0,
-        xf: selected.xf,
-        h: selected.h,
-        order: 2,
-      });
-    }
-  };
-
   const handleReset = () => {
     setExpression('2*x*y');
     setXVar('x');
@@ -164,27 +133,8 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               Configuración del P.V.I. & Método de Taylor
             </h2>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Ingresa la ecuación diferencial y parámetros o selecciona un ejercicio de cátedra.
+              Ingresa la ecuación diferencial y parámetros para resolver el problema de valor inicial.
             </p>
-          </div>
-
-          {/* Quick Presets Dropdown */}
-          <div className="flex items-center gap-2 self-start sm:self-auto w-full sm:w-auto">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap">
-              Presets:
-            </span>
-            <select
-              onChange={handleSelectPreset}
-              defaultValue="tp5-1c"
-              className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900 w-full sm:w-auto cursor-pointer"
-            >
-              <option value="" disabled>Seleccionar ejercicio...</option>
-              {OFFICIAL_TAYLOR_EXERCISES.map((ex) => (
-                <option key={ex.id} value={ex.id}>
-                  {ex.title.replace(/\(.*\)/, '')} ({ex.y_var}' = {ex.expression})
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 
@@ -204,12 +154,16 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                 <InlineMath math="-3x^2y" />
               </span>
             </label>
-            <input
-              type="text"
+            <UnifiedMathInput
               value={expression}
-              onChange={(e) => setExpression(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-mono font-bold text-slate-900 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all"
-              placeholder="2*x*y"
+              onChange={(_, ascii) => {
+                const pyExpr = ascii
+                  .replace(/·/g, '*')
+                  .replace(/÷/g, '/')
+                  .replace(/π/g, 'pi')
+                  .replace(/\\ /g, ' ');
+                setExpression(pyExpr);
+              }}
             />
           </div>
 

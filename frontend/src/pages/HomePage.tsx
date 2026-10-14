@@ -21,11 +21,11 @@ export default function HomePage() {
   const tools = [
     {
       title: 'Método de Taylor (E.D.O.)',
-      description: 'Resolución de Problemas de Valor Inicial (PVI) mediante series de Taylor de órdenes 1 a 4, derivación analítica simbólica con SymPy, ordenada genérica y contrastación de error con cátedra UTN FRLP.',
+      description: 'Resolución de Problemas de Valor Inicial mediante series de Taylor.',
       icon: <Sigma size={24} />,
       path: '/taylor',
       ready: true,
-      tag: 'P.V.I. · Grupo 1',
+      tag: 'Problemas de Valor Inicial',
     },
     {
       title: 'Ajuste por Mínimos Cuadrados',

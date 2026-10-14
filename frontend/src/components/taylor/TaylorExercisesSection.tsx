@@ -6,9 +6,7 @@ import {
   ChevronDown,
   ChevronUp,
   HelpCircle,
-  Sparkles,
   Printer,
-  Layers,
   ArrowDown,
 } from 'lucide-react';
 import type { TaylorPreset } from '../../types/taylor';
@@ -55,7 +53,6 @@ export interface SolvedTaylorExerciseDetail {
   problemStatement: string;
   specialQuestion?: string;
   specialAnswer?: string;
-  pedagogicalNote?: string;
   deduction: SecondDerivativeDeduction;
   canonicalFormulaMath: string;
   particularFormulaMath: string;
@@ -100,7 +97,7 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
   {
     id: 'tp5-1c',
     title: 'Ejercicio Nº 1 - Inciso c) (Práctica 05 EDO)',
-    subtitle: 'Desarrollado en apunte Amiconi: $y\' = 2xy$, $y(1)=1$, hallar $y(1.3)$ con paso $h=0.1$.',
+    subtitle: '$y\' = 2xy$, $y(1)=1$, hallar $y(1.3)$ con paso $h=0.1$.',
     expression: '2*x*y',
     x_var: 'x',
     y_var: 'y',
@@ -252,8 +249,6 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
     preset: OFFICIAL_TAYLOR_EXERCISES[2],
     problemStatement:
       'Aproximar usando el método de Taylor una solución al PVI: $y\' = 2xy$, con $h = 0.1$ e $y(1) = 1$. Hallar $y(1.3)$.',
-    pedagogicalNote:
-      'Este ejercicio es el ejemplo modelo resuelto paso a paso en el apunte del Ing. Amiconi (páginas 7 a 9), arrojando los mismos valores canónicos $y(1.1) = 1.23$, $y(1.2) = 1.5426$ e $y(1.3) = 1.9727$.',
     deduction: {
       ruleName: 'Regla del Producto',
       ruleFormula: '(u \\cdot v)\' = u\' \\cdot v + u \\cdot v\'',
@@ -369,12 +364,12 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
 export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ onLoadExercise }) => {
   const { printRef, handlePrint } = useAppPrint('Ejercicios-Resueltos-Taylor-TP5');
 
-  // State for expanded detailed resolution per card
+  // State for expanded detailed resolution per card (hidden by default)
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
-    'tp5-1a': true,
-    'tp5-1b': true,
-    'tp5-1c': true,
-    'tp5-1d': true,
+    'tp5-1a': false,
+    'tp5-1b': false,
+    'tp5-1c': false,
+    'tp5-1d': false,
   });
 
   const toggleCard = (id: string) => {
@@ -382,18 +377,6 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
       ...prev,
       [id]: !prev[id],
     }));
-  };
-
-  const areAllExpanded = Object.values(expandedCards).every(Boolean);
-
-  const toggleAll = () => {
-    const nextState = !areAllExpanded;
-    setExpandedCards({
-      'tp5-1a': nextState,
-      'tp5-1b': nextState,
-      'tp5-1c': nextState,
-      'tp5-1d': nextState,
-    });
   };
 
   return (
@@ -416,14 +399,6 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 flex-wrap">
-          <button
-            type="button"
-            onClick={toggleAll}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
-          >
-            <Layers size={14} />
-            <span>{areAllExpanded ? 'Colapsar todo' : 'Expandir todo'}</span>
-          </button>
 
           <button
             type="button"
@@ -496,17 +471,6 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                   </div>
                   <div className="text-slate-700 pl-5 font-medium leading-relaxed">
                     <MathText text={detail.specialAnswer} />
-                  </div>
-                </div>
-              )}
-
-              {/* Pedagogical reference if present (Inciso c) */}
-              {detail.pedagogicalNote && (
-                <div className="p-3.5 bg-slate-100/80 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 flex items-start gap-2">
-                  <Sparkles size={16} className="shrink-0 mt-0.5 text-slate-600" />
-                  <div>
-                    <span className="font-bold block">Referencia Oficial de Cátedra:</span>
-                    <span className="text-slate-600">{detail.pedagogicalNote}</span>
                   </div>
                 </div>
               )}
