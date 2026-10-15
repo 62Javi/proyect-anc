@@ -168,9 +168,9 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
             <label className="text-xs font-bold text-slate-700">
               Método Numérico
             </label>
-            <div className="px-3.5 py-2.5 rounded-xl border border-blue-200 bg-blue-50/70 text-blue-950 flex items-center justify-between">
+            <div className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 flex items-center justify-between">
               <span className="text-xs font-black">Taylor de Grado 2</span>
-              <span className="text-xs font-mono font-bold bg-white px-2 py-0.5 rounded-md border border-blue-200/80">
+              <span className="text-xs font-mono font-bold bg-white px-2 py-0.5 rounded-md border border-slate-200">
                 <InlineMath math="p = 2" />
               </span>
             </div>
@@ -456,7 +456,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
             </div>
           </div>
 
-          {/* Desglose Paso a Paso Metodología Amiconi */}
+          {/* Desglose Paso a Paso */}
           <TaylorStepAccordion result={result} />
 
           {/* Resultado Numérico Aproximado Final (Estilo Ejercicios Resueltos) */}

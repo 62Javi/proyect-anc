@@ -28,14 +28,14 @@ const BIBLIOGRAPHY_DOCS: BibliographyDoc[] = [
   {
     id: 'edo-amiconi',
     title: 'Ejemplos resueltos: Ecuaciones Diferenciales Ordinarias (Problemas de Valor Inicial)',
-    originalName: '06 - Ejemplos resueltos (Ecuaciones diferenciales ordinarias) - Amiconi.pdf',
-    author: 'Amiconi, D. F. • Cátedra de Modelos Numéricos / Cálculo Avanzado, UTN FRLP',
+    originalName: '06 - Ejemplos resueltos (Ecuaciones diferenciales ordinarias).pdf',
+    author: 'Cátedra de Modelos Numéricos / Cálculo Avanzado, UTN FRLP',
     category: 'Apunte Teórico-Práctico Oficial',
     description:
       'Guía conceptual principal: definición de los 4 elementos del P.V.I., deducción analítica de la Ordenada Genérica para Taylor de grado 2, derivación por reglas del producto, cadena y cociente, y resolución iterativa paso a paso.',
     fileSize: '362 KB',
     url: '/docs/06-edo-amiconi-ejemplos.pdf',
-    downloadFilename: '06 - Ejemplos resueltos (Ecuaciones diferenciales ordinarias) - Amiconi.pdf',
+    downloadFilename: '06 - Ejemplos resueltos (Ecuaciones diferenciales ordinarias).pdf',
   },
   {
     id: 'tp5-edo',
@@ -60,8 +60,8 @@ export const TaylorTheorySection: React.FC = () => {
       <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-slate-200 print:hidden">
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-black uppercase tracking-widest text-blue-300 bg-blue-950/80 px-3 py-1 rounded-full border border-blue-800">
-              Apunte 06 · Ing. Diego F. Amiconi (UTN FRLP)
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+              Apunte Oficial · Cátedra UTN FRLP
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight">
@@ -87,7 +87,7 @@ export const TaylorTheorySection: React.FC = () => {
         {/* Intro Card */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center gap-3">
-            <span className="p-2.5 bg-blue-50 text-blue-900 rounded-2xl border border-blue-100">
+            <span className="p-2.5 bg-slate-100 text-slate-900 rounded-2xl border border-slate-200">
               <BookOpen size={22} />
             </span>
             <div>
@@ -101,7 +101,7 @@ export const TaylorTheorySection: React.FC = () => {
           </div>
 
           <p className="text-sm text-slate-600 leading-relaxed font-medium">
-            Muchos problemas de ingeniería no pueden resolverse analíticamente en términos de funciones elementales. Se recurre entonces a métodos numéricos para la resolución de <strong>Ecuaciones Diferenciales Ordinarias en Problemas de Valor Inicial (P.V.I.)</strong>. En este desarrollo seguimos estrictamente la estructura didáctica del apunte oficial del <strong>Ing. Diego F. Amiconi</strong>.
+            Muchos problemas de ingeniería no pueden resolverse analíticamente en términos de funciones elementales. Se recurre entonces a métodos numéricos para la resolución de <strong>Ecuaciones Diferenciales Ordinarias en Problemas de Valor Inicial (P.V.I.)</strong>. En este desarrollo seguimos estrictamente la estructura didáctica del apunte oficial de cátedra.
           </p>
         </div>
 
@@ -128,7 +128,7 @@ export const TaylorTheorySection: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {/* 1. Ecuación diferencial */}
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-blue-900 block">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-900 block">
                 1) Una Ecuación Diferencial
               </span>
               <div className="py-1">
@@ -141,7 +141,7 @@ export const TaylorTheorySection: React.FC = () => {
 
             {/* 2. Condición inicial */}
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-emerald-900 block">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-900 block">
                 2) Una Condición Inicial
               </span>
               <div className="py-1">
@@ -154,7 +154,7 @@ export const TaylorTheorySection: React.FC = () => {
 
             {/* 3. Dominio de trabajo */}
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-purple-900 block">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-900 block">
                 3) Un Dominio de Trabajo en el Eje <InlineMath math="x" />
               </span>
               <div className="py-1">
@@ -167,7 +167,7 @@ export const TaylorTheorySection: React.FC = () => {
 
             {/* 4. Paso h */}
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-amber-900 block">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-900 block">
                 4) Un Paso <InlineMath math="h" /> para Recorrer el Dominio
               </span>
               <div className="py-1">
@@ -207,12 +207,12 @@ export const TaylorTheorySection: React.FC = () => {
               <InlineMath math="y(x_1), \, y(x_2), \, y(x_3), \, \dots, \, y(x_n)" />
             </div>
 
-            <div className="p-4 sm:p-5 rounded-2xl bg-blue-50/70 border border-blue-200 text-blue-950 space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 space-y-2">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
                 <Compass size={16} />
                 <span>¿Qué es un Algoritmo de Paso Simple?</span>
               </span>
-              <p className="text-xs sm:text-sm text-blue-900/90 leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
                 Son aquellos algoritmos en los que, para el cálculo de la ordenada genérica <InlineMath math="y_{n+1}" />, se requiere únicamente información correspondiente a un solo intervalo <InlineMath math="[x_n, x_{n+1}]" />: generalmente los valores de <InlineMath math="y_n" /> y de <InlineMath math="f(x_n, y_n)" /> en el punto <InlineMath math="x = x_n" />.
               </p>
             </div>
@@ -240,14 +240,14 @@ export const TaylorTheorySection: React.FC = () => {
               Para el Método de Taylor de grado 2, la fórmula general adoptada por la cátedra es:
             </p>
 
-            <div className="p-4 sm:p-5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 text-center font-bold text-sm sm:text-base">
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-center font-bold text-sm sm:text-base">
               <InlineMath math="y_{n+1} = y_n + h \cdot y'_n + \frac{h^2}{2!} \, y''_n" block />
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm pt-1">
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
                 <span className="font-bold text-slate-900 block flex items-center gap-1.5">
-                  <ChevronRight size={16} className="text-blue-600 shrink-0" />
+                  <ChevronRight size={16} className="text-slate-700 shrink-0" />
                   <span>Primera Derivada (<InlineMath math="y'_n" />):</span>
                 </span>
                 <p className="text-slate-600">
@@ -260,7 +260,7 @@ export const TaylorTheorySection: React.FC = () => {
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                 <span className="font-bold text-slate-900 block flex items-center gap-1.5">
-                  <ChevronRight size={16} className="text-blue-600 shrink-0" />
+                  <ChevronRight size={16} className="text-slate-700 shrink-0" />
                   <span>Segunda Derivada (<InlineMath math="y''_n" />) mediante Derivadas Parciales:</span>
                 </span>
                 <p className="text-slate-600 leading-relaxed">
@@ -272,24 +272,24 @@ export const TaylorTheorySection: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1 text-xs">
-                  <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                    <span className="font-bold text-blue-900 block">1. Derivada Parcial respecto a <InlineMath math="x" /></span>
+                  <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
+                    <span className="font-bold text-slate-900 block">1. Derivada Parcial respecto a <InlineMath math="x" /></span>
                     <p className="text-slate-500 text-[11px]">Se deriva <InlineMath math="f(x, y)" /> respecto a <InlineMath math="x" /> considerando a <InlineMath math="y" /> como una constante:</p>
                     <div className="font-mono text-slate-900 font-semibold py-0.5">
                       <InlineMath math="\frac{\partial f}{\partial x}" />
                     </div>
                   </div>
 
-                  <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                    <span className="font-bold text-emerald-900 block">2. Derivada Parcial respecto a <InlineMath math="y" /></span>
+                  <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
+                    <span className="font-bold text-slate-900 block">2. Derivada Parcial respecto a <InlineMath math="y" /></span>
                     <p className="text-slate-500 text-[11px]">Se deriva <InlineMath math="f(x, y)" /> respecto a <InlineMath math="y" /> considerando a <InlineMath math="x" /> como una constante:</p>
                     <div className="font-mono text-slate-900 font-semibold py-0.5">
                       <InlineMath math="\frac{\partial f}{\partial y}" />
                     </div>
                   </div>
 
-                  <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                    <span className="font-bold text-amber-900 block">3. Multiplicación por <InlineMath math="y'_n" /></span>
+                  <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
+                    <span className="font-bold text-slate-900 block">3. Multiplicación por <InlineMath math="y'_n" /></span>
                     <p className="text-slate-500 text-[11px]">La derivada parcial respecto a <InlineMath math="y" /> siempre multiplica a la primera derivada:</p>
                     <div className="font-mono text-slate-900 font-semibold py-0.5">
                       <InlineMath math="y'_n = f(x_n, y_n)" />
@@ -363,7 +363,7 @@ export const TaylorTheorySection: React.FC = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                    <h4 className="text-base font-black text-slate-900 group-hover:text-slate-700 transition-colors">
                       {doc.title}
                     </h4>
                     <p className="text-xs font-bold text-slate-500 mt-0.5">{doc.author}</p>

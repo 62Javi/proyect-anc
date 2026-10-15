@@ -26,7 +26,7 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
               <BookOpen size={16} />
             </span>
             <h3 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
-              Resolución Analítica Paso a Paso (Metodología Amiconi)
+              Resolución Analítica Paso a Paso
             </h3>
           </div>
           <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
