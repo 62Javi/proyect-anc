@@ -125,7 +125,7 @@ export const TaylorTheorySection: React.FC = () => {
           </div>
 
           <p className="text-sm text-slate-600 leading-relaxed">
-            Tal como lo formula el Ing. Amiconi en su apunte, un Problema de Valor Inicial se presenta a través de cuatro componentes indispensables:
+            Un Problema de Valor Inicial se presenta a través de cuatro componentes indispensables:
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -225,7 +225,7 @@ export const TaylorTheorySection: React.FC = () => {
         {/* 3. DEDUCCIÓN ANALÍTICA DE y'' POR REGLA DE LA CADENA */}
         <section className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <span className="w-8 h-8 rounded-xl bg-blue-600 text-white text-sm flex items-center justify-center font-black shrink-0">
+            <span className="w-8 h-8 rounded-xl bg-slate-900 text-white text-sm flex items-center justify-center font-black shrink-0">
               3
             </span>
             <div>
@@ -240,7 +240,7 @@ export const TaylorTheorySection: React.FC = () => {
 
           <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
             <p>
-              Para el Método de Taylor de grado 2, la fórmula general adoptada en el apunte de Amiconi es:
+              Para el Método de Taylor de grado 2, la fórmula general adoptada por la cátedra es:
             </p>
 
             <div className="p-4 sm:p-5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 text-center font-bold text-sm sm:text-base">
