@@ -85,6 +85,7 @@ export interface TaylorPreset {
   title: string;
   subtitle: string;
   expression: string;
+  displayExpression?: string;
   x_var: string;
   y_var: string;
   x0: number;

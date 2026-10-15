@@ -68,8 +68,9 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
   {
     id: 'tp5-1a',
     title: 'Ejercicio Nº 1 - Inciso a) (Práctica 05 EDO)',
-    subtitle: 'Decaimiento cúbico con condición inicial en $x=0$. Hallar $y(0.5)$ con paso $h=0.1$.',
+    subtitle: 'Decaimiento cúbico con condición inicial en $x=0$, hallar $y(0.5)$ con paso $h=0.1$.',
     expression: '-3*x^2*y',
+    displayExpression: '-3x^2y',
     x_var: 'x',
     y_var: 'y',
     x0: 0.0,
@@ -83,8 +84,9 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
   {
     id: 'tp5-1b',
     title: 'Ejercicio Nº 1 - Inciso b) (Práctica 05 EDO)',
-    subtitle: 'Ecuación no lineal separable con derivada cuadrática en $y$. Hallar $y(0.5)$ con paso $h=0.1$.',
+    subtitle: 'Ecuación no lineal separable con derivada cuadrática en $y$, hallar $y(0.5)$ con paso $h=0.1$.',
     expression: '(1/4)*(1 + y^2)',
+    displayExpression: '\\frac{1}{4}(1 + y^2)',
     x_var: 'x',
     y_var: 'y',
     x0: 0.0,
@@ -100,6 +102,7 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
     title: 'Ejercicio Nº 1 - Inciso c) (Práctica 05 EDO)',
     subtitle: '$y\' = 2xy$, $y(1)=1$, hallar $y(1.3)$ con paso $h=0.1$.',
     expression: '2*x*y',
+    displayExpression: '2xy',
     x_var: 'x',
     y_var: 'y',
     x0: 1.0,
@@ -115,6 +118,7 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
     title: 'Ejercicio Nº 1 - Inciso d) (Práctica 05 EDO)',
     subtitle: 'Variable temporal $t \\in [1, 3]$ con $h=0.5$. Pregunta: ¿Cuántas iteraciones son necesarias? Hallar $y(3)$.',
     expression: '(1/t)*(y^2 + y)',
+    displayExpression: '\\frac{1}{t}(y^2 + y)',
     x_var: 't',
     y_var: 'y',
     x0: 1.0,
@@ -483,7 +487,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                     Ecuación Diferencial
                   </span>
                   <div className="font-mono font-bold text-slate-900 mt-1 text-sm">
-                    <InlineMath math={`${ex.y_var}' = ${ex.expression}`} />
+                    <InlineMath math={`${ex.y_var}' = ${ex.displayExpression || ex.expression}`} />
                   </div>
                 </div>
 

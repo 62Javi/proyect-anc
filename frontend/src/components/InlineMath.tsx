@@ -14,8 +14,12 @@ export const InlineMath: React.FC<InlineMathProps> = ({ math, className = '', bl
   useEffect(() => {
     if (spanRef.current) {
       // Clean standard raw python notation into LaTeX if needed
-      let formatted = math
-        .replace(/\*\*/g, '^')
+      let formatted = math.replace(/\*\*/g, '^');
+      // Implicit algebraic multiplication (e.g. -3*x^2*y -> -3x^2y, 2*x*y -> 2xy, (1/4)*(...) -> (1/4)(...))
+      while (/([0-9a-zA-Z_)}\]])\s*\*\s*([a-zA-Z(])/.test(formatted)) {
+        formatted = formatted.replace(/([0-9a-zA-Z_)}\]])\s*\*\s*([a-zA-Z(])/g, '$1$2');
+      }
+      formatted = formatted
         .replace(/\*/g, ' \\cdot ')
         .replace(/(?<!\\)exp\(([^)]+)\)/g, (_m, p1) => `e^{${p1}}`)
         .replace(/(?<!\\)sin\(([^)]+)\)/g, (_m, p1) => `\\sin(${p1})`)
