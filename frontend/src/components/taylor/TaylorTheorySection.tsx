@@ -122,7 +122,7 @@ export const TaylorTheorySection: React.FC = () => {
           </div>
 
           <p className="text-sm text-slate-600 leading-relaxed">
-            Tal como lo formula el Ing. Amiconi en su apunte, un Problema de Valor Inicial se presenta a través de cuatro componentes indispensables:
+            Un Problema de Valor Inicial se presenta a través de cuatro componentes indispensables:
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -219,10 +219,10 @@ export const TaylorTheorySection: React.FC = () => {
           </div>
         </section>
 
-        {/* 3. DEDUCCIÓN ANALÍTICA DE y'' POR REGLA DE LA CADENA */}
+        {/* 3. DEDUCCIÓN ANALÍTICA DE y'' POR DERIVADAS PARCIALES */}
         <section className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <span className="w-8 h-8 rounded-xl bg-blue-600 text-white text-sm flex items-center justify-center font-black shrink-0">
+            <span className="w-8 h-8 rounded-xl bg-slate-900 text-white text-sm flex items-center justify-center font-black shrink-0">
               3
             </span>
             <div>
@@ -230,14 +230,14 @@ export const TaylorTheorySection: React.FC = () => {
                 Método de Taylor de Grado 2 y Deducción Analítica de <InlineMath math="y''_n" />
               </h3>
               <p className="text-xs text-slate-400 font-semibold">
-                Fórmula general de cátedra, derivación ordinaria (cadena, producto o cociente) y armado de la Ordenada Genérica
+                Fórmula general de cátedra, derivadas parciales y armado de la Ordenada Genérica
               </p>
             </div>
           </div>
 
           <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
             <p>
-              Para el Método de Taylor de grado 2, la fórmula general adoptada en el apunte de Amiconi es:
+              Para el Método de Taylor de grado 2, la fórmula general adoptada por la cátedra es:
             </p>
 
             <div className="p-4 sm:p-5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 text-center font-bold text-sm sm:text-base">
@@ -258,43 +258,47 @@ export const TaylorTheorySection: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                 <span className="font-bold text-slate-900 block flex items-center gap-1.5">
                   <ChevronRight size={16} className="text-blue-600 shrink-0" />
-                  <span>Segunda Derivada (<InlineMath math="y''_n" />) derivando miembro a miembro respecto de <InlineMath math="x" />:</span>
+                  <span>Segunda Derivada (<InlineMath math="y''_n" />) mediante Derivadas Parciales:</span>
                 </span>
                 <p className="text-slate-600 leading-relaxed">
-                  Para hallar <InlineMath math="y''" />, derivamos directamente <InlineMath math="y' = f(x, y)" /> respecto de la variable independiente <InlineMath math="x" /> (o <InlineMath math="t" />), recordando siempre que <InlineMath math="y" /> es una función de <InlineMath math="x" /> (<InlineMath math="y = y(x)" />). Según la estructura de la función, aplicamos las reglas estándar del cálculo de una variable:
+                  Dado que la EDO se define como <InlineMath math="y' = f(x, y)" /> (donde <InlineMath math="f" /> depende de dos variables independientes entre sí, <InlineMath math="x" /> e <InlineMath math="y" />, y a su vez <InlineMath math="y" /> depende de <InlineMath math="x" />), para hallar <InlineMath math="y''_n" /> la cátedra aplica la regla de la cadena multivariable (derivada total):
                 </p>
+
+                <div className="p-3.5 bg-white rounded-xl border border-slate-200 text-center">
+                  <InlineMath math="y''_n = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial y} \cdot y'_n" block />
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1 text-xs">
                   <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                    <span className="font-bold text-blue-900 block">1. Regla de la Cadena Estándar</span>
-                    <p className="text-slate-500 text-[11px]">Si <InlineMath math="f" /> es una función compuesta de <InlineMath math="y" />:</p>
+                    <span className="font-bold text-blue-900 block">1. Derivada Parcial respecto a <InlineMath math="x" /></span>
+                    <p className="text-slate-500 text-[11px]">Se deriva <InlineMath math="f(x, y)" /> respecto a <InlineMath math="x" /> considerando a <InlineMath math="y" /> como una constante:</p>
                     <div className="font-mono text-slate-900 font-semibold py-0.5">
-                      <InlineMath math="\frac{d}{dx}[g(y)] = g'(y) \cdot y'" />
+                      <InlineMath math="\frac{\partial f}{\partial x}" />
                     </div>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                    <span className="font-bold text-emerald-900 block">2. Regla del Producto</span>
-                    <p className="text-slate-500 text-[11px]">Si <InlineMath math="f" /> es producto de términos en <InlineMath math="x" /> e <InlineMath math="y" />:</p>
+                    <span className="font-bold text-emerald-900 block">2. Derivada Parcial respecto a <InlineMath math="y" /></span>
+                    <p className="text-slate-500 text-[11px]">Se deriva <InlineMath math="f(x, y)" /> respecto a <InlineMath math="y" /> considerando a <InlineMath math="x" /> como una constante:</p>
                     <div className="font-mono text-slate-900 font-semibold py-0.5">
-                      <InlineMath math="(u \cdot v)' = u' \cdot v + u \cdot v'" />
+                      <InlineMath math="\frac{\partial f}{\partial y}" />
                     </div>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                    <span className="font-bold text-amber-900 block">3. Regla del Cociente</span>
-                    <p className="text-slate-500 text-[11px]">Si <InlineMath math="f" /> contiene una fracción o cociente:</p>
+                    <span className="font-bold text-amber-900 block">3. Multiplicación por <InlineMath math="y'_n" /></span>
+                    <p className="text-slate-500 text-[11px]">La derivada parcial respecto a <InlineMath math="y" /> siempre multiplica a la primera derivada:</p>
                     <div className="font-mono text-slate-900 font-semibold py-0.5">
-                      <InlineMath math="\left(\frac{u}{v}\right)' = \frac{u' \cdot v - u \cdot v'}{v^2}" />
+                      <InlineMath math="y'_n = f(x_n, y_n)" />
                     </div>
                   </div>
                 </div>
 
                 <p className="text-slate-600 text-xs pt-1">
-                  Una vez aplicada la derivada, se sustituye <InlineMath math="y'" /> por su expresión original <InlineMath math="f(x, y)" />, obteniendo la segunda derivada puramente en términos de <InlineMath math="x" /> e <InlineMath math="y" /> para evaluarla en <InlineMath math="(x_n, y_n)" />.
+                  Una vez aplicada la fórmula, se sustituye <InlineMath math="y'_n" /> por su expresión original <InlineMath math="f(x, y)" />, obteniendo la segunda derivada puramente en términos de <InlineMath math="x" /> e <InlineMath math="y" /> para evaluarla en <InlineMath math="(x_n, y_n)" />.
                 </p>
               </div>
             </div>
