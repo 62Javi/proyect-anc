@@ -13,6 +13,7 @@ import type { TaylorPreset } from '../../types/taylor';
 import InlineMath from '../InlineMath';
 import MathText from '../MathText';
 import { useAppPrint } from '../../hooks/useAppPrint';
+import { formatCleanNumber } from '../../utils/numberFormat';
 
 interface TaylorExercisesSectionProps {
   onLoadExercise: (preset: TaylorPreset) => void;
@@ -351,7 +352,7 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
     finalTargetLabel: 'y(3.0)',
     finalApproxValue: '-1.458885',
     finalExactFormula: 'y(3.0) = -\\frac{2(3)}{2(3) - 1} = -\\frac{6}{5}',
-    finalExactValue: '-1.200000',
+    finalExactValue: '-1.2',
     steps: [
       { n: 0, x: 1.0, y: -2.0, yp: 2.0, ypp: -8.0, yNext: -2.0, yExact: -1.5 },
       { n: 1, x: 1.5, y: -2.0, yp: 1.333333, ypp: -3.555556, yNext: -1.777778, yExact: -1.333333 },
@@ -554,7 +555,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                           <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxU.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto overflow-y-hidden py-1.5 scrollbar-none">
                             <InlineMath math={detail.deduction.boxU.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -567,7 +568,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                           <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxUPrime.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto overflow-y-hidden py-1.5 scrollbar-none">
                             <InlineMath math={detail.deduction.boxUPrime.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -580,7 +581,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                           <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxV.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto overflow-y-hidden py-1.5 scrollbar-none">
                             <InlineMath math={detail.deduction.boxV.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -593,7 +594,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                           <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxVPrime.label}
                           </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto py-0.5">
+                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto overflow-y-hidden py-1.5 scrollbar-none">
                             <InlineMath math={detail.deduction.boxVPrime.math} />
                           </div>
                           <p className="text-[11px] text-slate-500 leading-snug">
@@ -608,7 +609,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                         Fórmula de derivación aplicada:
                       </span>
-                      <div className="text-sm sm:text-base font-bold text-slate-900 font-mono py-1 overflow-x-auto">
+                      <div className="text-sm sm:text-base font-bold text-slate-900 font-mono py-2 overflow-x-auto overflow-y-hidden scrollbar-none">
                         <InlineMath math={detail.deduction.appliedRuleFormulaMath} />
                       </div>
                     </div>
@@ -618,7 +619,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                         Sustitución de <InlineMath math={`${ex.y_var}'`} /> y simplificación algebraica
                       </span>
-                      <div className="space-y-2 font-mono text-xs sm:text-sm text-slate-800 overflow-x-auto">
+                      <div className="space-y-2 font-mono text-xs sm:text-sm text-slate-800 overflow-x-auto overflow-y-hidden scrollbar-none">
                         <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-lg">
                           <span className="text-[10px] text-slate-400 block font-sans mb-0.5 font-bold uppercase">
                             Sustitución directa:
@@ -639,7 +640,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       <span className="text-[11px] font-black uppercase tracking-wider text-slate-700 block">
                         Fórmula Final de la Segunda Derivada en el Nodo <InlineMath math="n" />:
                       </span>
-                      <div className="text-lg sm:text-2xl font-black font-mono text-slate-900 py-1 overflow-x-auto">
+                      <div className="text-lg sm:text-2xl font-black font-mono text-slate-900 py-2.5 overflow-x-auto overflow-y-hidden scrollbar-none">
                         <InlineMath math={detail.deduction.discreteFormulaMath} />
                       </div>
                     </div>
@@ -663,7 +664,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
                         Fórmula Canónica de Taylor (Grado 2):
                       </span>
-                      <div className="text-base sm:text-xl font-black text-slate-900 font-mono py-1 overflow-x-auto">
+                      <div className="text-base sm:text-xl font-black text-slate-900 font-mono py-2.5 overflow-x-auto overflow-y-hidden scrollbar-none">
                         <InlineMath math={detail.canonicalFormulaMath} />
                       </div>
                     </div>
@@ -673,7 +674,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
                         Sustitución Particular para este P.V.I.:
                       </span>
-                      <div className="text-sm sm:text-lg font-bold text-slate-900 font-mono py-1 overflow-x-auto">
+                      <div className="text-sm sm:text-lg font-bold text-slate-900 font-mono py-2.5 overflow-x-auto overflow-y-hidden scrollbar-none">
                         <InlineMath math={detail.particularFormulaMath} />
                       </div>
                     </div>
@@ -733,14 +734,14 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                             <td className="p-3 text-center font-bold text-slate-500 font-sans">
                               {s.n}
                             </td>
-                            <td className="p-3 text-slate-700">{s.x.toFixed(2)}</td>
+                            <td className="p-3 text-slate-700">{formatCleanNumber(s.x, 4)}</td>
                             <td className="p-3 text-slate-900 font-medium">
-                              {s.y.toFixed(6)}
+                              {formatCleanNumber(s.y, 6)}
                             </td>
-                            <td className="p-3 text-slate-600">{s.yp.toFixed(6)}</td>
-                            <td className="p-3 text-slate-600">{s.ypp.toFixed(6)}</td>
+                            <td className="p-3 text-slate-600">{formatCleanNumber(s.yp, 6)}</td>
+                            <td className="p-3 text-slate-600">{formatCleanNumber(s.ypp, 6)}</td>
                             <td className="p-3 text-slate-900 font-bold bg-slate-100/60">
-                              {s.yNext.toFixed(6)}
+                              {formatCleanNumber(s.yNext, 6)}
                             </td>
                           </tr>
                         ))}

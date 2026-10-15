@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, BookOpen, CheckCircle2 } from 'lucide-react';
 import type { TaylorResponse, TaylorStep } from '../../types/taylor';
 import InlineMath from '../InlineMath';
-import MathText from '../MathText';
+import { formatCleanNumber } from '../../utils/numberFormat';
 
 interface TaylorStepAccordionProps {
   result: TaylorResponse;
 }
 
 export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result }) => {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(0); // First open by default
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(0); // First step open by default
 
   const toggleStep = (idx: number) => {
     setExpandedIndex(expandedIndex === idx ? null : idx);
@@ -18,26 +18,26 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
   const { steps, derivatives, x_var, y_var, h } = result;
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm space-y-4">
+    <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-7 shadow-sm space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
         <div>
           <div className="flex items-center gap-2">
             <span className="p-1.5 bg-slate-100 rounded-lg text-slate-800">
               <BookOpen size={16} />
             </span>
-            <h3 className="text-base font-black text-slate-900 tracking-tight">
-              Resolución Paso a Paso (Metodología Amiconi)
+            <h3 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+              Resolución Analítica Paso a Paso (Metodología Amiconi)
             </h3>
           </div>
-          <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Sustitución analítica y numérica detallada de cada ordenada genérica iteración por iteración.
+          <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
+            Sustitución analítica y numérica detallada en la ordenada genérica iteración por iteración.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             onClick={() => setExpandedIndex(expandedIndex === null ? 0 : null)}
-            className="text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 transition-colors cursor-pointer"
+            className="text-[11px] sm:text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 transition-colors cursor-pointer"
           >
             {expandedIndex === null ? 'Expandir primer paso' : 'Colapsar todo'}
           </button>
@@ -49,48 +49,57 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
         {steps.map((step: TaylorStep, idx: number) => {
           const isOpen = expandedIndex === idx;
           const isLast = idx === steps.length - 1;
+          const xnClean = formatCleanNumber(step.xn, 4);
+          const xNextClean = formatCleanNumber(step.xn + h, 4);
+          const ynClean = formatCleanNumber(step.yn, 6);
+          const ynNextClean = formatCleanNumber(step.yn_plus_1, 6);
+          const hClean = formatCleanNumber(h, 4);
 
           return (
             <div
               key={step.step}
               className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-                isOpen ? 'bg-slate-50/80 border-slate-300 shadow-xs' : 'bg-white border-slate-200 hover:border-slate-300'
+                isOpen
+                  ? 'bg-white border-slate-300 shadow-xs'
+                  : 'bg-white border-slate-200/80 hover:border-slate-300'
               }`}
             >
               {/* Accordion Header */}
               <button
                 onClick={() => toggleStep(idx)}
-                className="w-full p-4 flex items-center justify-between gap-3 text-left cursor-pointer transition-colors"
+                className="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2.5 text-left cursor-pointer transition-colors hover:bg-slate-50/50"
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                   <div
-                    className={`px-2 py-1 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
                       isOpen
                         ? 'bg-slate-900 text-white'
                         : 'bg-slate-100 text-slate-700'
                     }`}
                   >
-                    <InlineMath math={`n=${idx}`} />
+                    {idx + 1}
                   </div>
                   <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-black text-slate-900 block truncate flex items-center gap-1.5 flex-wrap">
+                    <div className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5 flex-wrap leading-snug">
                       <span>Iteración</span>
                       <InlineMath math={`n = ${idx}`} />
-                      <span>: de</span>
-                      <InlineMath math={`${x_var}_{${idx}} = ${step.xn}`} />
-                      <span>a</span>
-                      <InlineMath math={`${x_var}_{${idx + 1}} = ${(step.xn + h).toFixed(4)}`} />
-                    </span>
-                    <span className="text-[11px] font-semibold text-slate-500 block truncate flex items-center gap-1.5 flex-wrap">
-                      <span>Resultado aproximado:</span>
-                      <InlineMath math={`${y_var}_{${idx + 1}} \\approx ${step.yn_plus_1}`} />
-                    </span>
+                      <span className="text-slate-300">·</span>
+                      <span className="text-slate-600 font-medium font-mono text-xs">
+                        <InlineMath math={`[${xnClean}, ${xNextClean}]`} />
+                      </span>
+                    </div>
+                    <div className="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5 flex-wrap mt-0.5">
+                      <span>Aproximación calculada:</span>
+                      <span className="font-mono text-slate-800 font-bold">
+                        <InlineMath math={`\\hat{${y_var}}_{${idx + 1}} = ${ynNextClean}`} />
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   {isLast && (
-                    <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                    <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-slate-900 text-white px-2.5 py-0.5 rounded-full">
                       <CheckCircle2 size={12} />
                       Final
                     </span>
@@ -103,39 +112,51 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
 
               {/* Accordion Body */}
               {isOpen && (
-                <div className="p-4 pt-0 border-t border-slate-200/60 mt-1 space-y-4 text-xs">
-                  {/* Puntos y derivadas evaluadas */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
-                    <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                        Estado Actual (Punto de Partida)
+                <div className="px-4 sm:px-6 py-4 border-t border-slate-100 bg-white space-y-4 text-xs">
+                  {/* Punto de Partida y Derivadas Evaluadas */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Punto de Partida */}
+                    <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                        Punto de Partida del Intervalo
                       </span>
-                      <div className="font-mono text-slate-800 font-medium space-y-1">
-                        <div>
-                          <InlineMath math={`${x_var}_{${idx}} = ${step.xn}`} />
+                      <div className="grid grid-cols-3 gap-2 font-mono text-slate-900 font-bold text-xs">
+                        <div className="bg-white p-2 rounded-lg border border-slate-200/60 text-center">
+                          <span className="text-[10px] text-slate-400 block font-sans font-normal">
+                            <InlineMath math={`${x_var}_${idx}`} />
+                          </span>
+                          {xnClean}
                         </div>
-                        <div>
-                          <InlineMath math={`${y_var}_{${idx}} = ${step.yn}`} />
+                        <div className="bg-white p-2 rounded-lg border border-slate-200/60 text-center">
+                          <span className="text-[10px] text-slate-400 block font-sans font-normal">
+                            <InlineMath math={`${y_var}_${idx}`} />
+                          </span>
+                          {ynClean}
                         </div>
-                        <div className="flex items-center gap-1">
-                          <span>Paso</span>
-                          <InlineMath math={`h = ${h}`} />
+                        <div className="bg-white p-2 rounded-lg border border-slate-200/60 text-center">
+                          <span className="text-[10px] text-slate-400 block font-sans font-normal">
+                            <InlineMath math="h" />
+                          </span>
+                          {hClean}
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block flex items-center gap-1">
-                        <span>Derivadas Evaluadas en</span>
-                        <InlineMath math={`(${x_var}_{${idx}}, ${y_var}_{${idx}})`} />
+                    {/* Derivadas Evaluadas */}
+                    <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                        Derivadas Evaluadas en <InlineMath math={`(${xnClean}, ${ynClean})`} />
                       </span>
-                      <div className="space-y-1 font-mono text-slate-800">
+                      <div className="grid grid-cols-2 gap-2 font-mono text-slate-900 font-bold text-xs">
                         {step.derivatives_values.map((val, dIdx) => (
-                          <div key={dIdx} className="flex items-center justify-between">
-                            <span className="text-slate-600">
-                              <InlineMath math={`${derivatives[dIdx]?.order_label || "y'"} = ${derivatives[dIdx]?.latex}`} />:
+                          <div
+                            key={dIdx}
+                            className="bg-white p-2 rounded-lg border border-slate-200/60 flex items-center justify-between px-2.5"
+                          >
+                            <span className="text-slate-500 font-sans font-semibold text-[11px]">
+                              <InlineMath math={`${derivatives[dIdx]?.order_label || "y'"} = `} />
                             </span>
-                            <span className="font-bold text-slate-900">{val}</span>
+                            <span className="text-slate-900">{formatCleanNumber(val, 6)}</span>
                           </div>
                         ))}
                       </div>
@@ -143,43 +164,24 @@ export const TaylorStepAccordion: React.FC<TaylorStepAccordionProps> = ({ result
                   </div>
 
                   {/* Sustitución en Ordenada Genérica */}
-                  <div className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
                       Sustitución en la Ordenada Genérica
                     </span>
-                    <div className="overflow-x-auto py-1">
-                      <InlineMath math={step.explanation_latex} block={true} className="text-slate-900 font-bold" />
+                    <div className="p-3 sm:p-4 bg-slate-50 border border-slate-200 rounded-xl overflow-x-auto overflow-y-hidden text-slate-900 font-bold text-center scrollbar-none">
+                      <InlineMath math={step.explanation_latex} block={true} />
                     </div>
                   </div>
 
-                  {/* Interpretación pedagógica estilo Cátedra */}
-                  <div className="bg-blue-50/60 border border-blue-200/70 p-3.5 rounded-xl text-blue-950 space-y-2">
-                    <div className="flex items-center gap-2 font-bold text-blue-900 text-[11px] uppercase tracking-wider">
-                      <span>Interpretación Cátedra UTN FRLP</span>
-                    </div>
-                    <div className="leading-relaxed whitespace-pre-line text-blue-900/90 text-[11px] sm:text-xs">
-                      <MathText text={step.explanation_text} />
+                  {/* Conclusión del Paso */}
+                  <div className="p-3 bg-slate-100/70 border border-slate-200/80 rounded-xl flex items-center justify-between flex-wrap gap-2 text-xs">
+                    <span className="text-slate-600 font-medium">
+                      Aproximación en el extremo superior del subintervalo:
+                    </span>
+                    <div className="font-mono font-bold text-slate-900 text-sm">
+                      <InlineMath math={`\\hat{${y_var}}(${xNextClean}) \\approx ${ynNextClean}`} />
                     </div>
                   </div>
-
-                  {/* Comparación con Exacta si existe */}
-                  {step.y_exact !== undefined && step.y_exact !== null && (
-                    <div className="flex items-center justify-between p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl text-emerald-950 flex-wrap gap-2">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-bold text-emerald-900">
-                          Solución Exacta en <InlineMath math={`${x_var} = ${(step.xn + h).toFixed(4)}`} />:
-                        </span>{' '}
-                        <span className="font-mono font-bold">{step.y_exact}</span>
-                      </div>
-                      <div className="text-right font-medium text-emerald-800 flex items-center gap-1.5">
-                        <span>Error Abs:</span>
-                        <InlineMath math={`E = ${step.error_abs}`} />
-                        {step.error_rel !== undefined && step.error_rel !== null && (
-                          <span className="ml-1.5">({step.error_rel.toFixed(3)}%)</span>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>

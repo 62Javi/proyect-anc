@@ -11,9 +11,11 @@ import { solveTaylorODE } from '../../services/api';
 import type { TaylorPreset, TaylorRequest, TaylorResponse } from '../../types/taylor';
 
 import TaylorStepAccordion from './TaylorStepAccordion';
+import TaylorTrajectoryPlot from './TaylorTrajectoryPlot';
 import InlineMath from '../InlineMath';
 import MathText from '../MathText';
 import UnifiedMathInput from '../UnifiedMathInput';
+import { formatCleanNumber } from '../../utils/numberFormat';
 
 interface TaylorInteractiveSolverProps {
   initialConfig?: TaylorPreset;
@@ -38,7 +40,6 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
   const [result, setResult] = useState<TaylorResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [showTheoreticalExact, setShowTheoreticalExact] = useState<boolean>(false);
 
   // Sync initialConfig when provided (e.g. from "Cargar en Simulador" in Ejercicios Resueltos)
   useEffect(() => {
@@ -55,18 +56,12 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
     }
   }, [initialConfig]);
 
-  // Initial solve on mount with default Amiconi Exercise 1
-  useEffect(() => {
-    if (!initialConfig && !result) {
-      handleSolve();
-    }
-  }, []);
-
   const handleSolveWithParams = async (params: TaylorRequest) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await solveTaylorODE(params);
+      const minDelay = new Promise((resolve) => setTimeout(resolve, 350));
+      const [data] = await Promise.all([solveTaylorODE(params), minDelay]);
       setResult(data);
       onResultChange?.(data);
     } catch (err: any) {
@@ -117,13 +112,14 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
     setY0('1');
     setXf('1.3');
     setH('0.1');
+    setResult(null);
     setError(null);
   };
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Parameter Configuration Card */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm space-y-6">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-7 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
           <div>
             <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -167,13 +163,10 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
             />
           </div>
 
-          {/* Método: Taylor de Grado 2 (Tema Exclusivo Grupo 1) */}
+          {/* Método: Taylor de Grado 2 */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>Método Numérico</span>
-              <span className="text-[10px] text-blue-700 font-bold uppercase tracking-wider">
-                Tema Grupo 1
-              </span>
+            <label className="text-xs font-bold text-slate-700">
+              Método Numérico
             </label>
             <div className="px-3.5 py-2.5 rounded-xl border border-blue-200 bg-blue-50/70 text-blue-950 flex items-center justify-between">
               <span className="text-xs font-black">Taylor de Grado 2</span>
@@ -287,7 +280,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
           <div className="text-xs text-slate-500 font-medium flex items-center gap-1.5 flex-wrap">
             <span>Iteraciones estimadas:</span>
             <InlineMath
-              math={`N = \\frac{${xVar}_f - ${xVar}_0}{h} = \\frac{${xf} - ${x0}}{${h}} = ${Math.max(
+              math={`N = \\frac{${xVar}_f - ${xVar}_0}{h} = \\frac{${formatCleanNumber(xf, 4)} - ${formatCleanNumber(x0, 4)}}{${formatCleanNumber(h, 4)}} = ${Math.max(
                 0,
                 Math.round((parseFloat(xf) - parseFloat(x0)) / (parseFloat(h) || 1))
               )}`}
@@ -342,12 +335,12 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                 <InlineMath math="p = 2" />
               </span>
               <div className="text-2xl font-black text-slate-900 font-mono">
-                {result.final_approx_value}
+                {formatCleanNumber(result.final_approx_value, 6)}
               </div>
               <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
-                <InlineMath math={`\\hat{${yVar}}(${result.xf})`} />
+                <InlineMath math={`\\hat{${yVar}}(${formatCleanNumber(result.xf, 4)})`} />
                 <span>aproximación final calculada en</span>
-                <InlineMath math={`${xVar}_f = ${result.xf}`} />
+                <InlineMath math={`${xVar}_f = ${formatCleanNumber(result.xf, 4)}`} />
               </p>
             </div>
 
@@ -360,85 +353,45 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               </div>
               <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
                 <span>Paso</span>
-                <InlineMath math={`h = ${result.h}`} />
+                <InlineMath math={`h = ${formatCleanNumber(result.h, 4)}`} />
                 <span className="text-slate-400 mx-1">•</span>
                 <span>Subintervalos calculados con la ordenada genérica</span>
               </p>
             </div>
           </div>
 
-          {/* Verificación Teórica Opcional (Toggle) */}
-          {result.has_exact_solution && result.final_exact_value !== null && result.final_exact_value !== undefined && (
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-              <button
-                type="button"
-                onClick={() => setShowTheoreticalExact(!showTheoreticalExact)}
-                className="w-full flex items-center justify-between text-left cursor-pointer transition-colors group"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span className="text-xs font-black text-slate-700 group-hover:text-slate-900">
-                    Contraste Teórico Adicional (Solución Analítica por separación de variables)
-                  </span>
-                  <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-                    Opcional
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-800">
-                  {showTheoreticalExact ? 'Ocultar' : 'Ver comparación teórica'}
-                </span>
-              </button>
-
-              {showTheoreticalExact && (
-                <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
-                      Solución Analítica Exacta en <InlineMath math={`${xVar}_f = ${result.xf}`} />
-                    </span>
-                    <span className="text-base font-black text-emerald-950 font-mono">
-                      {result.final_exact_value}
-                    </span>
-                  </div>
-                  {typeof result.final_error_abs === 'number' && (
-                    <div className="sm:text-right">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
-                        Diferencia Numérica
-                      </span>
-                      <span className="text-xs font-mono font-bold text-emerald-900">
-                        <InlineMath math={`|\\text{Error}| = ${result.final_error_abs.toFixed(5)}`} />
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+          {/* Valor Agregado: Gráfico Interactivo de la Trayectoria Numérica */}
+          <TaylorTrajectoryPlot
+            plotData={result.plot_data}
+            xVar={xVar}
+            yVar={yVar}
+          />
 
           {/* Derivadas Simbólicas y Ordenada Genérica */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm space-y-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-7 shadow-sm space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
               <Sparkles size={18} className="text-slate-800" />
-              <h3 className="text-base font-black text-slate-900 tracking-tight">
+              <h3 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
                 Derivadas Simbólicas & Ordenada Genérica
               </h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Derivadas calculadas */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div className="space-y-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                   Derivadas Analíticas Sucesivas
                 </span>
-                <div className="space-y-2 text-xs">
+                <div className="space-y-1.5 text-xs">
                   {result.derivatives.map((d) => (
-                    <div key={d.order} className="flex items-center justify-between p-2 bg-white rounded-xl border border-slate-200">
+                    <div key={d.order} className="flex items-center justify-between py-2 px-3 bg-slate-50/90 rounded-xl border border-slate-100">
                       <span className="font-bold text-slate-700 mr-2 flex items-center gap-1">
                         <InlineMath math={d.order_label} />
                         <span>(orden</span>
                         <InlineMath math={`p = ${d.order}`} />
                         <span>):</span>
                       </span>
-                      <div className="font-mono text-slate-900 font-bold overflow-x-auto">
+                      <div className="font-mono text-slate-900 font-bold overflow-x-auto overflow-y-hidden scrollbar-none py-1">
                         <InlineMath math={`${d.order_label} = ${d.latex}`} />
                       </div>
                     </div>
@@ -447,17 +400,17 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
               </div>
 
               {/* Ordenada Genérica */}
-              <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200/80 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2 flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1">
                     <span>Fórmula de la Ordenada Genérica para</span>
                     <InlineMath math={`${yVar}_{n+1}`} />
                   </span>
-                  <div className="py-3 overflow-x-auto text-blue-950 font-bold">
+                  <div className="py-2.5 px-3 my-1.5 bg-slate-50 border border-slate-200 rounded-xl overflow-x-auto overflow-y-hidden text-slate-900 font-bold text-center scrollbar-none">
                     <InlineMath math={result.generic_formula_latex} block />
                   </div>
                 </div>
-                <p className="text-[11px] text-blue-800/80 leading-relaxed font-medium">
+                <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
                   Esta es la fórmula clave de cátedra. Recorre el dominio sustituyendo iterativamente en cada paso los valores de <InlineMath math={`(${xVar}_n, ${yVar}_n)`} />.
                 </p>
               </div>
@@ -465,7 +418,7 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
           </div>
 
           {/* Tabla de Iteraciones */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm space-y-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-3 sm:p-7 shadow-sm space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
               <Table size={18} className="text-slate-800" />
               <h3 className="text-base font-black text-slate-900 tracking-tight">
@@ -484,30 +437,18 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
                       <th key={d.order} className="p-3"><InlineMath math={`${d.order_label}_n`} /></th>
                     ))}
                     <th className="p-3"><InlineMath math={`${yVar}_{n+1}`} /></th>
-                    {showTheoreticalExact && result.has_exact_solution && (
-                      <>
-                        <th className="p-3"><InlineMath math={`${yVar}_{\\text{exacta}}`} /></th>
-                        <th className="p-3"><InlineMath math="E_{\\text{abs}}" /></th>
-                      </>
-                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {result.steps.map((s, idx) => (
                     <tr key={s.step} className="hover:bg-slate-50/70 transition-colors">
                       <td className="p-3 font-bold text-slate-900">{idx}</td>
-                      <td className="p-3 font-mono text-slate-700">{s.xn}</td>
-                      <td className="p-3 font-mono text-slate-700">{s.yn}</td>
+                      <td className="p-3 font-mono text-slate-700">{formatCleanNumber(s.xn, 4)}</td>
+                      <td className="p-3 font-mono text-slate-700">{formatCleanNumber(s.yn, 6)}</td>
                       {s.derivatives_values.map((dv, dIdx) => (
-                        <td key={dIdx} className="p-3 font-mono text-slate-600">{dv}</td>
+                        <td key={dIdx} className="p-3 font-mono text-slate-600">{formatCleanNumber(dv, 6)}</td>
                       ))}
-                      <td className="p-3 font-mono font-bold text-blue-900">{s.yn_plus_1}</td>
-                      {showTheoreticalExact && result.has_exact_solution && (
-                        <>
-                          <td className="p-3 font-mono text-emerald-800">{s.y_exact ?? '-'}</td>
-                          <td className="p-3 font-mono text-rose-700">{s.error_abs ?? '-'}</td>
-                        </>
-                      )}
+                      <td className="p-3 font-mono font-bold text-slate-900">{formatCleanNumber(s.yn_plus_1, 6)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -517,6 +458,23 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
 
           {/* Desglose Paso a Paso Metodología Amiconi */}
           <TaylorStepAccordion result={result} />
+
+          {/* Resultado Numérico Aproximado Final (Estilo Ejercicios Resueltos) */}
+          <div className="bg-slate-50 border-2 border-slate-300 rounded-2xl p-6 sm:p-7 shadow-xs">
+            <div className="space-y-1.5">
+              <span className="text-xs uppercase tracking-widest text-slate-500 font-bold block">
+                Resultado Numérico Aproximado Final por Taylor Orden 2:
+              </span>
+              <div className="text-2xl sm:text-4xl font-black text-slate-900 font-mono tracking-tight">
+                <InlineMath
+                  math={`\\hat{${yVar}}(${formatCleanNumber(result.xf, 4)}) \\approx ${formatCleanNumber(result.final_approx_value, 6)}`}
+                />
+              </div>
+              <p className="text-xs text-slate-500 font-medium pt-1">
+                Valor calculado iterando la ordenada genérica en el intervalo del problema.
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>

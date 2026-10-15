@@ -32,6 +32,21 @@
   .glass-header {
     @apply backdrop-blur-md bg-white/80 border-b border-border sticky top-0 z-30;
   }
+
+  .scrollbar-none {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
+
+/* Prevent accidental vertical scrollbars on math elements or formula wrappers */
+.katex, .katex-display, .katex-html {
+  overflow-y: hidden !important;
 }
 
 @media print {

@@ -20,25 +20,22 @@ export const TaylorPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-full bg-slate-50/50 p-3 sm:p-6 lg:p-10 flex flex-col w-full max-w-full min-w-0 overflow-x-hidden">
+    <div className="min-h-full bg-slate-50/50 p-2 sm:p-6 lg:p-10 flex flex-col w-full max-w-full min-w-0 overflow-x-hidden">
       {/* Header Banner */}
-      <div className="max-w-5xl mx-auto w-full space-y-6 mb-8 print:hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+      <div className="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6 mb-6 sm:mb-8 print:hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                 Análisis Numérico · EDO
               </span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-blue-900 bg-blue-100/70 px-3 py-1 rounded-full border border-blue-200">
-                Grupo 1 · Tema 1
-              </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
               Método de Taylor para E.D.O. (P.V.I.)
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm max-w-2xl font-medium">
               Resolución numérica de Problemas de Valor Inicial mediante el Método de Taylor de Grado 2 (<InlineMath math="p=2" />),
-              derivación analítica con SymPy, ordenada genérica y ejercicios de cátedra UTN FRLP.
+              deducción analítica de derivadas sucesivas, ordenada genérica y ejercicios prácticos de cátedra.
             </p>
           </div>
 

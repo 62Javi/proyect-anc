@@ -20,7 +20,8 @@ const GithubIcon = ({ size = 20 }: { size?: number }) => (
 
 export default function Layout() {
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  // Colapsada por defecto al entrar a la página
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
 
   const navItems = [
     { path: '/', icon: <Home size={20} />, label: 'Inicio' },
