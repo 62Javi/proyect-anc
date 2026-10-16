@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { convertAsciiMathToLatex } from 'mathlive';
 import 'mathlive';
 import InlineMath from './InlineMath';
 
@@ -51,8 +52,9 @@ export default function UnifiedMathInput({ value, onChange, className = "", hide
       // Initial programmatic value sync on mount
       if (value) {
         const formattedValue = formatForMathField(value);
-        mfRef.current.setValue(formattedValue, { format: 'ascii-math' });
-        setCurrentLatex(mfRef.current.value || formattedValue);
+        const latex = convertAsciiMathToLatex(formattedValue);
+        mfRef.current.setValue(latex || formattedValue, { format: 'latex' });
+        setCurrentLatex(mfRef.current.value || latex || formattedValue);
         lastEmittedValue.current = value;
       }
     }
@@ -71,8 +73,9 @@ export default function UnifiedMathInput({ value, onChange, className = "", hide
       }
 
       const formattedValue = formatForMathField(value);
-      mfRef.current.setValue(formattedValue, { format: 'ascii-math' });
-      setCurrentLatex(mfRef.current.value || formattedValue);
+      const latex = convertAsciiMathToLatex(formattedValue);
+      mfRef.current.setValue(latex || formattedValue, { format: 'latex' });
+      setCurrentLatex(mfRef.current.value || latex || formattedValue);
       lastEmittedValue.current = value;
     }
   }, [value, hideMenu]);

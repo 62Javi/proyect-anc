@@ -68,7 +68,7 @@ export const TaylorTheorySection: React.FC = () => {
             Método de Taylor para Ecuaciones Diferenciales Ordinarias (P.V.I.)
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-            Enfoque conceptual y operativo de cátedra: los 4 elementos de un P.V.I., concepto de Ordenada Genérica y deducción analítica de <InlineMath math="y''" /> aplicando derivación por regla de la cadena, producto o cociente.
+            Enfoque conceptual y operativo de cátedra: los 4 elementos de un P.V.I., concepto de Ordenada Genérica y deducción analítica de <InlineMath math="y''" />.
           </p>
         </div>
 

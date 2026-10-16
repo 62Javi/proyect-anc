@@ -10,11 +10,13 @@ import type { TaylorPreset } from '../../types/taylor';
 export const TaylorPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'solver' | 'theory' | 'exercises'>('solver');
   const [selectedPreset, setSelectedPreset] = useState<TaylorPreset | undefined>(undefined);
+  const [loadCount, setLoadCount] = useState<number>(0);
 
   const { printRef, handlePrint } = useAppPrint('Simulacion-Taylor-EDO-ANC');
 
   const handleLoadExercise = (preset: TaylorPreset) => {
     setSelectedPreset({ ...preset });
+    setLoadCount((prev) => prev + 1);
     setActiveTab('solver');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -91,7 +93,10 @@ export const TaylorPage: React.FC = () => {
       <div className="max-w-5xl mx-auto w-full flex-1 min-w-0">
         <div ref={printRef}>
           {activeTab === 'solver' && (
-            <TaylorInteractiveSolver initialConfig={selectedPreset} />
+            <TaylorInteractiveSolver
+              key={selectedPreset ? `${selectedPreset.id}-${loadCount}` : 'default'}
+              initialConfig={selectedPreset}
+            />
           )}
           {activeTab === 'theory' && <TaylorTheorySection />}
           {activeTab === 'exercises' && (

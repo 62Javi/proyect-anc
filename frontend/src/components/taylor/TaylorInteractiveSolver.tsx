@@ -27,13 +27,13 @@ export const TaylorInteractiveSolver: React.FC<TaylorInteractiveSolverProps> = (
   onResultChange,
 }) => {
   // Form State
-  const [expression, setExpression] = useState<string>('2*x*y');
-  const [xVar, setXVar] = useState<string>('x');
-  const [yVar, setYVar] = useState<string>('y');
-  const [x0, setX0] = useState<string>('1');
-  const [y0, setY0] = useState<string>('1');
-  const [xf, setXf] = useState<string>('1.3');
-  const [h, setH] = useState<string>('0.1');
+  const [expression, setExpression] = useState<string>(initialConfig?.expression ?? '2*x*y');
+  const [xVar, setXVar] = useState<string>(initialConfig?.x_var ?? 'x');
+  const [yVar, setYVar] = useState<string>(initialConfig?.y_var ?? 'y');
+  const [x0, setX0] = useState<string>(initialConfig ? String(initialConfig.x0) : '1');
+  const [y0, setY0] = useState<string>(initialConfig ? String(initialConfig.y0) : '1');
+  const [xf, setXf] = useState<string>(initialConfig ? String(initialConfig.xf) : '1.3');
+  const [h, setH] = useState<string>(initialConfig ? String(initialConfig.h) : '0.1');
   const order = 2;
 
   // Results State
