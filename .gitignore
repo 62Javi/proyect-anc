@@ -25,3 +25,4 @@ build/
 *.tmp
 *.swp
 docker-compose.override.yml
+.wrangler/
