@@ -133,41 +133,41 @@ export const OFFICIAL_TAYLOR_EXERCISES: TaylorPreset[] = [
 
 export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
   // ==========================================
-  // INCISO A: y' = -3x^2 y (Regla del Producto)
+  // INCISO A: y' = -3x^2 y (Derivadas Parciales)
   // ==========================================
   {
     preset: OFFICIAL_TAYLOR_EXERCISES[0],
     problemStatement:
       'Aproximar usando el método de Taylor una solución al PVI: $y\' = -3x^2y$, con $0 \\le x \\le 0.5$, $h = 0.1$ e $y(0) = 3$. Hallar $y(0.5)$.',
     deduction: {
-      ruleName: 'Regla del Producto',
-      ruleFormula: '(u \\cdot v)\' = u\' \\cdot v + u \\cdot v\'',
+      ruleName: 'Derivadas Parciales y Regla de la Cadena',
+      ruleFormula: 'y\'\' = \\frac{\\partial f}{\\partial x} + \\frac{\\partial f}{\\partial y} \\cdot y\'',
       ruleDescription:
-        'Expresamos la derivada como el producto de dos factores: $u = -3x^2$ y $v = y(x)$. Derivamos miembro a miembro respecto a $x$:',
+        'Aplicamos la fórmula oficial de la cátedra derivando parcialmente la función $f(x,y) = -3x^2 y$ respecto a $x$ e $y$:',
       boxU: {
-        label: 'Primer Factor (u)',
-        math: 'u = -3x^2',
-        note: 'Término cuadrático en la variable independiente x.',
+        label: 'Derivada Parcial respecto a x',
+        math: '\\frac{\\partial f}{\\partial x} = -6xy',
+        note: 'Derivamos f(x,y) considerando a y como constante.',
       },
       boxUPrime: {
-        label: "Derivada de u (u')",
-        math: "u' = \\frac{d}{dx}(-3x^2) = -6x",
-        note: 'Derivación polinómica estándar respecto a x.',
+        label: 'Derivada Parcial respecto a y',
+        math: '\\frac{\\partial f}{\\partial y} = -3x^2',
+        note: 'Derivamos f(x,y) considerando a x como constante.',
       },
       boxV: {
-        label: 'Segundo Factor (v)',
-        math: 'v = y',
-        note: 'Función dependiente incógnita y(x).',
+        label: 'Primera Derivada (y\')',
+        math: "y' = -3x^2 y",
+        note: 'Expresión original de la EDO.',
       },
       boxVPrime: {
-        label: "Derivada de v (v')",
-        math: "v' = \\frac{d}{dx}(y) = y'",
-        note: "Como y depende de x, su derivada es y'.",
+        label: 'Sustitución y Producto',
+        math: '\\frac{\\partial f}{\\partial y} \\cdot y\' = (-3x^2)(-3x^2 y)',
+        note: 'Multiplicación por la primera derivada.',
       },
       appliedRuleFormulaMath:
-        "y'' = (u \\cdot v)' = u' \\cdot v + u \\cdot v'",
+        "y'' = \\frac{\\partial f}{\\partial x} + \\frac{\\partial f}{\\partial y} \\cdot y'",
       substitutionMath:
-        "y'' = (-6x) \\cdot y + (-3x^2) \\cdot y' = -6xy - 3x^2 \\cdot (-3x^2 y)",
+        "y'' = (-6xy) + (-3x^2) \\cdot (-3x^2 y)",
       simplificationSteps: [
         "y'' = -6xy + 9x^4 y",
         "y'' = 3xy \\cdot (3x^3 - 2)",
@@ -191,41 +191,41 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
   },
 
   // ==========================================
-  // INCISO B: y' = 1/4 (1 + y^2) (Regla de la Cadena)
+  // INCISO B: y' = 1/4 (1 + y^2) (Derivadas Parciales)
   // ==========================================
   {
     preset: OFFICIAL_TAYLOR_EXERCISES[1],
     problemStatement:
       'Aproximar usando el método de Taylor una solución al PVI: $y\' = \\frac{1}{4}(1 + y^2)$, con $0 \\le x \\le 0.5$, $h = 0.1$ e $y(0) = 1$. Hallar $y(0.5)$.',
     deduction: {
-      ruleName: 'Regla de la Cadena',
-      ruleFormula: '\\frac{d}{dx}[g(y)] = g\'(y) \\cdot y\'',
+      ruleName: 'Derivadas Parciales y Regla de la Cadena',
+      ruleFormula: 'y\'\' = \\frac{\\partial f}{\\partial x} + \\frac{\\partial f}{\\partial y} \\cdot y\'',
       ruleDescription:
-        'La ecuación depende exclusivamente de $y(x)$. Identificamos la función exterior $g(y)$ y la variable dependiente interior $y$:',
+        'Aplicamos la fórmula oficial de la cátedra derivando parcialmente la función $f(x,y) = \\frac{1}{4}(1 + y^2)$ respecto a $x$ e $y$:',
       boxU: {
-        label: 'Función Exterior g(y)',
-        math: 'g(y) = \\frac{1}{4}(1 + y^2)',
-        note: 'Expresión autónoma en términos de y.',
+        label: 'Derivada Parcial respecto a x',
+        math: '\\frac{\\partial f}{\\partial x} = 0',
+        note: 'La función no depende explícitamente de x.',
       },
       boxUPrime: {
-        label: "Derivada Exterior g'(y)",
-        math: "g'(y) = \\frac{d}{dy}\\left[\\frac{1 + y^2}{4}\\right] = \\frac{2y}{4} = \\frac{y}{2}",
-        note: 'Derivada directa de g respecto a y (la derivada de 1 es 0 y de y^2 es 2y).',
+        label: 'Derivada Parcial respecto a y',
+        math: '\\frac{\\partial f}{\\partial y} = \\frac{2y}{4} = \\frac{y}{2}',
+        note: 'Derivamos f respecto a y.',
       },
       boxV: {
-        label: 'Función Interior (y)',
-        math: 'y = y(x)',
-        note: 'Variable dependiente incógnita.',
+        label: 'Primera Derivada (y\')',
+        math: "y' = \\frac{1}{4}(1 + y^2)",
+        note: 'Expresión original de la EDO.',
       },
       boxVPrime: {
-        label: "Derivada Interior (y')",
-        math: "y' = \\frac{dy}{dx}",
-        note: "Derivada de la función interior respecto a x.",
+        label: 'Sustitución y Producto',
+        math: '\\frac{\\partial f}{\\partial y} \\cdot y\' = \\left(\\frac{y}{2}\\right) \\cdot \\left[\\frac{1}{4}(1 + y^2)\\right]',
+        note: 'Multiplicación por la primera derivada.',
       },
       appliedRuleFormulaMath:
-        "y'' = \\frac{d}{dx}[g(y)] = g'(y) \\cdot y' = \\frac{y}{2} \\cdot y'",
+        "y'' = \\frac{\\partial f}{\\partial x} + \\frac{\\partial f}{\\partial y} \\cdot y'",
       substitutionMath:
-        "y'' = \\frac{y}{2} \\cdot \\left[\\frac{1}{4}(1 + y^2)\\right]",
+        "y'' = 0 + \\left(\\frac{y}{2}\\right) \\cdot \\left[\\frac{1}{4}(1 + y^2)\\right]",
       simplificationSteps: [
         "y'' = \\frac{y(1 + y^2)}{8}",
       ],
@@ -248,41 +248,41 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
   },
 
   // ==========================================
-  // INCISO C: y' = 2xy (Regla del Producto)
+  // INCISO C: y' = 2xy (Derivadas Parciales)
   // ==========================================
   {
     preset: OFFICIAL_TAYLOR_EXERCISES[2],
     problemStatement:
       'Aproximar usando el método de Taylor una solución al PVI: $y\' = 2xy$, con $h = 0.1$ e $y(1) = 1$. Hallar $y(1.3)$.',
     deduction: {
-      ruleName: 'Regla del Producto',
-      ruleFormula: '(u \\cdot v)\' = u\' \\cdot v + u \\cdot v\'',
+      ruleName: 'Derivadas Parciales y Regla de la Cadena',
+      ruleFormula: 'y\'\' = \\frac{\\partial f}{\\partial x} + \\frac{\\partial f}{\\partial y} \\cdot y\'',
       ruleDescription:
-        'Expresamos la derivada como el producto de dos factores: $u = 2x$ y $v = y(x)$. Derivamos miembro a miembro respecto a $x$:',
+        'Aplicamos la fórmula oficial de la cátedra derivando parcialmente la función $f(x,y) = 2xy$ respecto a $x$ e $y$:',
       boxU: {
-        label: 'Primer Factor (u)',
-        math: 'u = 2x',
-        note: 'Término lineal en x.',
+        label: 'Derivada Parcial respecto a x',
+        math: '\\frac{\\partial f}{\\partial x} = 2y',
+        note: 'Derivamos f(x,y) considerando a y como constante.',
       },
       boxUPrime: {
-        label: "Derivada de u (u')",
-        math: "u' = \\frac{d}{dx}(2x) = 2",
-        note: 'Derivada constante respecto a x.',
+        label: 'Derivada Parcial respecto a y',
+        math: '\\frac{\\partial f}{\\partial y} = 2x',
+        note: 'Derivamos f(x,y) considerando a x como constante.',
       },
       boxV: {
-        label: 'Segundo Factor (v)',
-        math: 'v = y',
-        note: 'Función dependiente y(x).',
+        label: 'Primera Derivada (y\')',
+        math: "y' = 2xy",
+        note: 'Expresión original de la EDO.',
       },
       boxVPrime: {
-        label: "Derivada de v (v')",
-        math: "v' = \\frac{d}{dx}(y) = y'",
-        note: 'Derivada de y respecto de x.',
+        label: 'Sustitución y Producto',
+        math: '\\frac{\\partial f}{\\partial y} \\cdot y\' = (2x) \\cdot (2xy)',
+        note: 'Multiplicación por la primera derivada.',
       },
       appliedRuleFormulaMath:
-        "y'' = (u \\cdot v)' = u' \\cdot v + u \\cdot v'",
+        "y'' = \\frac{\\partial f}{\\partial x} + \\frac{\\partial f}{\\partial y} \\cdot y'",
       substitutionMath:
-        "y'' = 2 \\cdot y + (2x) \\cdot y' = 2y + 2x \\cdot (2xy)",
+        "y'' = 2y + (2x) \\cdot (2xy)",
       simplificationSteps: [
         "y'' = 2y + 4x^2 y",
         "y'' = 2y \\cdot (1 + 2x^2)",
@@ -304,7 +304,7 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
   },
 
   // ==========================================
-  // INCISO D: y' = 1/t (y^2 + y) (Regla del Cociente)
+  // INCISO D: y' = 1/t (y^2 + y) (Derivadas Parciales)
   // ==========================================
   {
     preset: OFFICIAL_TAYLOR_EXERCISES[3],
@@ -315,36 +315,36 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
     specialAnswer:
       'Son necesarias exactamente $N = \\frac{t_f - t_0}{h} = \\frac{3.0 - 1.0}{0.5} = 4$ iteraciones: evaluando en los puntos $t_0 = 1.0$, $t_1 = 1.5$, $t_2 = 2.0$, $t_3 = 2.5$ y $t_4 = 3.0$.',
     deduction: {
-      ruleName: 'Regla del Cociente',
-      ruleFormula: '\\left(\\frac{u}{v}\\right)\' = \\frac{u\' \\cdot v - u \\cdot v\'}{v^2}',
+      ruleName: 'Derivadas Parciales y Regla de la Cadena',
+      ruleFormula: 'y\'\' = \\frac{\\partial f}{\\partial t} + \\frac{\\partial f}{\\partial y} \\cdot y\'',
       ruleDescription:
-        'Escribimos la derivada como el cociente $y\' = \\frac{y^2 + y}{t}$ e identificamos numerador $u$ y denominador $v$:',
+        'Aplicamos la fórmula oficial de la cátedra derivando parcialmente la función $f(t,y) = \\frac{1}{t}(y^2 + y)$ respecto a $t$ e $y$:',
       boxU: {
-        label: 'Numerador (u)',
-        math: 'u = y^2 + y',
-        note: 'Polinomio cuadrático en y.',
+        label: 'Derivada Parcial respecto a t',
+        math: '\\frac{\\partial f}{\\partial t} = -\\frac{1}{t^2}(y^2 + y)',
+        note: 'Derivamos f(t,y) considerando a y como constante.',
       },
       boxUPrime: {
-        label: "Derivada del Numerador (u')",
-        math: "u' = \\frac{d}{dt}(y^2 + y) = (2y + 1) \\cdot y'",
-        note: "Regla de la cadena al derivar respecto a t.",
+        label: 'Derivada Parcial respecto a y',
+        math: '\\frac{\\partial f}{\\partial y} = \\frac{1}{t}(2y + 1)',
+        note: 'Derivamos f(t,y) considerando a t como constante.',
       },
       boxV: {
-        label: 'Denominador (v)',
-        math: 'v = t',
-        note: 'Variable temporal independiente.',
+        label: 'Primera Derivada (y\')',
+        math: "y' = \\frac{1}{t}(y^2 + y)",
+        note: 'Expresión original de la EDO.',
       },
       boxVPrime: {
-        label: "Derivada del Denominador (v')",
-        math: "v' = \\frac{d}{dt}(t) = 1",
-        note: 'Derivada directa respecto a t.',
+        label: 'Sustitución y Producto',
+        math: '\\frac{\\partial f}{\\partial y} \\cdot y\' = \\left[\\frac{1}{t}(2y + 1)\\right] \\cdot \\left[\\frac{1}{t}(y^2 + y)\\right]',
+        note: 'Multiplicación por la primera derivada.',
       },
       appliedRuleFormulaMath:
-        "y'' = \\left(\\frac{u}{v}\\right)' = \\frac{u' \\cdot v - u \\cdot v'}{v^2}",
+        "y'' = \\frac{\\partial f}{\\partial t} + \\frac{\\partial f}{\\partial y} \\cdot y'",
       substitutionMath:
-        "y'' = \\frac{[(2y + 1) \\cdot y'] \\cdot t - (y^2 + y) \\cdot 1}{t^2} = \\frac{[(2y + 1) \\cdot \\left(\\frac{y^2 + y}{t}\\right)] \\cdot t - (y^2 + y)}{t^2}",
+        "y'' = -\\frac{1}{t^2}(y^2 + y) + \\left[\\frac{1}{t}(2y + 1)\\right] \\cdot \\left[\\frac{1}{t}(y^2 + y)\\right]",
       simplificationSteps: [
-        "y'' = \\frac{(2y + 1)(y^2 + y) - (y^2 + y)}{t^2}",
+        "y'' = \\frac{-(y^2 + y) + (2y + 1)(y^2 + y)}{t^2}",
         "y'' = \\frac{(y^2 + y)[(2y + 1) - 1]}{t^2} = \\frac{(y^2 + y)(2y)}{t^2}",
         "y'' = \\frac{2y^2 (y + 1)}{t^2}",
       ],
@@ -369,7 +369,6 @@ export const DETAILED_TAYLOR_EXERCISES: SolvedTaylorExerciseDetail[] = [
 export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ onLoadExercise }) => {
   const { printRef, handlePrint } = useAppPrint('Ejercicios-Resueltos-Taylor-TP5');
 
-  // State for expanded detailed resolution per card (hidden by default)
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
     'tp5-1a': false,
     'tp5-1b': false,
@@ -399,12 +398,11 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
           </div>
           <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-3xl">
             Resolución paso a paso del Ejercicio Nº 1 (Incisos a, b, c y d) por el Método de Taylor de Grado 2,
-            con deducción analítica de derivadas, formulación de ordenada genérica y tablas de iteración.
+            utilizando la deducción analítica de la segunda derivada mediante derivadas parciales y regla de la cadena multivariable.
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 flex-wrap">
-
           <button
             type="button"
             onClick={() => {
@@ -437,7 +435,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
               key={ex.id}
               className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm hover:border-slate-300 transition-all space-y-6 print:border-slate-300 print:shadow-none print:break-inside-avoid"
             >
-              {/* Card Header (Sin cartelitos arriba) */}
+              {/* Card Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                 <div>
                   <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
@@ -548,13 +546,15 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       </div>
                     </div>
 
-                    {/* LOS 4 CUADROS CLAROS PARA u, u', v, v' EN GRIS/NEGRO */}
-                    <div className="space-y-2">
+                    {/* CUADROS PARA DERIVADAS PARCIALES Y SUSTITUCIÓN */}
+                    <div className="space-y-3">
                       <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                        Identificación de factores y derivadas:
+                        Cálculo de derivadas parciales y sustitución:
                       </span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        {/* Factor u */}
+                      
+                      {/* Fila superior: Las 3 primeras cajas en una fila de 3 columnas */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* Box 1 */}
                         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
                           <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxU.label}
@@ -567,7 +567,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                           </p>
                         </div>
 
-                        {/* Derivada u' */}
+                        {/* Box 2 */}
                         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
                           <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxUPrime.label}
@@ -580,7 +580,7 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                           </p>
                         </div>
 
-                        {/* Factor v */}
+                        {/* Box 3 */}
                         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
                           <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
                             {detail.deduction.boxV.label}
@@ -592,19 +592,19 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                             {detail.deduction.boxV.note}
                           </p>
                         </div>
+                      </div>
 
-                        {/* Derivada v' */}
-                        <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1">
-                          <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
-                            {detail.deduction.boxVPrime.label}
-                          </span>
-                          <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto overflow-y-hidden py-1.5 scrollbar-none">
-                            <InlineMath math={detail.deduction.boxVPrime.math} />
-                          </div>
-                          <p className="text-[11px] text-slate-500 leading-snug">
-                            {detail.deduction.boxVPrime.note}
-                          </p>
+                      {/* Fila inferior: La 4ta caja (Sustitución y producto) en ancho completo con texto centrado */}
+                      <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-1 text-center">
+                        <span className="text-[11px] font-bold text-slate-700 block uppercase tracking-wide">
+                          {detail.deduction.boxVPrime.label}
+                        </span>
+                        <div className="text-sm sm:text-base font-bold text-slate-900 font-mono overflow-x-auto overflow-y-hidden py-1.5 scrollbar-none flex justify-center">
+                          <InlineMath math={detail.deduction.boxVPrime.math} />
                         </div>
+                        <p className="text-[11px] text-slate-500 leading-snug">
+                          {detail.deduction.boxVPrime.note}
+                        </p>
                       </div>
                     </div>
 
@@ -618,10 +618,10 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       </div>
                     </div>
 
-                    {/* SUSTITUCIÓN DE y' Y SIMPLIFICACIÓN ALGEBRAICA */}
+                    {/* SUSTITUCIÓN Y SIMPLIFICACIÓN */}
                     <div className="space-y-2 bg-white border border-slate-200 rounded-xl p-4">
                       <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-                        Sustitución de <InlineMath math={`${ex.y_var}'`} /> y simplificación algebraica
+                        Sustitución y simplificación algebraica
                       </span>
                       <div className="space-y-2 font-mono text-xs sm:text-sm text-slate-800 overflow-x-auto overflow-y-hidden scrollbar-none">
                         <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-lg">
@@ -663,7 +663,6 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                   </div>
 
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4">
-                    {/* Fórmula Canónica Destacada */}
                     <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-1.5">
                       <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
                         Fórmula Canónica de Taylor (Grado 2):
@@ -673,7 +672,6 @@ export const TaylorExercisesSection: React.FC<TaylorExercisesSectionProps> = ({ 
                       </div>
                     </div>
 
-                    {/* Expresión Particular con Sustitución Completa */}
                     <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-1.5">
                       <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
                         Sustitución Particular para este P.V.I.:
